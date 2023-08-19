@@ -9,22 +9,20 @@
 
 You can modify some of the preferences a by creating a `config.json` file (`handy/config.json`)
 
-```json
-{
-  // If you want to receive the camera stream from UDP, you can modify the values below. Note that they have to match with your cilent settings (see below).
-  "UDP_PORT": 30001,
-  "MAX_PACKET_SIZE": 65507 // Better to not change it
-}
-```
-
-If you also want to use the client script (to stream the webcam), you can additionally modify another preferences also by creating a `config.json` file (`handy/client/config.json`) and using the template below:
+- STREAM_URL - the URL of the camera video feed - stream
+- FPS - frames per second
+- RESIZE_WIDTH - resize your input image to that width
+- RESIZE_HEIGHT - resize your input image to that height
 
 ```json
 {
-  "UDP_IP": "YOUR_SERVER_IP",
-  "UDP_PORT": 30001,
-  "MAX_PACKET_SIZE": 65507, // Better to not change it,
-  "CAMERA": "/dev/video0",
-  "FPS": 1
+  "STREAM_URL": "udp://127.0.0.1:12345",
+  "FPS": 1,
+  "RESIZE_WIDTH": 960,
+  "RESIZE_HEIGHT": 540
 }
 ```
+
+# Command to stream webcam on Linux
+
+ffmpeg -f v4l2 -i /dev/video0 -preset ultrafast -vcodec libx264 -tune zerolatency -b 900k -f h264 udp://<YOUR_IP>:<YOUR_PORT>
