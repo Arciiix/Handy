@@ -5,6 +5,10 @@
 
 ### Easily control your home automations using hand gestures, at any time. This app recognizes the gestures using your security camera footage and controls every IoT action you can dream of. Nothing is impossible - make your life feel like in a sci-fi movie.
 
+# Train
+
+## [Gather data](./handy/train/0_Gather_Data.ipynb)
+
 # Const values
 
 You can modify some of the preferences a by creating a `config.json` file (`handy/config.json`)
