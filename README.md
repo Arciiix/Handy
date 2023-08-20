@@ -7,7 +7,9 @@
 
 # Train
 
-## [Gather data](./handy/train/0_Gather_Data.ipynb)
+1. [Gather data](./handy/train/0_Gather_Data.ipynb)
+
+1. [Process data](./handy/train/1_Process_Data.ipynb)
 
 # Const values
 
