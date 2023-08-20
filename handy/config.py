@@ -44,4 +44,7 @@ class Config:
         }
 
 
+HANDY_WINDOW = "Handy"
+HANDY_MODEL_WINDOW = "Handy - model"
+
 CONFIG = Config()

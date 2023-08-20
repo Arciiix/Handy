@@ -1,15 +1,20 @@
+from os import path
 import time
 import cv2
 import mediapipe as mp
+import numpy as np
+import pandas as pd
 
 from config import CONFIG
-from angle import calculate_angle
+from angle import calculate_angle_from_obj
+from config import HANDY_MODEL_WINDOW
+
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
 
 
-def handle_frame(frame: cv2.typing.MatLike, holistic):
+def handle_frame(frame: cv2.typing.MatLike, holistic, model):
     start_time = time.time()
     # Resize frame
     frame = cv2.resize(frame, (CONFIG.resize_width, CONFIG.resize_height))
@@ -28,25 +33,6 @@ def handle_frame(frame: cv2.typing.MatLike, holistic):
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
-    # # 1. Draw face landmarks
-    # mp_drawing.draw_landmarks(image, results.face_landmarks, mp_holistic.FACEMESH_TESSELATION,
-    #                          mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1),
-    #                          mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1)
-    #                          )
-
-    # # 2. Right hand
-    # mp_drawing.draw_landmarks(image, results.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
-    #                          mp_drawing.DrawingSpec(color=(80,22,10), thickness=1, circle_radius=2),
-    #                          mp_drawing.DrawingSpec(color=(80,44,121), thickness=1, circle_radius=1)
-    #                          )
-
-    # # 3. Left Hand
-    # mp_drawing.draw_landmarks(image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS,
-    #                          mp_drawing.DrawingSpec(color=(121,22,76), thickness=1, circle_radius=2),
-    #                          mp_drawing.DrawingSpec(color=(121,44,250), thickness=1, circle_radius=1)
-    #                          )
-
-    # 4. Pose Detections
     mp_drawing.draw_landmarks(
         image,
         results.pose_landmarks,
@@ -55,32 +41,56 @@ def handle_frame(frame: cv2.typing.MatLike, holistic):
         mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=1, circle_radius=1),
     )
     if results.pose_landmarks is not None:
-        print("START")
-        shoulder = results.pose_landmarks.landmark[
-            mp_holistic.PoseLandmark.RIGHT_SHOULDER
-        ]
-        elbow = results.pose_landmarks.landmark[mp_holistic.PoseLandmark.RIGHT_ELBOW]
-        wrist = results.pose_landmarks.landmark[mp_holistic.PoseLandmark.RIGHT_WRIST]
+        # Calculate the angles
+        # See train/angles.png for more info
 
-        angle = calculate_angle(
-            (shoulder.x, shoulder.y), (elbow.x, elbow.y), (wrist.x, wrist.y)
+        landmarks = results.pose_landmarks.landmark
+        angles = []
+        # Angle 0
+        angles.append(
+            calculate_angle_from_obj(landmarks[12], landmarks[14], landmarks[16])
         )
-        cv2.putText(
-            image,
-            str(angle),
-            (
-                int(shoulder.x * CONFIG.resize_width),
-                int(shoulder.y * CONFIG.resize_height),
-            ),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (255, 0, 0),
-            2,
-            cv2.LINE_AA,
+        # Angle 1
+        angles.append(
+            calculate_angle_from_obj(landmarks[11], landmarks[13], landmarks[15])
         )
-        print("END")
+        # Angle 2
+        angles.append(
+            calculate_angle_from_obj(landmarks[14], landmarks[12], landmarks[24])
+        )
+        # Angle 3
+        angles.append(
+            calculate_angle_from_obj(landmarks[13], landmarks[11], landmarks[23])
+        )
+
+        print(f"Angles: {', '.join([f'{angle:.2f}' for angle in angles])}")
+
+        # Try to make pose guess
+        X = [angles]
+        # body_language_class = model.predict(X)[0]
+        # body_language_prob = model.predict_proba(X)[0]
+        # # print("-- PREDICT --")
+        # # print(body_language_class)
+        # # print(body_language_prob)
+        # model_frame = cv2.imread(
+        #     path.join(
+        #         path.dirname(__file__), "train", "poses", f"{body_language_class}.png"
+        #     )
+        # )
+        # cv2.putText(
+        #     model_frame,
+        #     f"{body_language_class} / {(body_language_prob[body_language_class] * 100):.2f}",
+        #     (0, 50),
+        #     cv2.FONT_HERSHEY_SIMPLEX,
+        #     2,
+        #     (255, 0, 0),
+        #     2,
+        # )
+
     else:
         print("NONE")
+        model_frame = np.zeros((560, 680, 3), dtype=np.uint8)
+    # cv2.imshow(HANDY_MODEL_WINDOW, model_frame)
 
     cv2.imshow("Handy", image)
-    print(time.time() - start_time)
+    # print(time.time() - start_time)

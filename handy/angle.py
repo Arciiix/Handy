@@ -1,6 +1,14 @@
 import numpy as np
 
 
+def calculate_angle_from_obj(a, b, c):
+    a = (a.x, a.y)  # First
+    b = (b.x, b.y)  # Mid - the angle corner
+    c = (c.x, c.y)  # End
+
+    return calculate_angle(a, b, c)
+
+
 def calculate_angle(a, b, c):
     a = np.array(a)  # First
     b = np.array(b)  # Mid - the angle corner
