@@ -10,16 +10,31 @@ def calculate_angle_from_obj(a, b, c):
 
 
 def calculate_angle(a, b, c):
-    a = np.array(a)  # First
-    b = np.array(b)  # Mid - the angle corner
-    c = np.array(c)  # End
+    """
+    Calculates the angle ABC given (x, y) of A, B and C
 
-    radians = np.arctan2(c[1] - b[1], c[0] - b[0]) - np.arctan2(
-        a[1] - b[1], a[0] - b[0]
-    )
-    angle = np.abs(radians * 180.0 / np.pi)
+    Args:
+        a (x, y)
+        b (x, y)
+        c (x, y)
 
-    if angle > 180.0:
-        angle = 360 - angle
+    Returns:
+        float: Angle (degrees)
+    """
+    # Define points
+    A = np.array(a)
+    B = np.array(b)
+    C = np.array(c)
 
-    return angle
+    # Calculate vectors
+    BA = A - B
+    BC = C - B
+
+    # Calculate the cosine of the angle
+    cosine_angle = np.dot(BA, BC) / (np.linalg.norm(BA) * np.linalg.norm(BC))
+
+    # Calculate the angle and convert it to degrees
+    angle = np.arccos(cosine_angle)
+    angle_deg = np.degrees(angle)
+
+    return angle_deg
