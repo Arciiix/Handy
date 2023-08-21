@@ -25,7 +25,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "STREAM_URL": "udp://127.0.0.1:12345",
   "FPS": 1,
   "RESIZE_WIDTH": 960,
-  "RESIZE_HEIGHT": 540
+  "RESIZE_HEIGHT": 540,
+  "ENV": "DEV" // Change the current running environment - "DEV" or "PROD"
 }
 ```
 

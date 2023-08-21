@@ -21,6 +21,7 @@ class Config:
     fps = 10
     resize_width = 960
     resize_height = 540
+    is_dev = True
 
     def __init__(self):
         config = load_config(
@@ -34,6 +35,7 @@ class Config:
         self.fps = dict["FPS"]
         self.resize_width = dict["RESIZE_WIDTH"]
         self.resize_height = dict["RESIZE_HEIGHT"]
+        self.is_dev = dict["ENV"] == "DEV"
 
     def to_dict(self):
         return {
@@ -41,6 +43,7 @@ class Config:
             "FPS": self.fps,
             "RESIZE_WIDTH": self.resize_width,
             "RESIZE_HEIGHT": self.resize_height,
+            "ENV": "DEV" if self.is_dev else "PROD",
         }
 
 

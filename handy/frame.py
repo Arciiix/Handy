@@ -7,27 +7,25 @@ import pandas as pd
 
 from config import CONFIG
 from angle import calculate_angle_from_obj
-from config import HANDY_MODEL_WINDOW
-
+from config import HANDY_MODEL_WINDOW, HANDY_WINDOW
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
 
 
 def handle_frame(frame: cv2.typing.MatLike, holistic, model):
+    # To calculate the performance for processing a single frame, init a start_time variable
     start_time = time.time()
+
     # Resize frame
     frame = cv2.resize(frame, (CONFIG.resize_width, CONFIG.resize_height))
 
-    # Recolor Feed
+    # Recolor feed
     image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     image.flags.writeable = False
 
-    # Make Detections
+    # Make detections
     results = holistic.process(image)
-    # print(results.face_landmarks)
-
-    # face_landmarks, pose_landmarks, left_hand_landmarks, right_hand_landmarks
 
     # Recolor image back to BGR for rendering
     image.flags.writeable = True
@@ -40,6 +38,7 @@ def handle_frame(frame: cv2.typing.MatLike, holistic, model):
         mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=1, circle_radius=2),
         mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=1, circle_radius=1),
     )
+    # If a pose was detected in the image
     if results.pose_landmarks is not None:
         # Calculate the angles
         # See train/angles.png for more info
@@ -69,28 +68,31 @@ def handle_frame(frame: cv2.typing.MatLike, holistic, model):
         X = [angles]
         body_language_class = model.predict(X)[0]
         body_language_prob = model.predict_proba(X)[0]
-        # print("-- PREDICT --")
-        # print(body_language_class)
-        # print(body_language_prob)
-        model_frame = cv2.imread(
-            path.join(
-                path.dirname(__file__), "train", "poses", f"{body_language_class}.png"
+
+        if CONFIG.is_dev:
+            model_frame = cv2.imread(
+                path.join(
+                    path.dirname(__file__),
+                    "train",
+                    "poses",
+                    f"{body_language_class}.png",
+                )
             )
-        )
-        cv2.putText(
-            model_frame,
-            f"{body_language_class} / {(body_language_prob[body_language_class] * 100):.2f}",
-            (0, 50),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            2,
-            (255, 0, 0),
-            2,
-        )
+            cv2.putText(
+                model_frame,
+                f"{body_language_class} / {(body_language_prob[body_language_class] * 100):.2f}",
+                (0, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                2,
+                (255, 0, 0),
+                2,
+            )
 
     else:
-        print("NONE")
+        print("No pose detected in the image")
         model_frame = np.zeros((560, 680, 3), dtype=np.uint8)
-    cv2.imshow(HANDY_MODEL_WINDOW, model_frame)
+    if CONFIG.is_dev:
+        cv2.imshow(HANDY_MODEL_WINDOW, model_frame)
+        cv2.imshow(HANDY_WINDOW, image)
 
-    cv2.imshow("Handy", image)
     print(time.time() - start_time)
