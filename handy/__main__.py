@@ -43,7 +43,7 @@ def main():
         cv2.namedWindow(HANDY_MODEL_WINDOW)
 
     with mp_holistic.Holistic(
-        min_detection_confidence=0.8, min_tracking_confidence=0.8
+        min_detection_confidence=0.6, min_tracking_confidence=0.6
     ) as holistic, open(model_path, "rb") as f:
         # Load the model
         model = pickle.load(f)
