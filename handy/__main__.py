@@ -53,6 +53,9 @@ def main():
 
         last_processing_time = datetime.now()
 
+        # To prevent user from accidently performing the same action after they show the gesture and didn't manage to stop showing it, add some blocking delay between next action
+        action_block_expire_time = datetime.now()
+
         while True:
             ret, frame = cap.read()
 
@@ -86,10 +89,17 @@ def main():
                     ]
                 ),
                 None,
-            )  # A fancy way of saying "get this item first item or return None"
+            )  # A fancy way of saying "get this list's first item or return None"
 
-            if most_frequent_class_name:
-                logger.info(f"Detected {most_frequent_class_name}!")
+            # If there is a class_name which isn't 0 (default action), and the user is able to perform action, perform it
+            if (
+                most_frequent_class_name is not None
+                and most_frequent_class_name != 0
+                and action_block_expire_time <= datetime.now()
+            ):
+                logger.info(f"Perform class_name {most_frequent_class_name}!")
+
+                action_block_expire_time = datetime.now() + CONFIG.action_block_delay
 
             logger.debug([angles, class_name, proba])
 

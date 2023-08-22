@@ -39,6 +39,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - MEDIA_PLAYER_HASS_ENTITY_ID - the entity id of the media player inside Home Assistant - used for audio playing (e.g. confirmation of gesture)
 - DETECTIONS_TO_KEEP - To prevent false detections caused by accidental gestures or model inaccuracy, Handy caches the last detections. This variable sets the number of detections to store.
 - MINIMAL_DETECTIONS - that number of DETECTIONS_TO_KEEP has to be the same to consider a detection as true (and perform the given action)
+- ACTION_BLOCK_DELAY_SECONDS - to prevent user from accidently performing the same action after they show the gesture and didn't manage to stop showing it, add some blocking delay between next action
 
 ```json
 {
@@ -53,7 +54,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "HOME_ASSISTANT_IP": "http://homeassistant.local:8123",
   "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.volumio_upnp_av",
   "DETECTIONS_TO_KEEP": 20,
-  "MINIMAL_DETECTIONS": 10
+  "MINIMAL_DETECTIONS": 10,
+  "ACTION_BLOCK_DELAY_SECONDS": 3
 }
 ```
 

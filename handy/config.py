@@ -1,3 +1,4 @@
+from datetime import timedelta
 import json
 import logging
 from os import path
@@ -31,6 +32,7 @@ class Config:
     media_player_hass_entity_id = None
     detections_to_keep = 20
     minimal_detections = 10
+    action_block_delay = timedelta(seconds=3)
 
     def __init__(self):
         config = load_config(
@@ -52,6 +54,7 @@ class Config:
         self.media_player_hass_entity_id = dict["MEDIA_PLAYER_HASS_ENTITY_ID"]
         self.detections_to_keep = dict["DETECTIONS_TO_KEEP"]
         self.minimal_detections = dict["MINIMAL_DETECTIONS"]
+        self.action_block_delay = timedelta(seconds=dict["ACTION_BLOCK_DELAY_SECONDS"])
 
     def to_dict(self):
         return {
@@ -66,6 +69,7 @@ class Config:
             "MEDIA_PLAYER_HASS_ENTITY_ID": self.media_player_hass_entity_id,
             "DETECTIONS_TO_KEEP": self.detections_to_keep,
             "MINIMAL_DETECTIONS": self.minimal_detections,
+            "ACTION_BLOCK_DELAY_SECONDS": self.action_block_delay.total_seconds(),
         }
 
 
