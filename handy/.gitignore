@@ -163,6 +163,7 @@ cython_debug/
 
 # Config
 config.json
+ROI.json
 
 # For testing
 test_vid/
