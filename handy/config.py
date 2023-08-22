@@ -29,8 +29,8 @@ class Config:
     is_dev = True
     home_assistant_ip = "http://homeassistant.local:8123"
     media_player_hass_entity_id = None
-    detections_to_keep = 10
-    minimal_detections = 5
+    detections_to_keep = 20
+    minimal_detections = 10
 
     def __init__(self):
         config = load_config(

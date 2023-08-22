@@ -83,7 +83,7 @@ def handle_frame(
         x1, x2, y1, y2 = ROI["x1"], ROI["x2"], ROI["y1"], ROI["y2"]
 
         logger.debug(
-            f"Legs coords: {right_leg_x}, {right_leg_y}; {left_leg_x}, {left_leg_y}; ROI = {x1}, {y1}, {x2}, {y2}"
+            f"Legs coords: ({right_leg_x}, {right_leg_y}), ({left_leg_x}, {left_leg_y}); ROI = ({x1}, {y1}), ({x2}, {y2})"
         )
 
         # So when ROI isn't defined or the legs fit, start checking further

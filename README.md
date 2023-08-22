@@ -52,8 +52,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "ENV": "DEV",
   "HOME_ASSISTANT_IP": "http://homeassistant.local:8123",
   "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.volumio_upnp_av",
-  "DETECTIONS_TO_KEEP": 10,
-  "MINIMAL_DETECTIONS": 5
+  "DETECTIONS_TO_KEEP": 20,
+  "MINIMAL_DETECTIONS": 10
 }
 ```
 
