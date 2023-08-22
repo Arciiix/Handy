@@ -5,6 +5,12 @@
 
 ### Easily control your home automations using hand gestures, at any time. This app recognizes the gestures using your security camera footage and controls every IoT action you can dream of. Nothing is impossible - make your life feel like in a sci-fi movie.
 
+# Prerequirements
+
+- [Home Assistant](https://www.home-assistant.io/)
+
+**IMPORTANT:** Before using the app, please upload the audio from the /handy/audio/ directory to Home Assistant as local media.
+
 # Train
 
 1. [Gather data](./handy/train/0_Gather_Data.ipynb)
@@ -55,7 +61,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.volumio_upnp_av",
   "DETECTIONS_TO_KEEP": 20,
   "MINIMAL_DETECTIONS": 10,
-  "ACTION_BLOCK_DELAY_SECONDS": 3
+  "ACTION_BLOCK_DELAY_SECONDS": 5
 }
 ```
 

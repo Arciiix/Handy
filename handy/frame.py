@@ -111,7 +111,7 @@ def handle_frame(
                 calculate_angle_from_obj(landmarks[13], landmarks[11], landmarks[23])
             )
 
-            logger.info(f"Angles: {', '.join([f'{angle:.2f}' for angle in angles])}")
+            # logger.info(f"Angles: {', '.join([f'{angle:.2f}' for angle in angles])}")
 
             if not dont_predict_pose:
                 # Try to make pose guess
@@ -147,6 +147,6 @@ def handle_frame(
             cv2.imshow(HANDY_MODEL_WINDOW, model_frame)
         cv2.imshow(HANDY_WINDOW, image)
 
-    logger.info(f"It took {time.time() - start_time}s")
+    # logger.info(f"It took {time.time() - start_time}s")
 
     return (angles, predicted_class, predicted_proba)

@@ -1,27 +1,40 @@
+import asyncio
 from collections import deque
-import logging
 from os import path
 import pickle
+import threading
+import time
 import cv2
+from homeassistant_api import Client
 import mediapipe as mp
 from datetime import datetime, timedelta
 
 from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW
 from frame import handle_frame
+from audio import AudioIndicator
+from action import ACTIONS, ActionContext
 from logger import logger
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
 
+hass_client = Client(
+    f"{CONFIG.home_assistant_ip}/api",
+    CONFIG.home_assistant_token,
+    use_async=True,
+    async_cache_session=False,
+)
 
-def main():
+
+async def main():
+    logger.info("Handy init")
+
     # To prevent false detections caused by accidental gestures or model inaccuracy, store the last 10 detections
     # If a gesture is detected, the app goes faster (i.e. faster than FPS limit) and gets the next detections
     # If most of the last detections mean the same pose
     last_detections = deque([None] * CONFIG.detections_to_keep)
     is_detected_now = False  # If true, there's a person standing in ROI right now
 
-    logger.info("Handy init")
     # Check if the model exists
     if not path.exists(model_path):
         logger.error("Model not found at train/handy_classifier.pkl!")
@@ -47,6 +60,8 @@ def main():
     with mp_holistic.Holistic(
         min_detection_confidence=0.6, min_tracking_confidence=0.6
     ) as holistic, open(model_path, "rb") as f:
+        audio_indicator = AudioIndicator(hass_client)
+
         # Load the model
         model = pickle.load(f)
         logger.info("Model loaded")
@@ -98,10 +113,28 @@ def main():
                 and action_block_expire_time <= datetime.now()
             ):
                 logger.info(f"Perform class_name {most_frequent_class_name}!")
+                # Clear the last detections
+                last_detections = deque([None] * CONFIG.detections_to_keep)
+
+                # await audio_indicator.play_success_sound(True)
 
                 action_block_expire_time = datetime.now() + CONFIG.action_block_delay
 
-            logger.debug([angles, class_name, proba])
+                ctx = ActionContext(
+                    confidency=last_detections.count(most_frequent_class_name)
+                    / CONFIG.detections_to_keep,
+                    home_assistant=hass_client,
+                )
+
+                if class_name in ACTIONS:
+                    logger.info("Action performing - start...")
+                    start_time = time.time()
+                    await ACTIONS[class_name].handler(ctx)
+                    logger.info(
+                        f"Action performing - end, it took {time.time() - start_time}s"
+                    )
+
+            # logger.debug([angles, class_name, proba])
 
             if CONFIG.is_dev and cv2.waitKey(1) & 0xFF == ord("q"):
                 break
@@ -111,4 +144,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())

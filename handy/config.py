@@ -32,7 +32,7 @@ class Config:
     media_player_hass_entity_id = None
     detections_to_keep = 20
     minimal_detections = 10
-    action_block_delay = timedelta(seconds=3)
+    action_block_delay = timedelta(seconds=5)
 
     def __init__(self):
         config = load_config(
@@ -105,3 +105,6 @@ def validate_config():
 
 
 validate_config()
+
+
+SOUND_SUCCESS = "Handy_success.mp3"
