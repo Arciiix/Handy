@@ -19,6 +19,21 @@ def load_config(
         return {**default_config, **data}
 
 
+class ActionEntitiesConfig:
+    media_player = "media_player.volumio_upnp_av"
+    play_pause = "media_player.volumio"
+
+    def __init__(self, media_player=None, play_pause=None):
+        self.media_player = media_player or self.media_player
+        self.play_pause = play_pause or self.play_pause or media_player
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "MEDIA_PLAYER_HASS_ENTITY_ID": self.media_player,
+            "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": self.play_pause or self.media_player,
+        }
+
+
 class Config:
     stream_url = "udp://127.0.0.1:12345"
     home_assistant_token = None
@@ -29,7 +44,6 @@ class Config:
     resize_height = 540
     is_dev = True
     home_assistant_ip = "http://homeassistant.local:8123"
-    media_player_hass_entity_id = None
     detections_to_keep = 20
     minimal_detections = 10
     action_block_delay = timedelta(seconds=5)
@@ -37,6 +51,8 @@ class Config:
     required_troi_percent_change = (
         0.003  # Note that it's in range 0-1, whereas the dict value is 0-100%
     )
+
+    entities = ActionEntitiesConfig()
 
     def __init__(self):
         config = load_config(
@@ -55,12 +71,17 @@ class Config:
         self.resize_height = dict["RESIZE_HEIGHT"]
         self.is_dev = dict["ENV"] == "DEV"
         self.home_assistant_ip = dict["HOME_ASSISTANT_IP"]
-        self.media_player_hass_entity_id = dict["MEDIA_PLAYER_HASS_ENTITY_ID"]
         self.detections_to_keep = dict["DETECTIONS_TO_KEEP"]
         self.minimal_detections = dict["MINIMAL_DETECTIONS"]
         self.action_block_delay = timedelta(seconds=dict["ACTION_BLOCK_DELAY_SECONDS"])
         self.fast_mode_duration = timedelta(seconds=dict["FAST_MODE_DURATION_SECONDS"])
         self.required_troi_percent_change = dict["REQUIRED_TROI_PERCENT_CHANGE"] / 100
+
+        self.entities = ActionEntitiesConfig(
+            media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
+            play_pause=dict["PLAYER_PLAYPAUSE_HASS_ENTITY_ID"]
+            or dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
+        )
 
     def to_dict(self):
         return {
@@ -72,12 +93,12 @@ class Config:
             "RESIZE_HEIGHT": self.resize_height,
             "ENV": "DEV" if self.is_dev else "PROD",
             "HOME_ASSISTANT_IP": self.home_assistant_ip,
-            "MEDIA_PLAYER_HASS_ENTITY_ID": self.media_player_hass_entity_id,
             "DETECTIONS_TO_KEEP": self.detections_to_keep,
             "MINIMAL_DETECTIONS": self.minimal_detections,
             "ACTION_BLOCK_DELAY_SECONDS": self.action_block_delay.total_seconds(),
             "FAST_MODE_DURATION_SECONDS": self.fast_mode_duration.total_seconds(),
             "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
+            **(self.entities.to_dict()),
         }
 
 

@@ -14,7 +14,7 @@ class AudioIndicator:
     # TODO: Make it work
     def __init__(self, hass_client=Client):
         self.hass_client = hass_client
-        self.entity_id = CONFIG.media_player_hass_entity_id
+        self.entity_id = CONFIG.entities.media_player
 
     async def play_sound(
         self, sound_filename: str, length_seconds: float, restore_previous_state: bool
@@ -38,7 +38,7 @@ class AudioIndicator:
 
         # Restore the previous playback state
         await self.hass_client.async_set_state(
-            state=State(entity_id=CONFIG.media_player_hass_entity_id, state=state.state)
+            state=State(entity_id=CONFIG.entities.media_player, state=state.state)
         )
 
         # print(state)

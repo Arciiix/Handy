@@ -49,6 +49,10 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - FAST_MODE_DURATION_SECONDS - normally the app works in an idle mode on low FPS. When user enters the T-ROI or a gesture within ROI is detected, the app turns into fast mode with high FPS. This variable determines how long it should remain in the fast mode after the last movement.
 - REQUIRED_TROI_PERCENT_CHANGE - this amount of the T-ROI frame has to be different for Handy to consider a movement inside it. Unit is percent [%].
 
+## Action-related changes
+
+- PLAYER_PLAYPAUSE_HASS_ENTITY_ID - this entity will be used for play/pause action
+
 ```json
 {
   "STREAM_URL": "udp://127.0.0.1:12345",
@@ -65,9 +69,17 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "MINIMAL_DETECTIONS": 10,
   "ACTION_BLOCK_DELAY_SECONDS": 5,
   "FAST_MODE_DURATION_SECONDS": 3,
-  "REQUIRED_TROI_PERCENT_CHANGE": 0.3
+  "REQUIRED_TROI_PERCENT_CHANGE": 0.3,
+
+  "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio"
 }
 ```
+
+# Using with Volumio
+
+If you want to use Handy with [**Volumio**](https://volumio.com/en/get-started/) (like I do), you have to note that there's a huge difference between the [**Volumio integration in Home Assistant**](https://www.home-assistant.io/integrations/volumio/) and [**Volumio-UPnP/AV entity (DLNA Digital Media Renderer integration)**](https://www.home-assistant.io/integrations/dlna_dmr/).
+
+You should use both of them. The first one is good for just controlling Volumio, whereas the second one is required to get current played media or play something on Volumio. See the default config - `media_player.volumio` is the Volumio integration and `media_player.volumio_upnp_av` is the DLNA Digital Media Renderer (which is still Volumio).
 
 # Command to stream webcam on Linux
 
