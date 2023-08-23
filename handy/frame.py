@@ -9,7 +9,7 @@ import pandas as pd
 from logger import logger
 from config import CONFIG
 from angle import calculate_angle_from_obj
-from config import HANDY_MODEL_WINDOW, HANDY_WINDOW, ROI
+from config import HANDY_MODEL_WINDOW, HANDY_WINDOW, ROI, TROI
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
@@ -56,9 +56,15 @@ def handle_frame(
     )
 
     # Draw the ROI on the image
-    if ROI is not None:
+    if ROI is not None and CONFIG.is_dev:
         cv2.rectangle(
             image, (ROI["x1"], ROI["y1"]), (ROI["x2"], ROI["y2"]), (255, 0, 0), 2
+        )
+
+    # Draw the T-ROI (tracking ROI) on the image
+    if TROI is not None and CONFIG.is_dev:
+        cv2.rectangle(
+            image, (TROI["x1"], TROI["y1"]), (TROI["x2"], TROI["y2"]), (0, 0, 255), 2
         )
 
     angles, predicted_class, predicted_proba = None, None, None

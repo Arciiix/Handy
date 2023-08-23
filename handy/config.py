@@ -33,6 +33,10 @@ class Config:
     detections_to_keep = 20
     minimal_detections = 10
     action_block_delay = timedelta(seconds=5)
+    fast_mode_duration = timedelta(seconds=3)
+    required_troi_percent_change = (
+        0.003  # Note that it's in range 0-1, whereas the dict value is 0-100%
+    )
 
     def __init__(self):
         config = load_config(
@@ -55,6 +59,8 @@ class Config:
         self.detections_to_keep = dict["DETECTIONS_TO_KEEP"]
         self.minimal_detections = dict["MINIMAL_DETECTIONS"]
         self.action_block_delay = timedelta(seconds=dict["ACTION_BLOCK_DELAY_SECONDS"])
+        self.fast_mode_duration = timedelta(seconds=dict["FAST_MODE_DURATION_SECONDS"])
+        self.required_troi_percent_change = dict["REQUIRED_TROI_PERCENT_CHANGE"] / 100
 
     def to_dict(self):
         return {
@@ -70,11 +76,14 @@ class Config:
             "DETECTIONS_TO_KEEP": self.detections_to_keep,
             "MINIMAL_DETECTIONS": self.minimal_detections,
             "ACTION_BLOCK_DELAY_SECONDS": self.action_block_delay.total_seconds(),
+            "FAST_MODE_DURATION_SECONDS": self.fast_mode_duration.total_seconds(),
+            "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
         }
 
 
 HANDY_WINDOW = "Handy"
 HANDY_MODEL_WINDOW = "Handy - model"
+HANDY_TROI_WINDOW = "Handy - T-ROI"
 
 ROI = None
 try:
@@ -85,12 +94,30 @@ try:
             ROI = None
         else:
             logger.info(
-                f"ROI {ROI['x1']}, {ROI['y1']} - {ROI['x2']}, {ROI['y2']} loaded"
+                f"ROI ({ROI['x1']}, {ROI['y1']}), ({ROI['x2']}, {ROI['y2']}) loaded"
             )
 
 except FileNotFoundError:
     logger.warning(
         "ROI.json doesn't exist - the whole area of image will be considered in gesture detection. Consider checking the Select_ROI.ipynb notebook in handy/utils"
+    )
+
+
+TROI = None
+try:
+    with open(path.join(path.dirname(__file__), "TROI.json")) as f:
+        TROI = json.load(f)
+        if not all(key in TROI for key in ("x1", "y1", "x2", "y2")):
+            logger.error("Invalid TROI.json file! Using no T-ROI")
+            TROI = None
+        else:
+            logger.info(
+                f"T-ROI ({TROI['x1']}, {TROI['y1']}), ({TROI['x2']}, {TROI['y2']}) loaded"
+            )
+
+except FileNotFoundError:
+    logger.warning(
+        "TROI.json doesn't exist - the Handy video feed will run in low FPS all the time unless the gesture is detected. Consider checking the Select_ROI.ipynb notebook in handy/utils"
     )
 
 CONFIG = Config()

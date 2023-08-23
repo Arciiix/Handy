@@ -46,6 +46,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - DETECTIONS_TO_KEEP - To prevent false detections caused by accidental gestures or model inaccuracy, Handy caches the last detections. This variable sets the number of detections to store.
 - MINIMAL_DETECTIONS - that number of DETECTIONS_TO_KEEP has to be the same to consider a detection as true (and perform the given action)
 - ACTION_BLOCK_DELAY_SECONDS - to prevent user from accidently performing the same action after they show the gesture and didn't manage to stop showing it, add some blocking delay between next action
+- FAST_MODE_DURATION_SECONDS - normally the app works in an idle mode on low FPS. When user enters the T-ROI or a gesture within ROI is detected, the app turns into fast mode with high FPS. This variable determines how long it should remain in the fast mode after the last movement.
+- REQUIRED_TROI_PERCENT_CHANGE - this amount of the T-ROI frame has to be different for Handy to consider a movement inside it. Unit is percent [%].
 
 ```json
 {
@@ -61,7 +63,9 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.volumio_upnp_av",
   "DETECTIONS_TO_KEEP": 20,
   "MINIMAL_DETECTIONS": 10,
-  "ACTION_BLOCK_DELAY_SECONDS": 5
+  "ACTION_BLOCK_DELAY_SECONDS": 5,
+  "FAST_MODE_DURATION_SECONDS": 3,
+  "REQUIRED_TROI_PERCENT_CHANGE": 0.3
 }
 ```
 

@@ -164,6 +164,7 @@ cython_debug/
 # Config
 config.json
 ROI.json
+TROI.json
 
 # For testing
 test_vid/

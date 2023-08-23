@@ -9,7 +9,9 @@ from homeassistant_api import Client
 import mediapipe as mp
 from datetime import datetime, timedelta
 
-from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW
+import numpy as np
+
+from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW, HANDY_TROI_WINDOW, TROI
 from frame import handle_frame
 from audio import AudioIndicator
 from action import ACTIONS, ActionContext
@@ -71,12 +73,17 @@ async def main():
         # To prevent user from accidently performing the same action after they show the gesture and didn't manage to stop showing it, add some blocking delay between next action
         action_block_expire_time = datetime.now()
 
+        # Handy can run with CONFIG.fps or CONFIG.fps_idle. This variable defines the expiration date of CONFIG.fps mode
+        fast_mode_expire_time = datetime.now()
+
+        previous_frame = None
         while True:
+            is_fast_mode = fast_mode_expire_time >= datetime.now()
             ret, frame = cap.read()
 
             # Limit the processing to the FPS, depending whether there's a person in ROI or not
             if datetime.now() - last_processing_time < timedelta(
-                milliseconds=1000 / (CONFIG.fps if is_detected_now else CONFIG.fps_idle)
+                milliseconds=1000 / (CONFIG.fps if is_fast_mode else CONFIG.fps_idle)
             ):
                 continue
             last_processing_time = datetime.now()
@@ -85,10 +92,50 @@ async def main():
                 logger.warning("Frame empty")
                 continue
 
+            # Detect movement within T-ROI if fast mode isn't enabled - to enable fast mode
+            if previous_frame is not None and not is_fast_mode and TROI is not None:
+                curr_frame_troi = frame[
+                    TROI["y1"] : TROI["y2"], TROI["x1"] : TROI["x2"]
+                ]
+                prev_frame_troi = previous_frame[
+                    TROI["y1"] : TROI["y2"], TROI["x1"] : TROI["x2"]
+                ]
+                prev_frame_troi = cv2.cvtColor(prev_frame_troi, cv2.COLOR_BGR2GRAY)
+                curr_frame_troi = cv2.cvtColor(curr_frame_troi, cv2.COLOR_BGR2GRAY)
+
+                frame_diff = cv2.absdiff(prev_frame_troi, curr_frame_troi)
+                _, thresh_diff = cv2.threshold(frame_diff, 30, 255, cv2.THRESH_BINARY)
+
+                total_pixels = thresh_diff.size
+                num_white_pixels = np.sum(thresh_diff == 255)
+                percent_change = num_white_pixels / total_pixels
+                logger.info(
+                    f"Percent of ROI change since last: {(percent_change * 100):.2f})"
+                )
+                if percent_change > CONFIG.required_troi_percent_change:
+                    fast_mode_expire_time = datetime.now() + CONFIG.fast_mode_duration
+                    logger.info("Detected movement in T-ROI!")
+
+                if CONFIG.is_dev:
+                    thresh_diff = cv2.cvtColor(thresh_diff, cv2.COLOR_GRAY2BGR)
+                    cv2.putText(
+                        thresh_diff,
+                        f"{(percent_change * 100):.2f}",
+                        (0, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1,
+                        (255, 0, 0),
+                    )
+                    cv2.imshow(HANDY_TROI_WINDOW, thresh_diff)
+
             angles, class_name, proba = handle_frame(frame, holistic, model)
 
             # If there's a person in ROI, set is_detected_now to true
-            is_detected_now = angles is not None
+            fast_mode_expire_time = (
+                datetime.now() + CONFIG.fast_mode_duration
+                if angles is not None
+                else fast_mode_expire_time
+            )
 
             # Update the last_detections queue
             last_detections.pop()
@@ -135,6 +182,7 @@ async def main():
                     )
 
             # logger.debug([angles, class_name, proba])
+            previous_frame = frame
 
             if CONFIG.is_dev and cv2.waitKey(1) & 0xFF == ord("q"):
                 break
