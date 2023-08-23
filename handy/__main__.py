@@ -15,6 +15,7 @@ from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW, HANDY_TROI_WINDOW, 
 from frame import handle_frame
 from audio import AudioIndicator
 from action import ACTIONS, ActionContext
+from translations import Translations
 from logger import logger
 
 mp_holistic = mp.solutions.holistic
@@ -26,6 +27,8 @@ hass_client = Client(
     use_async=True,
     async_cache_session=False,
 )
+
+translations = Translations()
 
 
 async def main():
@@ -171,6 +174,7 @@ async def main():
                     confidency=last_detections.count(most_frequent_class_name)
                     / CONFIG.detections_to_keep,
                     home_assistant=hass_client,
+                    translations=translations,
                 )
 
                 if class_name in ACTIONS:

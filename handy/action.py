@@ -1,4 +1,5 @@
 from typing import Awaitable, Callable, Optional
+from announcements import say_current_time
 
 from playback import toggle_playback_state
 from action_context import ActionContext
@@ -19,4 +20,7 @@ class Action:
 
 
 # A dict of all the actions. The key is the class_name and value is the action
-ACTIONS: dict[int, Optional[Action]] = {1: Action(handler=toggle_playback_state)}
+ACTIONS: dict[int, Optional[Action]] = {
+    4: Action(handler=toggle_playback_state),
+    7: Action(handler=say_current_time),
+}

@@ -51,6 +51,7 @@ class Config:
     required_troi_percent_change = (
         0.003  # Note that it's in range 0-1, whereas the dict value is 0-100%
     )
+    language = "en"
 
     entities = ActionEntitiesConfig()
 
@@ -76,6 +77,7 @@ class Config:
         self.action_block_delay = timedelta(seconds=dict["ACTION_BLOCK_DELAY_SECONDS"])
         self.fast_mode_duration = timedelta(seconds=dict["FAST_MODE_DURATION_SECONDS"])
         self.required_troi_percent_change = dict["REQUIRED_TROI_PERCENT_CHANGE"] / 100
+        self.language = dict["LANGUAGE"]
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
@@ -98,6 +100,7 @@ class Config:
             "ACTION_BLOCK_DELAY_SECONDS": self.action_block_delay.total_seconds(),
             "FAST_MODE_DURATION_SECONDS": self.fast_mode_duration.total_seconds(),
             "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
+            "LANGUAGE": self.language,
             **(self.entities.to_dict()),
         }
 

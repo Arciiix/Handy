@@ -1,0 +1,8 @@
+{
+  "en": {
+    "current_time": "It's {time}. Today is {date}"
+  },
+  "pl": {
+    "current_time": "Jest godzina {time}. Dziś jest {date}"
+  }
+}
