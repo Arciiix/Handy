@@ -19,7 +19,7 @@
 
 1. [Train model](./handy/train/2_Train_Model.ipynb)
 
-1. [Select ROI (region of interest)](./handy/utils/Select_ROI.ipynb)
+1. [Select ROI (region of interest), T-ROI (trigger region of interest), and G-ROI (gesture region of interest)](./handy/utils/Select_ROI.ipynb)
 
 After completing all above, you can optionally:
 
@@ -46,13 +46,16 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - DETECTIONS_TO_KEEP - To prevent false detections caused by accidental gestures or model inaccuracy, Handy caches the last detections. This variable sets the number of detections to store.
 - MINIMAL_DETECTIONS - that number of DETECTIONS_TO_KEEP has to be the same to consider a detection as true (and perform the given action)
 - ACTION_BLOCK_DELAY_SECONDS - to prevent user from accidently performing the same action after they show the gesture and didn't manage to stop showing it, add some blocking delay between next action
-- FAST_MODE_DURATION_SECONDS - normally the app works in an idle mode on low FPS. When user enters the T-ROI or a gesture within ROI is detected, the app turns into fast mode with high FPS. This variable determines how long it should remain in the fast mode after the last movement.
+- FAST_MODE_DURATION_SECONDS - normally the app works in an idle mode on low FPS. When user enters the T-ROI or a gesture within G-ROI is detected, the app turns into fast mode with high FPS. This variable determines how long it should remain in the fast mode after the last movement.
 - REQUIRED_TROI_PERCENT_CHANGE - this amount of the T-ROI frame has to be different for Handy to consider a movement inside it. Unit is percent [%].
+- NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS - there are some actions, like changing volume, that have to know the numeric value of change (see `numeric_value_track` in `numeric_value_track.py`). This value determines how many seconds user can stand without raising neither of their arms to be considered as idle (so cancel the action)
+- GET_NUMERIC_VALUE_INTERVAL_SECONDS - see above - the handler will be called every n seconds, where n is this value.
 - LANGUAGE - can be either "pl" or "en" - the announcements will be said in that language, e.g. the current time
 
 ## Action-related changes
 
 - PLAYER_PLAYPAUSE_HASS_ENTITY_ID - this entity will be used for play/pause action
+- PLAYER_VOLUME_HASS_ENTITY_ID - this entity will be used for volume change action
 
 ```json
 {
@@ -65,23 +68,34 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "RESIZE_HEIGHT": 540,
   "ENV": "DEV",
   "HOME_ASSISTANT_IP": "http://homeassistant.local:8123",
-  "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.volumio_upnp_av",
+  "MEDIA_PLAYER_HASS_ENTITY_ID": "media_player.mpd",
   "DETECTIONS_TO_KEEP": 20,
   "MINIMAL_DETECTIONS": 10,
   "ACTION_BLOCK_DELAY_SECONDS": 5,
   "FAST_MODE_DURATION_SECONDS": 3,
-  "REQUIRED_TROI_PERCENT_CHANGE": 0.3,
+  "REQUIRED_TROI_PERCENT_CHANGE": 0.5,
+  "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": 8,
+  "GET_NUMERIC_VALUE_INTERVAL_SECONDS": 1,
   "LANGUAGE": "en",
 
-  "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio"
+  "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
+  "PLAYER_VOLUME_HASS_ENTITY_ID": "media_player.volumio"
 }
 ```
 
 # Using with Volumio
 
-If you want to use Handy with [**Volumio**](https://volumio.com/en/get-started/) (like I do), you have to note that there's a huge difference between the [**Volumio integration in Home Assistant**](https://www.home-assistant.io/integrations/volumio/) and [**Volumio-UPnP/AV entity (DLNA Digital Media Renderer integration)**](https://www.home-assistant.io/integrations/dlna_dmr/).
+If you want to use Handy with [**Volumio**](https://volumio.com/en/get-started/) (like I do), you have to note that there's a huge difference between the [**Volumio integration in Home Assistant**](https://www.home-assistant.io/integrations/volumio/) and [**MPD**](https://www.home-assistant.io/integrations/mpd/) (it's not the same as [**DLNA Digital Media Renderer**](https://www.home-assistant.io/integrations/dlna_dmr/) - this one is useless and buggy for Volumio).
 
-You should use both of them. The first one is good for just controlling Volumio, whereas the second one is required to get current played media or play something on Volumio. See the default config - `media_player.volumio` is the Volumio integration and `media_player.volumio_upnp_av` is the DLNA Digital Media Renderer (which is still Volumio).
+You should use both [Volumio](https://www.home-assistant.io/integrations/volumio/) and [MPD](https://www.home-assistant.io/integrations/mpd/) integration. The first one is good for just controlling Volumio, whereas the second one is required to get current played media or play something on Volumio. See the default config - `media_player.volumio` is the Volumio integration and `media_player.mpd` is the Music Player Daemon (which is still Volumio). The MPD is a perfect thing - it comes back to the previously played media when using TTS (announce mode) - which is just ideal for Handy and solves tones of unnecessary problems DLNA_DMR or Volumio has.
+
+To set up MPD in Home Assistant, please add:
+
+```yaml
+- platform: mpd
+  name: volumio_mpd
+  host: your.volumio.ip.address
+```
 
 # Command to stream webcam on Linux
 

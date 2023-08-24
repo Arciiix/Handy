@@ -9,7 +9,7 @@ import pandas as pd
 from logger import logger
 from config import CONFIG
 from angle import calculate_angle_from_obj
-from config import HANDY_MODEL_WINDOW, HANDY_WINDOW, ROI, TROI
+from config import HANDY_MODEL_WINDOW, HANDY_WINDOW, ROI, TROI, GROI
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
@@ -36,8 +36,29 @@ def handle_frame(
     # Resize frame
     frame = cv2.resize(frame, (CONFIG.resize_width, CONFIG.resize_height))
 
+    input_frame = frame.copy()
+    width, height = CONFIG.resize_width, CONFIG.resize_height
+    x1, x2, y1, y2 = (
+        GROI.get("x1", 0),
+        GROI.get("x2", width),
+        GROI.get("y1", 0),
+        GROI.get("y2", height),
+    )
+    # If there's ROI, cut the frame to it
+    if ROI is not None:
+        input_frame = input_frame[ROI["y1"] : ROI["y2"], ROI["x1"] : ROI["x2"]]
+        width = ROI["x2"] - ROI["x1"]
+        height = ROI["y2"] - ROI["y1"]
+
+        x2 = min(x2 - ROI["x1"], width)
+        x1 = max(x1 - ROI["x1"], 0)
+        y2 = min(y2 - ROI["y1"], height)
+        y1 = max(y1 - ROI["y1"], 0)
+
+    print(x1, x2, y1, y2)
+
     # Recolor feed
-    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    image = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)
     image.flags.writeable = False
 
     # Make detections
@@ -55,16 +76,18 @@ def handle_frame(
         mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=1, circle_radius=1),
     )
 
-    # Draw the ROI on the image
-    if ROI is not None and CONFIG.is_dev:
-        cv2.rectangle(
-            image, (ROI["x1"], ROI["y1"]), (ROI["x2"], ROI["y2"]), (255, 0, 0), 2
-        )
+    # Draw the GROI on the image
+    if GROI is not None and CONFIG.is_dev:
+        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
     # Draw the T-ROI (tracking ROI) on the image
     if TROI is not None and CONFIG.is_dev:
         cv2.rectangle(
-            image, (TROI["x1"], TROI["y1"]), (TROI["x2"], TROI["y2"]), (0, 0, 255), 2
+            image,
+            (max(TROI["x1"] - ROI["x1"], 0), max(TROI["y1"] - ROI["y1"], 0)),
+            (min(TROI["x2"] - ROI["x1"], width), min(TROI["y2"] - ROI["y1"], height)),
+            (0, 0, 255),
+            2,
         )
 
     angles, predicted_class, predicted_proba = None, None, None
@@ -79,21 +102,20 @@ def handle_frame(
 
         # If user defined the ROI, check whether the legs fit within this ROI
         right_leg_x, right_leg_y = (
-            landmarks[28].x * CONFIG.resize_width,
-            landmarks[28].y * CONFIG.resize_height,
+            landmarks[28].x * width,
+            landmarks[28].y * height,
         )
         left_leg_x, left_leg_y = (
-            landmarks[27].x * CONFIG.resize_width,
-            landmarks[27].y * CONFIG.resize_height,
+            landmarks[27].x * width,
+            landmarks[27].y * height,
         )
-        x1, x2, y1, y2 = ROI["x1"], ROI["x2"], ROI["y1"], ROI["y2"]
 
         logger.debug(
             f"Legs coords: ({right_leg_x}, {right_leg_y}), ({left_leg_x}, {left_leg_y}); ROI = ({x1}, {y1}), ({x2}, {y2})"
         )
 
-        # So when ROI isn't defined or the legs fit, start checking further
-        if ROI is None or (
+        # So when GROI isn't defined or the legs fit, start checking further
+        if GROI is None or (
             x1 <= left_leg_x <= x2
             and x1 <= right_leg_x <= x2
             and y1 <= left_leg_y <= y2
@@ -143,8 +165,21 @@ def handle_frame(
                         (255, 0, 0),
                         2,
                     )
-            else:
-                logger.info("Detected person is not in ROI")
+            elif CONFIG.is_dev:
+                # Indicate that no pose is being predicted
+                model_frame = np.zeros((560, 680, 3), dtype=np.uint8)
+
+                cv2.putText(
+                    model_frame,
+                    f"No pose is being predicted!",
+                    (0, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    2,
+                    (0, 0, 255),
+                    2,
+                )
+        else:
+            logger.info("Detected person is not in G-ROI")
     else:
         logger.info("No pose detected in the image")
 

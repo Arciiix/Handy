@@ -15,6 +15,7 @@ from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW, HANDY_TROI_WINDOW, 
 from frame import handle_frame
 from audio import AudioIndicator
 from action import ACTIONS, ActionContext
+from numeric_value_track import numeric_value_track
 from translations import Translations
 from logger import logger
 
@@ -38,7 +39,6 @@ async def main():
     # If a gesture is detected, the app goes faster (i.e. faster than FPS limit) and gets the next detections
     # If most of the last detections mean the same pose
     last_detections = deque([None] * CONFIG.detections_to_keep)
-    is_detected_now = False  # If true, there's a person standing in ROI right now
 
     # Check if the model exists
     if not path.exists(model_path):
@@ -84,7 +84,7 @@ async def main():
             is_fast_mode = fast_mode_expire_time >= datetime.now()
             ret, frame = cap.read()
 
-            # Limit the processing to the FPS, depending whether there's a person in ROI or not
+            # Limit the processing to the FPS, depending whether there's a person in G-ROI or not
             if datetime.now() - last_processing_time < timedelta(
                 milliseconds=1000 / (CONFIG.fps if is_fast_mode else CONFIG.fps_idle)
             ):
@@ -113,7 +113,7 @@ async def main():
                 num_white_pixels = np.sum(thresh_diff == 255)
                 percent_change = num_white_pixels / total_pixels
                 logger.info(
-                    f"Percent of ROI change since last: {(percent_change * 100):.2f})"
+                    f"Percent of T-ROI change since last: {(percent_change * 100):.2f})"
                 )
                 if percent_change > CONFIG.required_troi_percent_change:
                     fast_mode_expire_time = datetime.now() + CONFIG.fast_mode_duration
@@ -132,8 +132,7 @@ async def main():
                     cv2.imshow(HANDY_TROI_WINDOW, thresh_diff)
 
             angles, class_name, proba = handle_frame(frame, holistic, model)
-
-            # If there's a person in ROI, set is_detected_now to true
+            # If there's a person in G-ROI, set is_detected_now to true
             fast_mode_expire_time = (
                 datetime.now() + CONFIG.fast_mode_duration
                 if angles is not None
@@ -178,12 +177,18 @@ async def main():
                 )
 
                 if class_name in ACTIONS:
-                    logger.info("Action performing - start...")
-                    start_time = time.time()
-                    await ACTIONS[class_name].handler(ctx)
-                    logger.info(
-                        f"Action performing - end, it took {time.time() - start_time}s"
-                    )
+                    if ACTIONS[class_name].change_numeric_value:
+                        logger.info("Numeric action performing - start...")
+                        await numeric_value_track(
+                            ACTIONS[class_name], cap, ctx, holistic, model
+                        )
+                    else:
+                        logger.info("Action performing - start...")
+                        start_time = time.time()
+                        await ACTIONS[class_name].handler(ctx)
+                        logger.info(
+                            f"Action performing - end, it took {time.time() - start_time}s"
+                        )
 
             # logger.debug([angles, class_name, proba])
             previous_frame = frame

@@ -20,17 +20,20 @@ def load_config(
 
 
 class ActionEntitiesConfig:
-    media_player = "media_player.volumio_upnp_av"
+    media_player = "media_player.mpd"
     play_pause = "media_player.volumio"
+    volume = "media_player.volumio"
 
-    def __init__(self, media_player=None, play_pause=None):
+    def __init__(self, media_player=None, play_pause=None, volume=None):
         self.media_player = media_player or self.media_player
         self.play_pause = play_pause or self.play_pause or media_player
+        self.volume = volume or self.play_pause
 
     def to_dict(self) -> dict[str, str]:
         return {
             "MEDIA_PLAYER_HASS_ENTITY_ID": self.media_player,
-            "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": self.play_pause or self.media_player,
+            "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": self.play_pause,
+            "PLAYER_VOLUME_HASS_ENTITY_ID": self.volume,
         }
 
 
@@ -49,8 +52,10 @@ class Config:
     action_block_delay = timedelta(seconds=5)
     fast_mode_duration = timedelta(seconds=3)
     required_troi_percent_change = (
-        0.003  # Note that it's in range 0-1, whereas the dict value is 0-100%
+        0.005  # Note that it's in range 0-1, whereas the dict value is 0-100%
     )
+    get_numeric_value_interval = timedelta(seconds=1)
+    numeric_value_max_waiting_time = timedelta(seconds=8)
     language = "en"
 
     entities = ActionEntitiesConfig()
@@ -77,12 +82,18 @@ class Config:
         self.action_block_delay = timedelta(seconds=dict["ACTION_BLOCK_DELAY_SECONDS"])
         self.fast_mode_duration = timedelta(seconds=dict["FAST_MODE_DURATION_SECONDS"])
         self.required_troi_percent_change = dict["REQUIRED_TROI_PERCENT_CHANGE"] / 100
+        self.numeric_value_max_waiting_time = timedelta(
+            seconds=dict["NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS"]
+        )
+        self.get_numeric_value_interval = timedelta(
+            seconds=dict["GET_NUMERIC_VALUE_INTERVAL_SECONDS"]
+        )
         self.language = dict["LANGUAGE"]
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
-            play_pause=dict["PLAYER_PLAYPAUSE_HASS_ENTITY_ID"]
-            or dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
+            play_pause=dict["PLAYER_PLAYPAUSE_HASS_ENTITY_ID"],
+            volume=dict["PLAYER_VOLUME_HASS_ENTITY_ID"],
         )
 
     def to_dict(self):
@@ -100,6 +111,8 @@ class Config:
             "ACTION_BLOCK_DELAY_SECONDS": self.action_block_delay.total_seconds(),
             "FAST_MODE_DURATION_SECONDS": self.fast_mode_duration.total_seconds(),
             "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
+            "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": self.numeric_value_max_waiting_time.total_seconds(),
+            "GET_NUMERIC_VALUE_INTERVAL_SECONDS": self.get_numeric_value_interval.total_seconds(),
             "LANGUAGE": self.language,
             **(self.entities.to_dict()),
         }
@@ -142,6 +155,23 @@ try:
 except FileNotFoundError:
     logger.warning(
         "TROI.json doesn't exist - the Handy video feed will run in low FPS all the time unless the gesture is detected. Consider checking the Select_ROI.ipynb notebook in handy/utils"
+    )
+
+GROI = None
+try:
+    with open(path.join(path.dirname(__file__), "GROI.json")) as f:
+        GROI = json.load(f)
+        if not all(key in GROI for key in ("x1", "y1", "x2", "y2")):
+            logger.error("Invalid GROI.json file! Using no G-ROI")
+            GROI = None
+        else:
+            logger.info(
+                f"G-ROI ({GROI['x1']}, {GROI['y1']}), ({GROI['x2']}, {GROI['y2']}) loaded"
+            )
+
+except FileNotFoundError:
+    logger.warning(
+        "GROI.json doesn't exist - the Handy video feed will run in low FPS all the time unless the gesture is detected. Consider checking the Select_ROI.ipynb notebook in handy/utils"
     )
 
 CONFIG = Config()

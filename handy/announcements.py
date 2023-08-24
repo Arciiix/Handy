@@ -18,22 +18,34 @@ async def say_current_time(ctx: ActionContext):
         "current_time", {"time": formatted_time, "date": formatted_date}
     )
 
-    await say(ctx, sentence, 8)
+    # await say_with_previous_media(ctx, sentence, 8)
+    await say(ctx, sentence)
 
 
-async def say(ctx: ActionContext, sentence_to_say: str, estimated_time_seconds: float):
+async def say(ctx, sentence):
+    entity_id = CONFIG.entities.media_player
+
+    tts = await ctx.hass_client.async_get_domain("tts")
+    await tts.google_translate_say(entity_id=entity_id, message=sentence)
+
+
+async def say_with_previous_media(
+    ctx: ActionContext, sentence_to_say: str, estimated_time_seconds: float
+):
+    """
+    The same function as say, but instead also restores the previous playback state
+    Note: please use ONLY for media players that don't support "announce" mode in Home Assistant
+    """
     entity_id = CONFIG.entities.media_player
 
     # Get the previous played media
     state = await ctx.hass_client.async_get_state(entity_id=entity_id)
     logger.info("Got the previous state")
 
-    # Say the sentence
-    tts = await ctx.hass_client.async_get_domain("tts")
-
     time_now = time.time()
     domain = await ctx.hass_client.async_get_domain(domain_id="media_player")
-    await tts.google_translate_say(entity_id=entity_id, message=sentence_to_say)
+    # Say the sentence
+    await say(ctx, sentence_to_say)
 
     await asyncio.sleep(1)
     new_state = await ctx.hass_client.async_get_state(entity_id=entity_id)
