@@ -26,7 +26,9 @@ async def toggle_playback_state(ctx: ActionContext):
 
 async def get_current_volume(ctx: ActionContext) -> tuple[int, Optional[Domain]]:
     state = await ctx.hass_client.async_get_state(entity_id=CONFIG.entities.volume)
-    volume = state.attributes["volume_level"]
+    # TODO: Sometimes it's null - think what to do in that scenario
+    volume = state.attributes.get("volume_level", 50)
+
     volume = int(float(volume) * 100)
     logger.info(f"Got volume: {volume}")
 
