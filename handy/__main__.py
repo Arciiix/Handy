@@ -18,6 +18,7 @@ from action import ACTIONS, ActionContext
 from numeric_value_track import numeric_value_track
 from translations import Translations
 from logger import logger
+from utils.working_hours import is_inside_working_hours
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
@@ -81,6 +82,9 @@ async def main():
         while True:
             is_fast_mode = fast_mode_expire_time >= datetime.now()
             ret, frame = cap.read()
+
+            if not is_inside_working_hours():
+                return
 
             # Limit the processing to the FPS, depending whether there's a person in G-ROI or not
             if datetime.now() - last_processing_time < timedelta(
@@ -202,4 +206,10 @@ async def main():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    while True:
+        # The app should only process images within its working hours
+        if is_inside_working_hours():
+            loop.run_until_complete(main())
+        else:
+            logger.info("Outside of working hours!")
+            time.sleep(60)  # Sleep for a minute and then check the time again

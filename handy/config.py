@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, time
 import json
 import logging
 from os import path
@@ -71,6 +71,7 @@ class Config:
     numeric_value_max_waiting_time = timedelta(seconds=8)
     language = "en"
     min_arm_angle_for_numeric_value_change = 70
+    working_hours = (time(8, 0), time(21, 0))
 
     entities = ActionEntitiesConfig()
 
@@ -106,6 +107,16 @@ class Config:
         self.min_arm_angle_for_numeric_value_change = dict[
             "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE"
         ]
+        self.working_hours = (
+            time(
+                dict["TIME_START_MINUTES_AFTER_MIDNIGHT"] // 60,
+                dict["TIME_START_MINUTES_AFTER_MIDNIGHT"] % 60,
+            ),
+            time(
+                dict["TIME_END_MINUTES_AFTER_MIDNIGHT"] // 60,
+                dict["TIME_END_MINUTES_AFTER_MIDNIGHT"] % 60,
+            ),
+        )
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
@@ -133,6 +144,10 @@ class Config:
             "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": self.numeric_value_max_waiting_time.total_seconds(),
             "GET_NUMERIC_VALUE_INTERVAL_SECONDS": self.get_numeric_value_interval.total_seconds(),
             "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": self.min_arm_angle_for_numeric_value_change,
+            "TIME_START_MINUTES_AFTER_MIDNIGHT": self.working_hours[0].hour * 60
+            + self.working_hours[0].minute,
+            "TIME_END_MINUTES_AFTER_MIDNIGHT": self.working_hours[1].hour * 60
+            + self.working_hours[1].minute,
             "LANGUAGE": self.language,
             **(self.entities.to_dict()),
         }

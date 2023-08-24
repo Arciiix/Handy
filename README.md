@@ -52,6 +52,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - GET_NUMERIC_VALUE_INTERVAL_SECONDS - see above - the handler will be called every n seconds, where n is this value.
 - LANGUAGE - can be either "pl" or "en" - the announcements will be said in that language, e.g. the current time.
 - MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE - Minimum angle for arm to be considered as raised (which, in numeric vaule mode, causes the value to be either increased or decreased).
+- TIME_START_MINUTES_AFTER_MIDNIGHT - The time of the day that Handy starts processing the images at (to prevent it from unnecessary image processing, e.g. why would it process images at 2 am?). It's minutes after midnight, i.e. hour \* 60 + minutes, e.g. 08:15 = 8 \* 60 + 15. Defaults to 8:00.
+- TIME_END_MINUTES_AFTER_MIDNIGHT - The same thing as above, but it's ending time. Defaults to 21:00.
 
 ## Action-related changes
 
@@ -81,6 +83,8 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "GET_NUMERIC_VALUE_INTERVAL_SECONDS": 1,
   "LANGUAGE": "en",
   "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": 70,
+  "TIME_START_MINUTES_AFTER_MIDNIGHT": 480,
+  "TIME_END_MINUTES_AFTER_MIDNIGHT": 1260,
 
   "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
   "PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID": "media_player.mpd",
