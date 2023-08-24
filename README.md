@@ -57,6 +57,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 
 - PLAYER_PLAYPAUSE_HASS_ENTITY_ID - this media_player entity will be used for play/pause action
 - PLAYER_VOLUME_HASS_ENTITY_ID - this media_player entity will be used for volume change action
+- PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID - this media_player entity will be used for playing next playlist item (see below for playlist)
 - WEATHER_HASS_ENTITY_ID - this weather entity will be used for weather info
 
 ```json
@@ -82,9 +83,24 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": 70,
 
   "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
+  "PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID": "media_player.mpd",
   "PLAYER_VOLUME_HASS_ENTITY_ID": "media_player.volumio",
   "WEATHER_HASS_ENTITY_ID": "weather.openweathermap"
 }
+```
+
+# Playlist
+
+The "next playlist item" action needs some playlist to play. You can define it in the playlist.json file using the following format:
+
+```json
+[
+  {
+    "name": "your_media_name",
+    "pronunciation": "since radio stations and songs are often pronounced differently, provide their pronunciation here",
+    "url": "your_media_url"
+  }
+]
 ```
 
 # Using with Volumio

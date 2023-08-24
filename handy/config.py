@@ -24,12 +24,21 @@ class ActionEntitiesConfig:
     play_pause = "media_player.volumio"
     volume = "media_player.volumio"
     weather = "weather.openweathermap"
+    next_playlist_item = "media_player.mpd"
 
-    def __init__(self, media_player=None, play_pause=None, volume=None, weather=None):
+    def __init__(
+        self,
+        media_player=None,
+        play_pause=None,
+        volume=None,
+        weather=None,
+        next_playlist_item=None,
+    ):
         self.media_player = media_player or self.media_player
         self.play_pause = play_pause or self.play_pause or media_player
         self.volume = volume or self.play_pause
         self.weather = weather or self.weather
+        self.next_playlist_item = next_playlist_item or self.media_player
 
     def to_dict(self) -> dict[str, str]:
         return {
@@ -37,6 +46,7 @@ class ActionEntitiesConfig:
             "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": self.play_pause,
             "PLAYER_VOLUME_HASS_ENTITY_ID": self.volume,
             "WEATHER_HASS_ENTITY_ID": self.weather,
+            "PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID": self.next_playlist_item,
         }
 
 
@@ -102,6 +112,7 @@ class Config:
             play_pause=dict["PLAYER_PLAYPAUSE_HASS_ENTITY_ID"],
             volume=dict["PLAYER_VOLUME_HASS_ENTITY_ID"],
             weather=dict["WEATHER_HASS_ENTITY_ID"],
+            next_playlist_item=dict["PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID"],
         )
 
     def to_dict(self):

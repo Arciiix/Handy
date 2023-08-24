@@ -174,6 +174,8 @@ async def main():
                     translations=translations,
                 )
 
+                logger.info(f"Confidency of performing action: {ctx.confidency}")
+
                 if class_name in ACTIONS:
                     if ACTIONS[class_name].change_numeric_value:
                         logger.info("Numeric action performing - start...")

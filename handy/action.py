@@ -4,6 +4,7 @@ from homeassistant_api import Domain
 from action_context import ActionContext
 
 from announcements import say_current_time
+from playlist import next_playlist_item
 from playback import toggle_playback_state, get_current_volume, set_current_volume
 from weather import get_weather
 
@@ -46,6 +47,7 @@ ACTIONS: dict[int, Optional[Action]] = {
         numeric_value_multiplier=5,
         init_value_getter=get_current_volume,
     ),
+    2: Action(handler=next_playlist_item),
     4: Action(handler=toggle_playback_state),
     7: Action(handler=say_current_time),
     8: Action(handler=get_weather),
