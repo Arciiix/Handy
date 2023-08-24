@@ -50,12 +50,14 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - REQUIRED_TROI_PERCENT_CHANGE - this amount of the T-ROI frame has to be different for Handy to consider a movement inside it. Unit is percent [%].
 - NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS - there are some actions, like changing volume, that have to know the numeric value of change (see `numeric_value_track` in `numeric_value_track.py`). This value determines how many seconds user can stand without raising neither of their arms to be considered as idle (so cancel the action)
 - GET_NUMERIC_VALUE_INTERVAL_SECONDS - see above - the handler will be called every n seconds, where n is this value.
-- LANGUAGE - can be either "pl" or "en" - the announcements will be said in that language, e.g. the current time
+- LANGUAGE - can be either "pl" or "en" - the announcements will be said in that language, e.g. the current time.
+- MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE - Minimum angle for arm to be considered as raised (which, in numeric vaule mode, causes the value to be either increased or decreased).
 
 ## Action-related changes
 
-- PLAYER_PLAYPAUSE_HASS_ENTITY_ID - this entity will be used for play/pause action
-- PLAYER_VOLUME_HASS_ENTITY_ID - this entity will be used for volume change action
+- PLAYER_PLAYPAUSE_HASS_ENTITY_ID - this media_player entity will be used for play/pause action
+- PLAYER_VOLUME_HASS_ENTITY_ID - this media_player entity will be used for volume change action
+- WEATHER_HASS_ENTITY_ID - this weather entity will be used for weather info
 
 ```json
 {
@@ -77,9 +79,11 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": 8,
   "GET_NUMERIC_VALUE_INTERVAL_SECONDS": 1,
   "LANGUAGE": "en",
+  "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": 70,
 
   "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
-  "PLAYER_VOLUME_HASS_ENTITY_ID": "media_player.volumio"
+  "PLAYER_VOLUME_HASS_ENTITY_ID": "media_player.volumio",
+  "WEATHER_HASS_ENTITY_ID": "weather.openweathermap"
 }
 ```
 

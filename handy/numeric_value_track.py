@@ -57,8 +57,7 @@ async def numeric_value_track(
         """
 
         # The minimum angle to consider the arm to be raised
-        # TODO: Move to config
-        min_angle = 70
+        min_angle = CONFIG.min_arm_angle_for_numeric_value_change
 
         if CONFIG.is_dev:
             if angles is not None:
@@ -78,9 +77,10 @@ async def numeric_value_track(
             if CONFIG.is_dev:
                 logger.debug("Conditions:")
                 logger.debug(f"Angles is none: {str(angles is None)}")
-                logger.debug(
-                    f"Both hands: {str(angles[3] > min_angle and angles[2] > min_angle)}"
-                )
+                if angles is not None:
+                    logger.debug(
+                        f"Both hands: {str(angles[3] > min_angle and angles[2] > min_angle)}"
+                    )
                 logger.debug(
                     f"Time limit reached: {str((datetime.now() - last_time_arm_was_raised) > CONFIG.numeric_value_max_waiting_time)}"
                 )

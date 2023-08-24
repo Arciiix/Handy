@@ -1,10 +1,11 @@
 from typing import Awaitable, Callable, Optional
 
 from homeassistant_api import Domain
-from announcements import say_current_time
-
-from playback import toggle_playback_state, get_current_volume, set_current_volume
 from action_context import ActionContext
+
+from announcements import say_current_time
+from playback import toggle_playback_state, get_current_volume, set_current_volume
+from weather import get_weather
 
 
 class Action:
@@ -47,4 +48,5 @@ ACTIONS: dict[int, Optional[Action]] = {
     ),
     4: Action(handler=toggle_playback_state),
     7: Action(handler=say_current_time),
+    8: Action(handler=get_weather),
 }

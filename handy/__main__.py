@@ -65,8 +65,6 @@ async def main():
     with mp_holistic.Holistic(
         min_detection_confidence=0.6, min_tracking_confidence=0.6
     ) as holistic, open(model_path, "rb") as f:
-        audio_indicator = AudioIndicator(hass_client)
-
         # Load the model
         model = pickle.load(f)
         logger.info("Model loaded")

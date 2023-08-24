@@ -6,6 +6,9 @@ from logger import logger
 
 SUPPORTED_LANGUAGES = ("en", "pl")
 
+# In some of the languages, it's preferred to use comma instead of dot for floating-point numbers
+CHANGE_DOT_TO_COMMA_LANGS = "pl"
+
 
 class Translations:
     def __init__(self):
@@ -26,7 +29,7 @@ class Translations:
 
         self.current_translations = self.translations.get(self.language)
 
-    def get_translation(self, key: str, variables: Optional[dict[str, str]]):
+    def get_translation(self, key: str, variables: Optional[dict[str, str]] = {}):
         """
         A function to get translation given the key.
         The items from variables will replace every variables in curly braces in the translation value.
@@ -47,3 +50,19 @@ class Translations:
         # Replace all the variables in curly braces with those from the dictionary
         translation = translation.format(**variables)
         return translation
+
+    def format_number(self, number: str | int | float) -> str:
+        """
+        A function to format a numeric value - i.e. replace dot to comma on given locales
+
+        Args:
+            number (str | int | float)
+
+        Returns:
+            str: Formatted number string
+        """
+        number = str(number)
+
+        if self.language in CHANGE_DOT_TO_COMMA_LANGS:
+            number = number.replace(".", ",")
+        return number

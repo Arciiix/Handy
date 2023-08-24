@@ -1,8 +1,43 @@
 {
   "en": {
-    "current_time": "It's {time}. Today is {date}"
+    "current_time": "It's {time}. Today is {date}",
+
+    "weather_raport": "The weather. Now it's {condition_now}. The temperature is {temp_now}, pressure is {pressure_now}, and humidity is {humidity_now}. The wind speed is around {wind_speed_now}. When it comes to tomorrow, it will be {condition_tomorrow}, with an average of {temp_tomorrow} and minimum {temp_min_tomorrow}. The precipitation is: {precipitation_tomorrow}. Finally, the wind speed will be {wind_speed}. Data was updated at {updated_at}. Now it's {now}.",
+    "weather_chance_of_rain": "change of rain is {percent}%",
+    "weather.clear-night": "Clear, night",
+    "weather.cloudy": "Cloudy",
+    "weather.exceptional": "Exceptional",
+    "weather.fog": "Fog",
+    "weather.hail": "Hail",
+    "weather.lightning": "Lightning",
+    "weather.lightning-rainy": "Lightning, rainy",
+    "weather.partlycloudy": "Partly cloudy",
+    "weather.pouring": "Pouring",
+    "weather.rainy": "Rainy",
+    "weather.snowy": "Snowy",
+    "weather.snowy-rainy": "Snowy, rainy",
+    "weather.sunny": "Sunny",
+    "weather.windy": "Windy",
+    "weather.windy-variant": "Windy"
   },
   "pl": {
-    "current_time": "Jest godzina {time}. Dziś jest {date}"
+    "current_time": "Jest godzina {time}. Dziś jest {date}",
+    "weather_raport": "Pogoda. Aktualnie jest {condition_now}. Temperatura wynosi {temp_now}, ciśnienie: {pressure_now}, a wilgotność powietrza: {humidity_now}. Prędkość wiatru to {wind_speed_now}. Jeśli chodzi o jutro, to będzie {condition_tomorrow}, z temperaturą wynoszącą średnio {temp_tomorrow} oraz minimalnie {temp_min_tomorrow}. Opady: {precipitation_tomorrow}, a prędkość wiatru: {wind_speed}. Dane zostały odświeżone o godzinie {updated_at}. Teraz jest {now}.",
+    "weather_chance_of_rain": "szansa na deszcz wynosi {percent}%",
+    "weather.clear-night": "bezchmurna noc",
+    "weather.cloudy": "pochmurno",
+    "weather.fog": "mgła",
+    "weather.hail": "grad",
+    "weather.lightning": "burza",
+    "weather.lightning-rainy": "burza z deszczem",
+    "weather.partlycloudy": "częściowe zachmurzenie",
+    "weather.pouring": "silny deszcz",
+    "weather.rainy": "deszcz",
+    "weather.snowy": "śnieg",
+    "weather.snowy-rainy": "deszcz ze śniegiem",
+    "weather.sunny": "słonecznie",
+    "weather.windy": "wietrznie",
+    "weather.windy-variant": "wietrznie",
+    "weather.exceptional": "niebezpieczna pogoda - ostrzeżenie"
   }
 }

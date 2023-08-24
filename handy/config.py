@@ -23,17 +23,20 @@ class ActionEntitiesConfig:
     media_player = "media_player.mpd"
     play_pause = "media_player.volumio"
     volume = "media_player.volumio"
+    weather = "weather.openweathermap"
 
-    def __init__(self, media_player=None, play_pause=None, volume=None):
+    def __init__(self, media_player=None, play_pause=None, volume=None, weather=None):
         self.media_player = media_player or self.media_player
         self.play_pause = play_pause or self.play_pause or media_player
         self.volume = volume or self.play_pause
+        self.weather = weather or self.weather
 
     def to_dict(self) -> dict[str, str]:
         return {
             "MEDIA_PLAYER_HASS_ENTITY_ID": self.media_player,
             "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": self.play_pause,
             "PLAYER_VOLUME_HASS_ENTITY_ID": self.volume,
+            "WEATHER_HASS_ENTITY_ID": self.weather,
         }
 
 
@@ -57,6 +60,7 @@ class Config:
     get_numeric_value_interval = timedelta(seconds=1)
     numeric_value_max_waiting_time = timedelta(seconds=8)
     language = "en"
+    min_arm_angle_for_numeric_value_change = 70
 
     entities = ActionEntitiesConfig()
 
@@ -89,11 +93,15 @@ class Config:
             seconds=dict["GET_NUMERIC_VALUE_INTERVAL_SECONDS"]
         )
         self.language = dict["LANGUAGE"]
+        self.min_arm_angle_for_numeric_value_change = dict[
+            "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE"
+        ]
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
             play_pause=dict["PLAYER_PLAYPAUSE_HASS_ENTITY_ID"],
             volume=dict["PLAYER_VOLUME_HASS_ENTITY_ID"],
+            weather=dict["WEATHER_HASS_ENTITY_ID"],
         )
 
     def to_dict(self):
@@ -113,6 +121,7 @@ class Config:
             "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
             "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": self.numeric_value_max_waiting_time.total_seconds(),
             "GET_NUMERIC_VALUE_INTERVAL_SECONDS": self.get_numeric_value_interval.total_seconds(),
+            "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": self.min_arm_angle_for_numeric_value_change,
             "LANGUAGE": self.language,
             **(self.entities.to_dict()),
         }
