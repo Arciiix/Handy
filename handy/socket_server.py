@@ -9,8 +9,8 @@ from schematics.exceptions import DataError
 from logger import logger
 from config import CONFIG
 from dto import PlaylistItemCreateDto, PlaylistItemEditDto
-from db import PlaylistItem
-from playlist import update_playlists, get_playlists
+from db import PlaylistItem, PlaylistTypes
+from playlist import update_playlists, get_playlist_items
 
 sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
 
@@ -23,6 +23,22 @@ async def connect(sid, environ):
 @sio.event
 async def disconnect(sid):
     logger.info(f"Socket {sid} disconnected")
+
+
+@sio.on("playlist_item/all")
+async def get_all_playlist_items(sid, data):
+    type = data.get("type", None)
+
+    if type is not None:
+        try:
+            # Check whether user provided the correct type
+            type = PlaylistTypes[type].value  # Convert to value as well
+        except KeyError:
+            return {
+                "success": False,
+                "error": f"{type} does not exist in the playlist item types enum",
+            }
+    return get_playlist_items(type)
 
 
 @sio.on("playlist_item/add")
@@ -40,16 +56,20 @@ async def playlist_item_add(
         return {"success": False, "error": str(err)}
 
     playlist_item = PlaylistItem(
-        id=uuid.uuid4(), name=dto.name, pronunciation=dto.pronunciation, url=dto.url
+        id=uuid.uuid4(),
+        name=dto.name,
+        pronunciation=dto.pronunciation,
+        url=dto.url,
+        type=PlaylistTypes[dto.type].value,
     )
     playlist_item.save(force_insert=True)
 
-    update_playlists()
+    await update_playlists(sio)
 
     return {
         "success": True,
         "playlist": playlist_item.to_dict(),
-        "playlists": get_playlists(),
+        "playlists": get_playlist_items(),
     }
 
 
@@ -86,15 +106,18 @@ async def playlist_item_add(
     if data.get("url"):
         playlist_item.url = data["url"]
 
+    if data.get("type"):
+        playlist_item.type = PlaylistTypes[data["type"]].value
+
     playlist_item.save()
 
     logger.info(f"Playlist {data['id']} has been updated")
-    update_playlists()
+    await update_playlists(sio)
 
     return {
         "success": True,
         "playlist": playlist_item.to_dict(),
-        "playlists": get_playlists(),
+        "playlists": get_playlist_items(),
     }
 
 
@@ -114,11 +137,11 @@ async def playlist_item_remove(
         return {"success": False, "error": "Item doesn't exist"}
 
     previous_playlist.delete_instance()
-    update_playlists()
+    await update_playlists(sio)
 
     logger.info(f"Removed playlist item {data['id']}")
 
-    return {"success": True, "playlists": get_playlists()}
+    return {"success": True, "playlists": get_playlist_items()}
 
 
 app = web.Application()

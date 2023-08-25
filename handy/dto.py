@@ -3,12 +3,17 @@ from schematics.models import Model
 from schematics.types import StringType, DecimalType, DateTimeType, URLType
 
 from validators import validate_url
+from db import PlaylistTypes
 
 
 class PlaylistItemCreateDto(Model):
     name = StringType(required=True)
     pronunciation = StringType()
-    url = StringType(validators=[validate_url])
+    url = StringType(required=True, validators=[validate_url])
+
+    type = StringType(
+        required=True, choices=[*PlaylistTypes.__members__.keys()]
+    )  # Type is PlaylistTypes enum
 
     def __init__(self, *args, **kwargs):
         super(PlaylistItemCreateDto, self).__init__(*args, **kwargs)
@@ -23,3 +28,7 @@ class PlaylistItemEditDto(Model):
     name = StringType()
     pronunciation = StringType()
     url = StringType(validators=[validate_url])
+
+    type = StringType(
+        choices=[PlaylistTypes.__members__.keys()]
+    )  # Type is PlaylistTypes enum

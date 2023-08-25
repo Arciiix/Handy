@@ -21,6 +21,7 @@ from logger import logger
 from utils.working_hours import is_inside_working_hours
 from db import db
 from socket_server import init_socket
+from playlist import update_playlists
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
@@ -42,6 +43,8 @@ async def main():
     # If a gesture is detected, the app goes faster (i.e. faster than FPS limit) and gets the next detections
     # If most of the last detections mean the same pose
     last_detections = deque([None] * CONFIG.detections_to_keep)
+
+    await update_playlists()
 
     # Check if the model exists
     if not path.exists(model_path):

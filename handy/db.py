@@ -1,3 +1,4 @@
+from enum import Enum
 from peewee import *
 
 from logger import logger
@@ -5,11 +6,18 @@ from logger import logger
 db = SqliteDatabase("handy.db")
 
 
+class PlaylistTypes(Enum):
+    LOCAL = 0
+    YOUTUBE = 1
+
+
 class PlaylistItem(Model):
     id = UUIDField(primary_key=True)
     name = CharField()
     pronunciation = CharField()
     url = CharField()
+
+    type = SmallIntegerField()  # Value from enum PlaylistTypes
 
     class Meta:
         database = db
@@ -20,6 +28,7 @@ class PlaylistItem(Model):
             "name": self.name,
             "pronunciation": self.pronunciation,
             "url": self.url,
+            "type": PlaylistTypes(self.type).name,
         }
 
 
