@@ -72,6 +72,7 @@ class Config:
     language = "en"
     min_arm_angle_for_numeric_value_change = 70
     working_hours = (time(8, 0), time(21, 0))
+    socket_io_port = 4001
 
     entities = ActionEntitiesConfig()
 
@@ -117,6 +118,7 @@ class Config:
                 dict["TIME_END_MINUTES_AFTER_MIDNIGHT"] % 60,
             ),
         )
+        self.socket_io_port = dict["SOCKET_IO_PORT"]
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
@@ -143,12 +145,13 @@ class Config:
             "REQUIRED_TROI_PERCENT_CHANGE": self.required_troi_percent_change * 100,
             "NUMERIC_VALUE_MAX_WAITING_TIME_SECONDS": self.numeric_value_max_waiting_time.total_seconds(),
             "GET_NUMERIC_VALUE_INTERVAL_SECONDS": self.get_numeric_value_interval.total_seconds(),
+            "LANGUAGE": self.language,
             "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": self.min_arm_angle_for_numeric_value_change,
             "TIME_START_MINUTES_AFTER_MIDNIGHT": self.working_hours[0].hour * 60
             + self.working_hours[0].minute,
             "TIME_END_MINUTES_AFTER_MIDNIGHT": self.working_hours[1].hour * 60
             + self.working_hours[1].minute,
-            "LANGUAGE": self.language,
+            "SOCKET_IO_PORT": self.socket_io_port,
             **(self.entities.to_dict()),
         }
 

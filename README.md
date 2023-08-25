@@ -54,6 +54,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE - Minimum angle for arm to be considered as raised (which, in numeric vaule mode, causes the value to be either increased or decreased).
 - TIME_START_MINUTES_AFTER_MIDNIGHT - The time of the day that Handy starts processing the images at (to prevent it from unnecessary image processing, e.g. why would it process images at 2 am?). It's minutes after midnight, i.e. hour \* 60 + minutes, e.g. 08:15 = 8 \* 60 + 15. Defaults to 8:00.
 - TIME_END_MINUTES_AFTER_MIDNIGHT - The same thing as above, but it's ending time. Defaults to 21:00.
+- SOCKET_IO_PORT - A port that the socket.io instance will run on.
 
 ## Action-related changes
 
@@ -85,26 +86,13 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "MIN_ARM_ANGLE_FOR_NUMERIC_VALUE_CHANGE": 70,
   "TIME_START_MINUTES_AFTER_MIDNIGHT": 480,
   "TIME_END_MINUTES_AFTER_MIDNIGHT": 1260,
+  "SOCKET_IO_PORT": 4001,
 
   "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
   "PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID": "media_player.mpd",
   "PLAYER_VOLUME_HASS_ENTITY_ID": "media_player.volumio",
   "WEATHER_HASS_ENTITY_ID": "weather.openweathermap"
 }
-```
-
-# Playlist
-
-The "next playlist item" action needs some playlist to play. You can define it in the playlist.json file using the following format:
-
-```json
-[
-  {
-    "name": "your_media_name",
-    "pronunciation": "since radio stations and songs are often pronounced differently, provide their pronunciation here",
-    "url": "your_media_url"
-  }
-]
 ```
 
 # Using with Volumio

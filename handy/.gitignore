@@ -166,7 +166,6 @@ config.json
 ROI.json
 TROI.json
 GROI.json
-playlist.json
 
 # For testing
 test_vid/

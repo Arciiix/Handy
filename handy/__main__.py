@@ -19,6 +19,8 @@ from numeric_value_track import numeric_value_track
 from translations import Translations
 from logger import logger
 from utils.working_hours import is_inside_working_hours
+from db import db
+from socket_server import init_socket
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
@@ -176,6 +178,7 @@ async def main():
                     / CONFIG.detections_to_keep,
                     home_assistant=hass_client,
                     translations=translations,
+                    db=db,
                 )
 
                 logger.info(f"Confidency of performing action: {ctx.confidency}")
@@ -206,6 +209,10 @@ async def main():
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
+
+    server_thread = threading.Thread(target=init_socket)
+    server_thread.start()
+
     while True:
         # The app should only process images within its working hours
         if is_inside_working_hours():

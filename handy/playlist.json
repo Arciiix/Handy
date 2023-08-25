@@ -1,0 +1,27 @@
+[
+  {
+    "name": "RMF FM",
+    "pronunciation": "eremef FM",
+    "url": "http://www.rmfon.pl/tunein/tunein.php?host=rs101-krk-cyfronet.rmfstream.pl&mount=rmf_fm&secure=0"
+  },
+  {
+    "name": "Radio Silesia",
+    "pronunciation": "Radio Si lezja",
+    "url": "http://s1.slotex.pl:7926/"
+  },
+  {
+    "name": "Radio ZET",
+    "pronunciation": "Radio ZET",
+    "url": "https://zt.cdn.eurozet.pl/zet-tun.mp3"
+  },
+  {
+    "name": "Radio ESKA",
+    "pronunciation": "Radio ESKA",
+    "url": "https://waw.ic.smcdn.pl/2330-1.mp3"
+  },
+  {
+    "name": "HitzRadio",
+    "pronunciation": "HitzRadio",
+    "url": "http://216.235.89.171:80/hitlist"
+  }
+]

@@ -6,13 +6,7 @@ from logger import logger
 from action_context import ActionContext
 from announcements import say
 from config import CONFIG
-
-
-class PlaylistItem:
-    def __init__(self, name, pronunciation, url):
-        self.name = name
-        self.pronunciation = pronunciation or name
-        self.url = url
+from db import PlaylistItem
 
 
 PLAYLIST: list[PlaylistItem] = []
@@ -59,21 +53,14 @@ async def next_playlist_item(ctx: ActionContext):
         logger.error(f"Couldn't play media! {str(err)}")
 
 
-try:
-    with open(path.join(path.dirname(__file__), "playlist.json")) as f:
-        loaded_playlist = json.load(f)
-        for item in loaded_playlist:
-            PLAYLIST.append(
-                PlaylistItem(
-                    item["name"],
-                    item.get("pronunciation", item["name"]),
-                    item[
-                        "url"
-                    ],  # It throws an error if the format of playlist.json is wrong
-                )
-            )
+def get_playlists():
+    return [playlist.to_dict() for playlist in PLAYLIST]
+
+
+def update_playlists():
+    global PLAYLIST
+    try:
+        PLAYLIST = PlaylistItem.select()
         logger.info(f"Loaded {len(PLAYLIST)} playlist items!")
-except FileNotFoundError:
-    logger.warning(
-        'playlist.json doesn\'t exist - please consider creating it to make the "next playlist item" action work'
-    )
+    except Exception as err:
+        logger.warning(f"Playlist couldn't be loaded from the database: {str(err)}")
