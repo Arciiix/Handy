@@ -10,6 +10,22 @@ class PlaylistTypes(Enum):
     LOCAL = 0
     YOUTUBE = 1
 
+    @classmethod
+    def next(self, current):
+        """
+        Get the next item in enum
+
+        Args:
+            current: current item
+
+        Returns:
+            next_item: next item
+        """
+        members = list(self)
+        idx = members.index(current)
+        next_idx = (idx + 1) % len(members)
+        return members[next_idx]
+
 
 class PlaylistItem(Model):
     id = UUIDField(primary_key=True)

@@ -1,6 +1,7 @@
 import asyncio
 import json
 from os import path
+import threading
 from typing import Optional
 
 from socketio import Server
@@ -20,6 +21,39 @@ YOUTUBE_PLAYLIST: list[PlaylistItem] = []
 current_local_playlist_item_index = 0
 current_youtube_playlist_item_index = 0
 current_playlist_type = PlaylistTypes.LOCAL
+
+# To prevent race condition when both the server and Handy app wants to change playlist mode
+playlist_type_lock = threading.Lock()
+
+
+async def play_playlist_item(
+    ctx: ActionContext, item_to_play: PlaylistItem, index: int
+):
+    logger.info(
+        f"About to play {item_to_play.name} (item with index {index} from playlist type {current_playlist_type})"
+    )
+    # First say the name of the item
+    await say(ctx, item_to_play.pronunciation)
+    logger.info("Said next media name")
+
+    # TODO: If it's YouTube playlist, download the item in the background while waiting
+
+    # Let's assume it takes 0.5 second per word to say the name + 1 second
+    await asyncio.sleep((0.5 * len(item_to_play.pronunciation.split())) + 1)
+    logger.info("Waited 2 seconds")
+
+    # Play the media itself
+    try:
+        domain = await ctx.hass_client.async_get_domain(domain_id="media_player")
+        await domain.play_media(
+            entity_id=CONFIG.entities.next_playlist_item,
+            media_content_id=item_to_play.url,  # TODO: On YouTube, get the raw .mp3 URL
+            media_content_type="music",
+            enqueue="replace",
+        )
+        logger.info("Played media!")
+    except Exception as err:
+        logger.error(f"Couldn't play media! {str(err)}")
 
 
 async def next_playlist_item(ctx: ActionContext):
@@ -56,32 +90,7 @@ async def next_playlist_item(ctx: ActionContext):
         logger.error(f"Couldn't find playlist type {current_playlist_type}")
         return
 
-    logger.info(
-        f"About to play {item_to_play.name} (item with index {index} from playlist type {current_playlist_type})"
-    )
-
-    # First say the name of the item
-    await say(ctx, item_to_play.pronunciation)
-    logger.info("Said next media name")
-
-    # TODO: If it's YouTube playlist, download the item in the background while waiting
-
-    # Let's assume it takes 0.5 second per word to say the name + 1 second
-    await asyncio.sleep((0.5 * len(item_to_play.pronunciation.split())) + 1)
-    logger.info("Waited 2 seconds")
-
-    # Play the media itself
-    try:
-        domain = await ctx.hass_client.async_get_domain(domain_id="media_player")
-        await domain.play_media(
-            entity_id=CONFIG.entities.next_playlist_item,
-            media_content_id=item_to_play.url,  # TODO: On YouTube, get the raw .mp3 URL
-            media_content_type="music",
-            enqueue="replace",
-        )
-        logger.info("Played media!")
-    except Exception as err:
-        logger.error(f"Couldn't play media! {str(err)}")
+    return await play_playlist_item(ctx, item_to_play, index)
 
 
 def get_playlist_items(type: Optional[PlaylistTypes] = None):
@@ -126,3 +135,43 @@ async def update_playlists(socket: Server = None):
         )
     except Exception as err:
         logger.warning(f"Playlist couldn't be loaded from the database: {str(err)}")
+
+
+async def switch_playlist_type(ctx: ActionContext, type=None):
+    """
+    Switches between LOCAL and YOUTUBE type
+
+    Args:
+        ctx (ActionContext)
+    """
+    global current_playlist_type
+    with playlist_type_lock:
+        if type is not None:
+            current_playlist_type = type
+        else:
+            current_playlist_type = PlaylistTypes.next(current_playlist_type)
+
+        # Announce the mode change
+        await say(
+            ctx,
+            ctx.translations.get_translation(
+                "mode_local"
+                if current_playlist_type is PlaylistTypes.LOCAL
+                else "mode_youtube"
+            ),
+        )
+
+        # Get the current item index
+        current_item_index = (
+            current_local_playlist_item_index
+            if current_playlist_type is PlaylistTypes.LOCAL
+            else current_youtube_playlist_item_index
+        )
+        current_item = (
+            LOCAL_PLAYLIST[current_item_index]
+            if current_playlist_type is PlaylistTypes.LOCAL
+            else YOUTUBE_PLAYLIST[current_item_index]
+        )
+
+        # Play it once again
+        return await play_playlist_item(ctx, current_item, current_item_index)

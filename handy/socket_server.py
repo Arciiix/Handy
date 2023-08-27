@@ -6,13 +6,24 @@ import aiohttp_cors
 import socketio
 from schematics.exceptions import DataError
 
+from action_context import ActionContext
 from logger import logger
 from config import CONFIG
 from dto import PlaylistItemCreateDto, PlaylistItemEditDto
-from db import PlaylistItem, PlaylistTypes
-from playlist import update_playlists, get_playlist_items
+from db import PlaylistItem, PlaylistTypes, db
+from services import get_services
+from playlist import (
+    update_playlists,
+    get_playlist_items,
+    switch_playlist_type,
+    current_playlist_type,
+)
 
 sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
+
+
+# Since it's a separate thread, we have to get the services again
+hass_client, translations = None, None
 
 
 @sio.event
@@ -23,6 +34,27 @@ async def connect(sid, environ):
 @sio.event
 async def disconnect(sid):
     logger.info(f"Socket {sid} disconnected")
+
+
+@sio.on("playlist/switch_type")
+async def switch_type(sid, data):
+    type = data.get("type", None)
+
+    if type is not None:
+        try:
+            # Check whether user provided the correct type
+            type = PlaylistTypes[type].value  # Convert to value as well
+        except KeyError:
+            return {
+                "success": False,
+                "error": f"{type} does not exist in the playlist item types enum",
+            }
+
+    ctx = ActionContext(
+        confidency=1, db=db, home_assistant=hass_client, translations=translations
+    )
+    await switch_playlist_type(ctx, type=type)
+    return {"success": True, "mode": PlaylistTypes(current_playlist_type).name}
 
 
 @sio.on("playlist_item/all")
@@ -144,32 +176,47 @@ async def playlist_item_remove(
     return {"success": True, "playlists": get_playlist_items()}
 
 
-app = web.Application()
-sio.attach(app)
-
-
 async def hello_handler(request):
     return web.Response(text="Hello from Handy!")
 
 
-app.add_routes([web.get("/", hello_handler)])
+async def init():
+    global hass_client, translations
 
-# Thanks to: https://stackoverflow.com/a/56767323
-cors = aiohttp_cors.setup(app)
-for resource in app.router._resources:
-    # Because socket.io already adds cors, if you don't skip socket.io, you get error saying, you've done this already.
-    if resource.raw_match("/socket.io/"):
-        continue
-    cors.add(
-        resource,
-        {
-            "*": aiohttp_cors.ResourceOptions(
-                allow_credentials=True, expose_headers="*", allow_headers="*"
-            )
-        },
-    )
+    hass_client, translations = await get_services()
+
+    app = web.Application()
+    sio.attach(app)
+    app.add_routes([web.get("/", hello_handler)])
+
+    # Thanks to: https://stackoverflow.com/a/56767323
+    cors = aiohttp_cors.setup(app)
+    for resource in app.router._resources:
+        # Because socket.io already adds cors, if you don't skip socket.io, you get error saying, you've done this already.
+        if resource.raw_match("/socket.io/"):
+            continue
+        cors.add(
+            resource,
+            {
+                "*": aiohttp_cors.ResourceOptions(
+                    allow_credentials=True, expose_headers="*", allow_headers="*"
+                )
+            },
+        )
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, port=CONFIG.socket_io_port)
+
+    try:
+        await site.start()
+        logger.info(f"Socket.io started on port: {CONFIG.socket_io_port}")
+        await asyncio.Event().wait()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        await runner.cleanup()
 
 
 def init_socket():
-    logger.info(f"Socket.io starting on port: {CONFIG.socket_io_port}")
-    web.run_app(app, port=CONFIG.socket_io_port)
+    asyncio.run(init())

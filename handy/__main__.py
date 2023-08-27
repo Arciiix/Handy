@@ -22,21 +22,13 @@ from utils.working_hours import is_inside_working_hours
 from db import db
 from socket_server import init_socket
 from playlist import update_playlists
+from services import get_services
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
 
-hass_client = Client(
-    f"{CONFIG.home_assistant_ip}/api",
-    CONFIG.home_assistant_token,
-    use_async=True,
-    async_cache_session=False,
-)
 
-translations = Translations()
-
-
-async def main():
+async def main(hass_client, translations):
     logger.info("Handy init")
 
     # To prevent false detections caused by accidental gestures or model inaccuracy, store the last 10 detections
@@ -216,10 +208,12 @@ if __name__ == "__main__":
     server_thread = threading.Thread(target=init_socket)
     server_thread.start()
 
+    hass_client, translations = loop.run_until_complete(get_services())
+
     while True:
         # The app should only process images within its working hours
         if is_inside_working_hours():
-            loop.run_until_complete(main())
+            loop.run_until_complete(main(hass_client, translations))
         else:
             logger.info("Outside of working hours!")
             time.sleep(60)  # Sleep for a minute and then check the time again

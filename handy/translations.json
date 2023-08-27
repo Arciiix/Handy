@@ -1,6 +1,8 @@
 {
   "en": {
     "current_time": "It's {time}. Today is {date}",
+    "mode_local": "Mode: local",
+    "mode_youtube": "Mode: YouTube",
 
     "weather_raport": "The weather. Now it's {condition_now}. The temperature is {temp_now}, pressure is {pressure_now}, and humidity is {humidity_now}. The wind speed is around {wind_speed_now}. When it comes to tomorrow, it will be {condition_tomorrow}, with an average of {temp_tomorrow} and minimum {temp_min_tomorrow}. The precipitation is: {precipitation_tomorrow}. Finally, the wind speed will be {wind_speed}. Data was updated at {updated_at}. Now it's {now}.",
     "weather_chance_of_rain": "change of rain is {percent}%",
@@ -22,6 +24,9 @@
   },
   "pl": {
     "current_time": "Jest godzina {time}. Dziś jest {date}",
+    "mode_local": "Tryb: lokalny",
+    "mode_youtube": "Tryb: YouTube",
+
     "weather_raport": "Pogoda. Aktualnie jest {condition_now}. Temperatura wynosi {temp_now}, ciśnienie: {pressure_now}, a wilgotność powietrza: {humidity_now}. Prędkość wiatru to {wind_speed_now}. Jeśli chodzi o jutro, to będzie {condition_tomorrow}, z temperaturą wynoszącą średnio {temp_tomorrow} oraz minimalnie {temp_min_tomorrow}. Opady: {precipitation_tomorrow}, a prędkość wiatru: {wind_speed}. Dane zostały odświeżone o godzinie {updated_at}. Teraz jest {now}.",
     "weather_chance_of_rain": "szansa na deszcz wynosi {percent}%",
     "weather.clear-night": "bezchmurna noc",
