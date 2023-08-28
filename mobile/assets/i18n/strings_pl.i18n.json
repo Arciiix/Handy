@@ -1,8 +1,15 @@
 {
   "buttons": {
     "cancel": "Anuluj",
+    "delete": "Usuń",
     "ok": "OK",
     "save": "Zapisz"
+  },
+  "dialog": {
+    "delete_item": {
+      "title": "Usuń element",
+      "description": "Czy na pewno chcesz usunąć $item_name?"
+    }
   },
   "error": {
     "title": "Wystąpił błąd"
@@ -18,6 +25,33 @@
     "media": {
       "local": "Lokalna",
       "youtube": "YouTube"
+    },
+    "youtube": {
+      "advice": {
+        "title": "Porada",
+        "description": "Lepszym sposobem dodawania filmów z YouTube do Handy jest użycie przycisku Udostępnij na dowolnym filmie YouTube i wybranie aplikacji Handy."
+      },
+      "fetch_data": "Pobierz dane wideo"
+    },
+    "open_url": "Otwórz URL",
+    "form": {
+      "edit_type(context=PlaylistTypesContext)": {
+        "local": "element lokalnej playlisty",
+        "youtube": "element playlisty z YouTube"
+      },
+      "title_edit": "Edytuj @:playlist.form.edit_type",
+      "title_add": "Dodaj @:playlist.form.edit_type",
+      "fields": {
+        "name": "Nazwa",
+        "custom_pronunciation": "Niestandardowa wymowa nazwy",
+        "pronunciation": "Wymowa nazwy",
+        "url": "Adres URL",
+        "url_helper": "Zacznij od np. https://"
+      },
+      "errors": {
+        "name_empty": "Proszę podać nazwę",
+        "url_invalid": "Proszę podać poprawny adres URL"
+      }
     }
   },
   "settings": {

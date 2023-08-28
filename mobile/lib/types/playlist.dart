@@ -30,9 +30,19 @@ class Playlists {
         .toList();
   }
 
+  List<PlaylistItem> getForType(PlaylistType type) {
+    switch (type) {
+      case PlaylistType.local:
+        return local;
+      case PlaylistType.youtube:
+        return youtube;
+    }
+  }
+
   Future<Playlists> addItem(PlaylistItem item) async {
     // TODO: Do the server-side work
 
+    //  TODO: The id here should be obtained from the request
     var newItems = [...items, item];
 
     return Playlists(items: newItems);

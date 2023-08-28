@@ -1,8 +1,15 @@
 {
   "buttons": {
     "cancel": "Cancel",
+    "delete": "Delete",
     "ok": "OK",
     "save": "Save"
+  },
+  "dialog": {
+    "delete_item": {
+      "title": "Delete item",
+      "description": "Are you sure you want to delete this item $item_name?"
+    }
   },
   "error": {
     "title": "Error"
@@ -18,6 +25,33 @@
     "media": {
       "local": "Local",
       "youtube": "YouTube"
+    },
+    "youtube": {
+      "advice": {
+        "title": "Advice",
+        "description": "A better way to add YouTube videos to Handy is to use the Share button on any YouTube video and select the Handy app."
+      },
+      "fetch_data": "Fetch video data"
+    },
+    "open_url": "Open URL",
+    "form": {
+      "edit_type(context=PlaylistTypesContext)": {
+        "local": "local playlist item",
+        "youtube": "YouTube playlist item"
+      },
+      "title_edit": "Edit @:playlist.form.edit_type",
+      "title_add": "Add @:playlist.form.edit_type",
+      "fields": {
+        "name": "Name",
+        "custom_pronunciation": "Custom pronunciation of the name",
+        "pronunciation": "Pronunciation",
+        "url": "URL",
+        "url_helper": "Start with e.g. https://"
+      },
+      "errors": {
+        "name_empty": "Please enter a name",
+        "url_invalid": "Please enter a valid URL"
+      }
     }
   },
   "settings": {

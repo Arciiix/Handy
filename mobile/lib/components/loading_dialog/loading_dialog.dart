@@ -36,7 +36,10 @@ class LoadingDialog<T> extends StatelessWidget {
             ],
           );
         } else {
-          Navigator.of(context).pop(snapshot.data);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop(snapshot.data);
+          });
+
           return Container();
         }
       },
