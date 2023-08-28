@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 
 import androidx.annotation.NonNull
-import io.flutter.Log
 
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.embedding.android.FlutterActivity
@@ -18,7 +17,6 @@ class MainActivity : FlutterActivity() {
         val intent: Intent = intent
         val action: String? = intent.action
         val type: String? = intent.type
-        Log.d("Handy", "Hi!")
         if (Intent.ACTION_SEND == action && type != null) {
             if ("text/plain" == type) {
                 handleSendText(intent) 
