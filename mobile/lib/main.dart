@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:handy/gen/strings.g.dart';
+import 'package:handy/providers/shared_preferences_provider.dart';
 import 'package:handy/router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LocaleSettings.useDeviceLocale();
-  runApp(TranslationProvider(child: const HandyApp()));
+
+  final sharedPrefs = await SharedPreferences.getInstance();
+
+  runApp(ProviderScope(overrides: [
+    sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+  ], child: TranslationProvider(child: const HandyApp())));
 }
 
 class HandyApp extends StatelessWidget {

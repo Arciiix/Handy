@@ -1,6 +1,20 @@
 {
+  "buttons": {
+    "cancel": "Anuluj",
+    "save": "Zapisz"
+  },
   "navigation": {
     "home": "Start",
     "settings": "Ustawienia"
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "sections": {
+      "general": "Ogólne"
+    },
+    "ip": {
+      "title": "IP serwera",
+      "description": "IP (wraz z portem i protokołem (HTTP)) serwera Handy"
+    }
   }
 }

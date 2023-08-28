@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 4 (2 per locale)
+/// Strings: 16 (8 per locale)
 ///
-/// Built on 2023-08-27 at 15:47 UTC
+/// Built on 2023-08-28 at 09:25 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -150,7 +150,20 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	late final _StringsEn _root = this; // ignore: unused_field
 
 	// Translations
+	late final _StringsButtonsEn buttons = _StringsButtonsEn._(_root);
 	late final _StringsNavigationEn navigation = _StringsNavigationEn._(_root);
+	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
+}
+
+// Path: buttons
+class _StringsButtonsEn {
+	_StringsButtonsEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get cancel => 'Cancel';
+	String get save => 'Save';
 }
 
 // Path: navigation
@@ -162,6 +175,39 @@ class _StringsNavigationEn {
 	// Translations
 	String get home => 'Home';
 	String get settings => 'Settings';
+}
+
+// Path: settings
+class _StringsSettingsEn {
+	_StringsSettingsEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Settings';
+	late final _StringsSettingsSectionsEn sections = _StringsSettingsSectionsEn._(_root);
+	late final _StringsSettingsIpEn ip = _StringsSettingsIpEn._(_root);
+}
+
+// Path: settings.sections
+class _StringsSettingsSectionsEn {
+	_StringsSettingsSectionsEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get general => 'General';
+}
+
+// Path: settings.ip
+class _StringsSettingsIpEn {
+	_StringsSettingsIpEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Server IP';
+	String get description => 'The IP (together with the port and protocol (HTTP)) of the Handy server';
 }
 
 // Path: <root>
@@ -189,7 +235,20 @@ class _StringsPl implements _StringsEn {
 	@override late final _StringsPl _root = this; // ignore: unused_field
 
 	// Translations
+	@override late final _StringsButtonsPl buttons = _StringsButtonsPl._(_root);
 	@override late final _StringsNavigationPl navigation = _StringsNavigationPl._(_root);
+	@override late final _StringsSettingsPl settings = _StringsSettingsPl._(_root);
+}
+
+// Path: buttons
+class _StringsButtonsPl implements _StringsButtonsEn {
+	_StringsButtonsPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get cancel => 'Anuluj';
+	@override String get save => 'Zapisz';
 }
 
 // Path: navigation
@@ -203,14 +262,53 @@ class _StringsNavigationPl implements _StringsNavigationEn {
 	@override String get settings => 'Ustawienia';
 }
 
+// Path: settings
+class _StringsSettingsPl implements _StringsSettingsEn {
+	_StringsSettingsPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Ustawienia';
+	@override late final _StringsSettingsSectionsPl sections = _StringsSettingsSectionsPl._(_root);
+	@override late final _StringsSettingsIpPl ip = _StringsSettingsIpPl._(_root);
+}
+
+// Path: settings.sections
+class _StringsSettingsSectionsPl implements _StringsSettingsSectionsEn {
+	_StringsSettingsSectionsPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get general => 'Ogólne';
+}
+
+// Path: settings.ip
+class _StringsSettingsIpPl implements _StringsSettingsIpEn {
+	_StringsSettingsIpPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'IP serwera';
+	@override String get description => 'IP (wraz z portem i protokołem (HTTP)) serwera Handy';
+}
+
 /// Flat map(s) containing all translations.
 /// Only for edge cases! For simple maps, use the map function of this library.
 
 extension on _StringsEn {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
+			case 'buttons.cancel': return 'Cancel';
+			case 'buttons.save': return 'Save';
 			case 'navigation.home': return 'Home';
 			case 'navigation.settings': return 'Settings';
+			case 'settings.title': return 'Settings';
+			case 'settings.sections.general': return 'General';
+			case 'settings.ip.title': return 'Server IP';
+			case 'settings.ip.description': return 'The IP (together with the port and protocol (HTTP)) of the Handy server';
 			default: return null;
 		}
 	}
@@ -219,8 +317,14 @@ extension on _StringsEn {
 extension on _StringsPl {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
+			case 'buttons.cancel': return 'Anuluj';
+			case 'buttons.save': return 'Zapisz';
 			case 'navigation.home': return 'Start';
 			case 'navigation.settings': return 'Ustawienia';
+			case 'settings.title': return 'Ustawienia';
+			case 'settings.sections.general': return 'Ogólne';
+			case 'settings.ip.title': return 'IP serwera';
+			case 'settings.ip.description': return 'IP (wraz z portem i protokołem (HTTP)) serwera Handy';
 			default: return null;
 		}
 	}

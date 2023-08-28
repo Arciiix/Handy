@@ -1,6 +1,20 @@
 {
+  "buttons": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
   "navigation": {
     "home": "Home",
     "settings": "Settings"
+  },
+  "settings": {
+    "title": "Settings",
+    "sections": {
+      "general": "General"
+    },
+    "ip": {
+      "title": "Server IP",
+      "description": "The IP (together with the port and protocol (HTTP)) of the Handy server"
+    }
   }
 }
