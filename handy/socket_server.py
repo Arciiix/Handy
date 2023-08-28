@@ -9,7 +9,7 @@ from schematics.exceptions import DataError
 from action_context import ActionContext
 from logger import logger
 from config import CONFIG
-from dto import PlaylistItemCreateDto, PlaylistItemEditDto
+from dto import PlaylistItemCreateDto, PlaylistItemEditDto, PlaylistItemRearrangeDto
 from db import PlaylistItem, PlaylistTypes, db
 from services import get_services
 from playlist import (
@@ -18,6 +18,8 @@ from playlist import (
     switch_playlist_type,
     current_playlist_type,
     get_playlist_item_new_position,
+    LOCAL_PLAYLIST,
+    YOUTUBE_PLAYLIST,
 )
 from youtube import get_youtube_video_info
 
@@ -193,6 +195,57 @@ async def playlist_item_remove(
     return {"success": True, "playlists": get_playlist_items()}
 
 
+@sio.on("playlist_item/rearrange")
+async def rearrange_items(sid, data):
+    # Validate data
+    try:
+        dto = PlaylistItemRearrangeDto(data)
+        dto.validate()
+    except Exception as err:
+        logger.warning(err)
+        return {"success": False, "error": str(err)}
+
+    # Get the previous playlist
+    previous_playlist_item = PlaylistItem.get_or_none(PlaylistItem.id == data["id"])
+    if previous_playlist_item is None:
+        return {"success": False, "error": "Item doesn't exist"}
+
+    old_position = previous_playlist_item.position
+    new_position = data["new_position"]
+
+    # Check if the new position is even possible
+    # Check it by simply obtaining the new position for the item and seeing if it's lower than the user's desired new position
+    type = PlaylistTypes(previous_playlist_item.type)
+    if new_position >= get_playlist_item_new_position(type):
+        return {"success": False, "error": "The new position is too high"}
+
+    with db.atomic():
+        # Determine the direction of the rearrangement (up or down)
+        direction = 1 if new_position < old_position else -1
+
+        # Update positions of items in the specified range
+        query = PlaylistItem.update(position=PlaylistItem.position + direction).where(
+            (PlaylistItem.position >= min(old_position, new_position)),
+            (PlaylistItem.position <= max(old_position, new_position)),
+            (
+                PlaylistItem.id != previous_playlist_item.id
+            ),  # Exclude the item being moved,
+            (PlaylistItem.type == previous_playlist_item.type),
+        )
+        query.execute()
+
+        # Set the new position for the item
+        previous_playlist_item.position = new_position
+        previous_playlist_item.save()
+
+        await update_playlists()
+
+        logger.info(
+            f"Playlist item {previous_playlist_item.id} has been moved from position {old_position} to {new_position}"
+        )
+    return {"success": True, "playlists": get_playlist_items()}
+
+
 @sio.on("youtube/info")
 async def get_youtube_video_data(sid, data):
     logger.info(f"[{sid}] Get YouTube video info")
@@ -240,6 +293,7 @@ async def init():
     try:
         await site.start()
         logger.info(f"Socket.io started on port: {CONFIG.socket_io_port}")
+        await update_playlists()
         await asyncio.Event().wait()
     except KeyboardInterrupt:
         pass

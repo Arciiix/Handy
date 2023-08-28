@@ -1,6 +1,6 @@
 import re
 from schematics.models import Model
-from schematics.types import StringType, DecimalType, DateTimeType, URLType
+from schematics.types import StringType, IntType
 
 from validators import validate_url
 from db import PlaylistTypes
@@ -32,3 +32,8 @@ class PlaylistItemEditDto(Model):
     type = StringType(
         choices=[PlaylistTypes.__members__.keys()]
     )  # Type is PlaylistTypes enum
+
+
+class PlaylistItemRearrangeDto(Model):
+    id = StringType(required=True)
+    new_position = IntType(required=True)
