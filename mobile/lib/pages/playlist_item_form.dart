@@ -9,10 +9,12 @@ import "package:url_launcher/url_launcher.dart";
 
 class PlaylistItemForm extends ConsumerStatefulWidget {
   final String? id;
+  final String? overrideURL;
 
   final PlaylistType type;
 
-  const PlaylistItemForm({super.key, this.id, required this.type});
+  const PlaylistItemForm(
+      {super.key, this.id, required this.type, this.overrideURL});
 
   @override
   PlaylistItemFormState createState() => PlaylistItemFormState();
@@ -82,6 +84,11 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
       customPronunciation = previousItem.pronunciation != null &&
           previousItem.pronunciation != previousItem.name;
       urlController.text = previousItem.url.toString();
+    }
+
+    if (widget.overrideURL != null) {
+      urlController.text = widget.overrideURL!;
+      // TODO: Fetch YouTube video data
     }
   }
 
