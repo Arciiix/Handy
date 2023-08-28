@@ -18,6 +18,7 @@ from playlist import (
     switch_playlist_type,
     current_playlist_type,
 )
+from youtube import get_youtube_video_info
 
 sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
 
@@ -174,6 +175,18 @@ async def playlist_item_remove(
     logger.info(f"Removed playlist item {data['id']}")
 
     return {"success": True, "playlists": get_playlist_items()}
+
+
+@sio.on("youtube/info")
+async def get_youtube_video_data(sid, data):
+    logger.info(f"[{sid}] Get YouTube video info")
+
+    if not data.get("url", None):
+        return {"success": False, "error": "No YouTube URL provided"}
+
+    info = get_youtube_video_info(data["url"])
+
+    return {"success": True, **info}
 
 
 async def hello_handler(request):
