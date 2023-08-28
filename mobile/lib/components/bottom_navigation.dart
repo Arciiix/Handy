@@ -25,6 +25,8 @@ class BottomNavigation extends StatelessWidget {
           BottomNavigationBarItem(
               icon: const Icon(Icons.home), label: t.navigation.home),
           BottomNavigationBarItem(
+              icon: const Icon(Icons.music_note), label: t.navigation.playlist),
+          BottomNavigationBarItem(
               icon: const Icon(Icons.settings), label: t.navigation.settings)
         ],
       ),

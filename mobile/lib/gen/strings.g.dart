@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 16 (8 per locale)
+/// Strings: 30 (15 per locale)
 ///
-/// Built on 2023-08-28 at 09:25 UTC
+/// Built on 2023-08-28 at 11:11 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -151,7 +151,10 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 
 	// Translations
 	late final _StringsButtonsEn buttons = _StringsButtonsEn._(_root);
+	late final _StringsErrorEn error = _StringsErrorEn._(_root);
+	String get loading => 'Loading...';
 	late final _StringsNavigationEn navigation = _StringsNavigationEn._(_root);
+	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 }
 
@@ -163,7 +166,18 @@ class _StringsButtonsEn {
 
 	// Translations
 	String get cancel => 'Cancel';
+	String get ok => 'OK';
 	String get save => 'Save';
+}
+
+// Path: error
+class _StringsErrorEn {
+	_StringsErrorEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Error';
 }
 
 // Path: navigation
@@ -174,7 +188,19 @@ class _StringsNavigationEn {
 
 	// Translations
 	String get home => 'Home';
+	String get playlist => 'Playlist';
 	String get settings => 'Settings';
+}
+
+// Path: playlist
+class _StringsPlaylistEn {
+	_StringsPlaylistEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Playlist';
+	late final _StringsPlaylistMediaEn media = _StringsPlaylistMediaEn._(_root);
 }
 
 // Path: settings
@@ -187,6 +213,17 @@ class _StringsSettingsEn {
 	String get title => 'Settings';
 	late final _StringsSettingsSectionsEn sections = _StringsSettingsSectionsEn._(_root);
 	late final _StringsSettingsIpEn ip = _StringsSettingsIpEn._(_root);
+}
+
+// Path: playlist.media
+class _StringsPlaylistMediaEn {
+	_StringsPlaylistMediaEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get local => 'Local';
+	String get youtube => 'YouTube';
 }
 
 // Path: settings.sections
@@ -236,7 +273,10 @@ class _StringsPl implements _StringsEn {
 
 	// Translations
 	@override late final _StringsButtonsPl buttons = _StringsButtonsPl._(_root);
+	@override late final _StringsErrorPl error = _StringsErrorPl._(_root);
+	@override String get loading => 'Ładowanie...';
 	@override late final _StringsNavigationPl navigation = _StringsNavigationPl._(_root);
+	@override late final _StringsPlaylistPl playlist = _StringsPlaylistPl._(_root);
 	@override late final _StringsSettingsPl settings = _StringsSettingsPl._(_root);
 }
 
@@ -248,7 +288,18 @@ class _StringsButtonsPl implements _StringsButtonsEn {
 
 	// Translations
 	@override String get cancel => 'Anuluj';
+	@override String get ok => 'OK';
 	@override String get save => 'Zapisz';
+}
+
+// Path: error
+class _StringsErrorPl implements _StringsErrorEn {
+	_StringsErrorPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wystąpił błąd';
 }
 
 // Path: navigation
@@ -259,7 +310,19 @@ class _StringsNavigationPl implements _StringsNavigationEn {
 
 	// Translations
 	@override String get home => 'Start';
+	@override String get playlist => 'Playlista';
 	@override String get settings => 'Ustawienia';
+}
+
+// Path: playlist
+class _StringsPlaylistPl implements _StringsPlaylistEn {
+	_StringsPlaylistPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Playlista';
+	@override late final _StringsPlaylistMediaPl media = _StringsPlaylistMediaPl._(_root);
 }
 
 // Path: settings
@@ -272,6 +335,17 @@ class _StringsSettingsPl implements _StringsSettingsEn {
 	@override String get title => 'Ustawienia';
 	@override late final _StringsSettingsSectionsPl sections = _StringsSettingsSectionsPl._(_root);
 	@override late final _StringsSettingsIpPl ip = _StringsSettingsIpPl._(_root);
+}
+
+// Path: playlist.media
+class _StringsPlaylistMediaPl implements _StringsPlaylistMediaEn {
+	_StringsPlaylistMediaPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get local => 'Lokalna';
+	@override String get youtube => 'YouTube';
 }
 
 // Path: settings.sections
@@ -302,9 +376,16 @@ extension on _StringsEn {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
 			case 'buttons.cancel': return 'Cancel';
+			case 'buttons.ok': return 'OK';
 			case 'buttons.save': return 'Save';
+			case 'error.title': return 'Error';
+			case 'loading': return 'Loading...';
 			case 'navigation.home': return 'Home';
+			case 'navigation.playlist': return 'Playlist';
 			case 'navigation.settings': return 'Settings';
+			case 'playlist.title': return 'Playlist';
+			case 'playlist.media.local': return 'Local';
+			case 'playlist.media.youtube': return 'YouTube';
 			case 'settings.title': return 'Settings';
 			case 'settings.sections.general': return 'General';
 			case 'settings.ip.title': return 'Server IP';
@@ -318,9 +399,16 @@ extension on _StringsPl {
 	dynamic _flatMapFunction(String path) {
 		switch (path) {
 			case 'buttons.cancel': return 'Anuluj';
+			case 'buttons.ok': return 'OK';
 			case 'buttons.save': return 'Zapisz';
+			case 'error.title': return 'Wystąpił błąd';
+			case 'loading': return 'Ładowanie...';
 			case 'navigation.home': return 'Start';
+			case 'navigation.playlist': return 'Playlista';
 			case 'navigation.settings': return 'Ustawienia';
+			case 'playlist.title': return 'Playlista';
+			case 'playlist.media.local': return 'Lokalna';
+			case 'playlist.media.youtube': return 'YouTube';
 			case 'settings.title': return 'Ustawienia';
 			case 'settings.sections.general': return 'Ogólne';
 			case 'settings.ip.title': return 'IP serwera';

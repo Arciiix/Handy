@@ -1,11 +1,24 @@
 {
   "buttons": {
     "cancel": "Anuluj",
+    "ok": "OK",
     "save": "Zapisz"
   },
+  "error": {
+    "title": "Wystąpił błąd"
+  },
+  "loading": "Ładowanie...",
   "navigation": {
     "home": "Start",
+    "playlist": "Playlista",
     "settings": "Ustawienia"
+  },
+  "playlist": {
+    "title": "Playlista",
+    "media": {
+      "local": "Lokalna",
+      "youtube": "YouTube"
+    }
   },
   "settings": {
     "title": "Ustawienia",
