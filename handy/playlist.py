@@ -108,18 +108,24 @@ def get_playlist_items(type: Optional[PlaylistTypes] = None):
 async def update_playlists(socket: Server = None):
     global LOCAL_PLAYLIST, YOUTUBE_PLAYLIST
     try:
-        playlists = PlaylistItem.select()
+        playlists = sorted(PlaylistItem.select(), key=lambda item: item.position)
 
-        LOCAL_PLAYLIST = [
-            playlist
-            for playlist in playlists
-            if playlist.type == PlaylistTypes.LOCAL.value
-        ]
-        YOUTUBE_PLAYLIST = [
-            playlist
-            for playlist in playlists
-            if playlist.type == PlaylistTypes.YOUTUBE.value
-        ]
+        LOCAL_PLAYLIST = sorted(
+            [
+                playlist
+                for playlist in playlists
+                if playlist.type == PlaylistTypes.LOCAL.value
+            ],
+            key=lambda item: item.position,
+        )
+        YOUTUBE_PLAYLIST = sorted(
+            [
+                playlist
+                for playlist in playlists
+                if playlist.type == PlaylistTypes.YOUTUBE.value
+            ],
+            key=lambda item: item.position,
+        )
 
         if socket:
             await socket.emit(
@@ -175,3 +181,19 @@ async def switch_playlist_type(ctx: ActionContext, type=None):
 
         # Play it once again
         return await play_playlist_item(ctx, current_item, current_item_index)
+
+
+def get_playlist_item_new_position(type: PlaylistTypes) -> int:
+    """
+    Since all playlist items have their position, when creating a new one, its position will be type's last one + 1
+
+    Args:
+        type (PlaylistTypes)
+
+    Returns:
+        int: New position
+    """
+    if type is PlaylistTypes.LOCAL:
+        return len(LOCAL_PLAYLIST)
+    elif type is PlaylistTypes.YOUTUBE:
+        return len(YOUTUBE_PLAYLIST)

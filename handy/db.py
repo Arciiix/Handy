@@ -33,6 +33,8 @@ class PlaylistItem(Model):
     pronunciation = CharField()
     url = CharField()
 
+    position = IntegerField()  # A index/order of this item
+
     type = SmallIntegerField()  # Value from enum PlaylistTypes
 
     class Meta:
@@ -44,6 +46,7 @@ class PlaylistItem(Model):
             "name": self.name,
             "pronunciation": self.pronunciation,
             "url": self.url,
+            "position": self.position,
             "type": PlaylistTypes(self.type).name,
         }
 

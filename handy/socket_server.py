@@ -17,6 +17,7 @@ from playlist import (
     get_playlist_items,
     switch_playlist_type,
     current_playlist_type,
+    get_playlist_item_new_position,
 )
 from youtube import get_youtube_video_info
 
@@ -94,6 +95,7 @@ async def playlist_item_add(
         pronunciation=dto.pronunciation,
         url=dto.url,
         type=PlaylistTypes[dto.type].value,
+        position=get_playlist_item_new_position(PlaylistTypes[dto.type]),
     )
     playlist_item.save(force_insert=True)
 
@@ -142,6 +144,8 @@ async def playlist_item_add(
     if data.get("type"):
         playlist_item.type = PlaylistTypes[data["type"]].value
 
+    # Note that position isn't changed here
+
     playlist_item.save()
 
     logger.info(f"Playlist {data['id']} has been updated")
@@ -165,14 +169,26 @@ async def playlist_item_remove(
         return {"success": False, "error": "No id provided"}
 
     previous_playlist = PlaylistItem.get_or_none(PlaylistItem.id == data["id"])
-
     if previous_playlist is None:
         return {"success": False, "error": "Item doesn't exist"}
 
-    previous_playlist.delete_instance()
-    await update_playlists(sio)
+    previous_position = previous_playlist.position
 
-    logger.info(f"Removed playlist item {data['id']}")
+    with db.atomic():
+        previous_playlist.delete_instance()
+        logger.info(f"Removed playlist item {data['id']}")
+
+        # Fix the positions
+        query = PlaylistItem.update(position=PlaylistItem.position - 1).where(
+            PlaylistItem.position > previous_position,
+            PlaylistItem.type == previous_playlist.type,
+        )
+
+        query.execute()
+
+        logger.info(f"Fixed the positions after item removal")
+
+    await update_playlists(sio)
 
     return {"success": True, "playlists": get_playlist_items()}
 
