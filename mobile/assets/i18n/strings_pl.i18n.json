@@ -54,7 +54,11 @@
         "title": "Porada",
         "description": "Lepszym sposobem dodawania filmów z YouTube do Handy jest użycie przycisku Udostępnij na dowolnym filmie YouTube i wybranie aplikacji Handy."
       },
-      "fetch_data": "Pobierz dane wideo"
+      "fetch_data": "Pobierz dane wideo",
+      "irretrievable": {
+        "title": "Nieosiągalny dźwięk",
+        "description": "Nie można pobrać dźwięku z tego filmiku. Nic nie możesz z tym zrobić, musisz znaleźć inny film."
+      }
     },
     "open_url": "Otwórz URL",
     "form": {

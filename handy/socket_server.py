@@ -322,6 +322,18 @@ async def playlist_item_play(
     }
 
 
+@sio.on("youtube/check")
+async def check_youtube_video(sid, data):
+    logger.info(f"[{sid}] Check YouTube video - whether audio can be retrieved")
+
+    if not data.get("url", None):
+        return {"success": False, "error": "No YouTube URL provided"}
+
+    info = get_youtube_video_info(data["url"])
+
+    return {"success": info["success"] and info.get("url", None) is not None}
+
+
 @sio.on("youtube/info")
 async def get_youtube_video_data(sid, data):
     logger.info(f"[{sid}] Get YouTube video info")
@@ -331,7 +343,7 @@ async def get_youtube_video_data(sid, data):
 
     info = get_youtube_video_info(data["url"])
 
-    return {"success": True, **info}
+    return {"success": info["success"], **info}
 
 
 async def hello_handler(request):

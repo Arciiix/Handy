@@ -1,11 +1,16 @@
+import "dart:async";
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:handy/components/loading_dialog/loading_dialog.dart";
 import "package:handy/gen/strings.g.dart";
 import "package:handy/providers/playlist_items_provider.dart";
+import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/playlist.dart";
 import "package:handy/utils/validation.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 import "package:url_launcher/url_launcher.dart";
+
+import "../utils/process_socket_response.dart";
 
 class PlaylistItemForm extends ConsumerStatefulWidget {
   final String? id;
@@ -39,6 +44,54 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
   }
 
   void handleSave() async {
+    // First, if it's a YouTube item, verify whether the audio URL can be retrieved
+    if (widget.type == PlaylistType.youtube) {
+      var socket = ref.read(socketClientProvider);
+
+      Completer c = Completer();
+      socket.emitWithAck("youtube/check", {"url": urlController.text},
+          ack: (data) {
+        bool isSuccess = processSocketRepsonse(context, data);
+
+        c.complete(isSuccess);
+      });
+
+      Completer c2 = Completer();
+
+      showLoadingDialog(context, () async {
+        var data = await c.future;
+        c2.complete(data);
+      });
+
+      bool isRetrievable = await c2.future;
+
+      // Wait a bit for the dialog to close
+      await Future.delayed(const Duration(seconds: 2));
+
+      if (!isRetrievable) {
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text(t.playlist.youtube.irretrievable.title),
+                content: Text(t.playlist.youtube.irretrievable.description),
+                actions: <Widget>[
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(t.buttons.ok),
+                  ),
+                ],
+              ),
+            );
+          });
+        }
+        return;
+      }
+    }
+
     // Create the playlist item object
     PlaylistItem playlist = PlaylistItem(
         id: widget.id ?? "",
@@ -63,7 +116,27 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
   }
 
   Future<void> fetchYouTubeData() async {
-    // TODO: Fetch the title of the YouTube video provided in the URL
+    if (urlController.text == "" || !validateURL(urlController.text)) return;
+
+    var socket = ref.read(socketClientProvider);
+
+    Completer c = Completer();
+    socket.emitWithAck("youtube/info", {"url": urlController.text},
+        ack: (data) {
+      bool isSuccess = processSocketRepsonse(context, data);
+
+      c.complete(isSuccess ? data : null);
+    });
+
+    showLoadingDialog(context, () async {
+      var data = await c.future;
+
+      if (data != null) {
+        setState(() {
+          nameController.text = data?["title"] ?? "Unknown";
+        });
+      }
+    });
   }
 
   @override
@@ -88,7 +161,6 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
 
     if (widget.overrideURL != null) {
       urlController.text = widget.overrideURL!;
-      // TODO: Fetch YouTube video data
     }
   }
 

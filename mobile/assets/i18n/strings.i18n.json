@@ -54,7 +54,11 @@
         "title": "Advice",
         "description": "A better way to add YouTube videos to Handy is to use the Share button on any YouTube video and select the Handy app."
       },
-      "fetch_data": "Fetch video data"
+      "fetch_data": "Fetch video data",
+      "irretrievable": {
+        "title": "Irretrievable audio",
+        "description": "The audio for the video cannot be retrieved. It's not your faul, but unfortunately you have to find another video."
+      }
     },
     "open_url": "Open URL",
     "form": {

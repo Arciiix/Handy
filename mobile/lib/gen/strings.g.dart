@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 92 (46 per locale)
+/// Strings: 96 (48 per locale)
 ///
-/// Built on 2023-08-29 at 16:03 UTC
+/// Built on 2023-08-29 at 17:38 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -327,6 +327,7 @@ class _StringsPlaylistYoutubeEn {
 	// Translations
 	late final _StringsPlaylistYoutubeAdviceEn advice = _StringsPlaylistYoutubeAdviceEn._(_root);
 	String get fetch_data => 'Fetch video data';
+	late final _StringsPlaylistYoutubeIrretrievableEn irretrievable = _StringsPlaylistYoutubeIrretrievableEn._(_root);
 }
 
 // Path: playlist.form
@@ -380,6 +381,17 @@ class _StringsPlaylistYoutubeAdviceEn {
 	// Translations
 	String get title => 'Advice';
 	String get description => 'A better way to add YouTube videos to Handy is to use the Share button on any YouTube video and select the Handy app.';
+}
+
+// Path: playlist.youtube.irretrievable
+class _StringsPlaylistYoutubeIrretrievableEn {
+	_StringsPlaylistYoutubeIrretrievableEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Irretrievable audio';
+	String get description => 'The audio for the video cannot be retrieved. It\'s not your faul, but unfortunately you have to find another video.';
 }
 
 // Path: playlist.form.fields
@@ -602,6 +614,7 @@ class _StringsPlaylistYoutubePl implements _StringsPlaylistYoutubeEn {
 	// Translations
 	@override late final _StringsPlaylistYoutubeAdvicePl advice = _StringsPlaylistYoutubeAdvicePl._(_root);
 	@override String get fetch_data => 'Pobierz dane wideo';
+	@override late final _StringsPlaylistYoutubeIrretrievablePl irretrievable = _StringsPlaylistYoutubeIrretrievablePl._(_root);
 }
 
 // Path: playlist.form
@@ -655,6 +668,17 @@ class _StringsPlaylistYoutubeAdvicePl implements _StringsPlaylistYoutubeAdviceEn
 	// Translations
 	@override String get title => 'Porada';
 	@override String get description => 'Lepszym sposobem dodawania filmów z YouTube do Handy jest użycie przycisku Udostępnij na dowolnym filmie YouTube i wybranie aplikacji Handy.';
+}
+
+// Path: playlist.youtube.irretrievable
+class _StringsPlaylistYoutubeIrretrievablePl implements _StringsPlaylistYoutubeIrretrievableEn {
+	_StringsPlaylistYoutubeIrretrievablePl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nieosiągalny dźwięk';
+	@override String get description => 'Nie można pobrać dźwięku z tego filmiku. Nic nie możesz z tym zrobić, musisz znaleźć inny film.';
 }
 
 // Path: playlist.form.fields
@@ -724,6 +748,8 @@ extension on _StringsEn {
 			case 'playlist.youtube.advice.title': return 'Advice';
 			case 'playlist.youtube.advice.description': return 'A better way to add YouTube videos to Handy is to use the Share button on any YouTube video and select the Handy app.';
 			case 'playlist.youtube.fetch_data': return 'Fetch video data';
+			case 'playlist.youtube.irretrievable.title': return 'Irretrievable audio';
+			case 'playlist.youtube.irretrievable.description': return 'The audio for the video cannot be retrieved. It\'s not your faul, but unfortunately you have to find another video.';
 			case 'playlist.open_url': return 'Open URL';
 			case 'playlist.form.edit_type': return ({required PlaylistTypesContext context}) {
 				switch (context) {
@@ -790,6 +816,8 @@ extension on _StringsPl {
 			case 'playlist.youtube.advice.title': return 'Porada';
 			case 'playlist.youtube.advice.description': return 'Lepszym sposobem dodawania filmów z YouTube do Handy jest użycie przycisku Udostępnij na dowolnym filmie YouTube i wybranie aplikacji Handy.';
 			case 'playlist.youtube.fetch_data': return 'Pobierz dane wideo';
+			case 'playlist.youtube.irretrievable.title': return 'Nieosiągalny dźwięk';
+			case 'playlist.youtube.irretrievable.description': return 'Nie można pobrać dźwięku z tego filmiku. Nic nie możesz z tym zrobić, musisz znaleźć inny film.';
 			case 'playlist.open_url': return 'Otwórz URL';
 			case 'playlist.form.edit_type': return ({required PlaylistTypesContext context}) {
 				switch (context) {
