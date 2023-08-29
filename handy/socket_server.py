@@ -1,4 +1,5 @@
 import asyncio
+import threading
 import uuid
 from aiohttp import web
 import aiohttp_cors
@@ -29,15 +30,47 @@ sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
 # Since it's a separate thread, we have to get the services again
 hass_client, translations = None, None
 
+number_of_socket_clients = 0
+is_handy_enabled = True
+
+status_change_lock = threading.Lock()
+
+
+def get_is_enabled() -> bool:
+    """
+    Gets whether Handy is currently enabled or no
+
+    Returns:
+        bool
+    """
+
+    return is_handy_enabled
+
 
 @sio.event
 async def connect(sid, environ):
+    global number_of_socket_clients
+    number_of_socket_clients += 1
     logger.info(f"New socket connected: {sid}")
 
 
 @sio.event
 async def disconnect(sid):
+    global number_of_socket_clients
+    number_of_socket_clients -= 1
     logger.info(f"Socket {sid} disconnected")
+
+
+@sio.on("handy/change_status")
+async def change_status(sid, data):
+    is_enabled = data.get("isEnabled", True)
+    with status_change_lock:
+        global is_handy_enabled
+        is_handy_enabled = is_enabled
+
+    logger.info(f"Is enabled changed to {is_enabled}")
+
+    return {"success": True, "isEnabled": is_handy_enabled}
 
 
 @sio.on("playlist/switch_type")

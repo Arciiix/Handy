@@ -20,7 +20,7 @@ from translations import Translations
 from logger import logger
 from utils.working_hours import is_inside_working_hours
 from db import db
-from socket_server import init_socket
+from socket_server import init_socket, number_of_socket_clients, get_is_enabled
 from playlist import update_playlists
 from services import get_services
 
@@ -80,7 +80,9 @@ async def main(hass_client, translations):
             is_fast_mode = fast_mode_expire_time >= datetime.now()
             ret, frame = cap.read()
 
-            if not is_inside_working_hours():
+            if (
+                not is_inside_working_hours() and number_of_socket_clients == 0
+            ) or not get_is_enabled():
                 return
 
             # Limit the processing to the FPS, depending whether there's a person in G-ROI or not
@@ -212,8 +214,13 @@ if __name__ == "__main__":
 
     while True:
         # The app should only process images within its working hours
-        if is_inside_working_hours():
+        if (is_inside_working_hours() and get_is_enabled()) or (
+            number_of_socket_clients > 0 and get_is_enabled()
+        ):
             loop.run_until_complete(main(hass_client, translations))
+        elif not get_is_enabled():
+            logger.info("Disabled!")
+            time.sleep(10)  # Sleep for 10 seconds and then check the status again
         else:
             logger.info("Outside of working hours!")
             time.sleep(60)  # Sleep for a minute and then check the time again
