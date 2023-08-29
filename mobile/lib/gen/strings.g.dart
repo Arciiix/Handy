@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 72 (36 per locale)
+/// Strings: 76 (38 per locale)
 ///
-/// Built on 2023-08-29 at 10:42 UTC
+/// Built on 2023-08-29 at 12:15 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -230,6 +230,7 @@ class _StringsPlaylistEn {
 	final _StringsEn _root; // ignore: unused_field
 
 	// Translations
+	late final _StringsPlaylistNotConnectedDialogEn not_connected_dialog = _StringsPlaylistNotConnectedDialogEn._(_root);
 	String get title => 'Playlist';
 	late final _StringsPlaylistMediaEn media = _StringsPlaylistMediaEn._(_root);
 	late final _StringsPlaylistYoutubeEn youtube = _StringsPlaylistYoutubeEn._(_root);
@@ -269,6 +270,17 @@ class _StringsControlConnectionStateEn {
 	// Translations
 	String get connected => 'Connected';
 	String get disconnected => 'Not connected';
+}
+
+// Path: playlist.not_connected_dialog
+class _StringsPlaylistNotConnectedDialogEn {
+	_StringsPlaylistNotConnectedDialogEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Not connected';
+	String get description => 'Please connect to the Handy server first.';
 }
 
 // Path: playlist.media
@@ -469,6 +481,7 @@ class _StringsPlaylistPl implements _StringsPlaylistEn {
 	@override final _StringsPl _root; // ignore: unused_field
 
 	// Translations
+	@override late final _StringsPlaylistNotConnectedDialogPl not_connected_dialog = _StringsPlaylistNotConnectedDialogPl._(_root);
 	@override String get title => 'Playlista';
 	@override late final _StringsPlaylistMediaPl media = _StringsPlaylistMediaPl._(_root);
 	@override late final _StringsPlaylistYoutubePl youtube = _StringsPlaylistYoutubePl._(_root);
@@ -508,6 +521,17 @@ class _StringsControlConnectionStatePl implements _StringsControlConnectionState
 	// Translations
 	@override String get connected => 'Połączono';
 	@override String get disconnected => 'Nie połączono';
+}
+
+// Path: playlist.not_connected_dialog
+class _StringsPlaylistNotConnectedDialogPl implements _StringsPlaylistNotConnectedDialogEn {
+	_StringsPlaylistNotConnectedDialogPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nie połączono';
+	@override String get description => 'Proszę najpierw połączyć się z serwerm Handy.';
 }
 
 // Path: playlist.media
@@ -630,6 +654,8 @@ extension on _StringsEn {
 			case 'control.connection_state.connected': return 'Connected';
 			case 'control.connection_state.disconnected': return 'Not connected';
 			case 'control.see_preview': return 'See preview';
+			case 'playlist.not_connected_dialog.title': return 'Not connected';
+			case 'playlist.not_connected_dialog.description': return 'Please connect to the Handy server first.';
 			case 'playlist.title': return 'Playlist';
 			case 'playlist.media.local': return 'Local';
 			case 'playlist.media.youtube': return 'YouTube';
@@ -680,6 +706,8 @@ extension on _StringsPl {
 			case 'control.connection_state.connected': return 'Połączono';
 			case 'control.connection_state.disconnected': return 'Nie połączono';
 			case 'control.see_preview': return 'Zobacz podgląd';
+			case 'playlist.not_connected_dialog.title': return 'Nie połączono';
+			case 'playlist.not_connected_dialog.description': return 'Proszę najpierw połączyć się z serwerm Handy.';
 			case 'playlist.title': return 'Playlista';
 			case 'playlist.media.local': return 'Lokalna';
 			case 'playlist.media.youtube': return 'YouTube';

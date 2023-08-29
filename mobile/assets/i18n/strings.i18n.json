@@ -28,6 +28,10 @@
     "see_preview": "See preview"
   },
   "playlist": {
+    "not_connected_dialog": {
+      "title": "Not connected",
+      "description": "Please connect to the Handy server first."
+    },
     "title": "Playlist",
     "media": {
       "local": "Local",
