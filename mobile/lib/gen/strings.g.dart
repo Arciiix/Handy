@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 90 (45 per locale)
+/// Strings: 92 (46 per locale)
 ///
-/// Built on 2023-08-29 at 15:50 UTC
+/// Built on 2023-08-29 at 16:03 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -198,6 +198,7 @@ class _StringsErrorEn {
 
 	// Translations
 	String get title => 'Error';
+	String socket({required Object error}) => 'Error in socket operation: ${error}';
 }
 
 // Path: navigation
@@ -472,6 +473,7 @@ class _StringsErrorPl implements _StringsErrorEn {
 
 	// Translations
 	@override String get title => 'Wystąpił błąd';
+	@override String socket({required Object error}) => 'Error in socket operation: ${error}';
 }
 
 // Path: navigation
@@ -693,6 +695,7 @@ extension on _StringsEn {
 			case 'dialog.delete_item.title': return 'Delete item';
 			case 'dialog.delete_item.description': return ({required Object item_name}) => 'Are you sure you want to delete this item ${item_name}?';
 			case 'error.title': return 'Error';
+			case 'error.socket': return ({required Object error}) => 'Error in socket operation: ${error}';
 			case 'loading': return 'Loading...';
 			case 'navigation.home': return 'Home';
 			case 'navigation.playlist': return 'Playlist';
@@ -758,6 +761,7 @@ extension on _StringsPl {
 			case 'dialog.delete_item.title': return 'Usuń element';
 			case 'dialog.delete_item.description': return ({required Object item_name}) => 'Czy na pewno chcesz usunąć ${item_name}?';
 			case 'error.title': return 'Wystąpił błąd';
+			case 'error.socket': return ({required Object error}) => 'Error in socket operation: ${error}';
 			case 'loading': return 'Ładowanie...';
 			case 'navigation.home': return 'Start';
 			case 'navigation.playlist': return 'Playlista';

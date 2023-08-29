@@ -12,7 +12,8 @@
     }
   },
   "error": {
-    "title": "Error"
+    "title": "Error",
+    "socket": "Error in socket operation: $error"
   },
   "loading": "Loading...",
   "navigation": {

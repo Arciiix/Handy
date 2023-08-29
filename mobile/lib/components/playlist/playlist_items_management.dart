@@ -1,9 +1,13 @@
+import "dart:async";
+
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:handy/components/loading_dialog/loading_dialog.dart";
 import "package:handy/gen/strings.g.dart";
 import "package:handy/providers/playlist_items_provider.dart";
+import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/playlist.dart";
+import "package:handy/utils/process_socket_response.dart";
 import "package:hooks_riverpod/hooks_riverpod.dart";
 
 class PlaylistItemsManagement extends ConsumerStatefulWidget {
@@ -67,7 +71,28 @@ class PlaylistItemsManagementState
     }
 
     void changePlaylistType() {
-      // TODO
+      var socket = ref.read(socketClientProvider);
+
+      Completer c = Completer();
+      socket.emitWithAck("playlist/switch_type", {}, ack: (data) {
+        bool isSuccess = processSocketRepsonse(context, data);
+
+        c.complete(isSuccess ? data["mode"] : null);
+      });
+
+      showLoadingDialog(context, () async {
+        var mode = await c.future;
+
+        if (mode != null) {
+          ref.read(playlistItemsProvider.notifier).state =
+              ref.read(playlistItemsProvider).copyWith(
+                      currentType: PlaylistType.values.firstWhere(
+                    (enumValue) =>
+                        enumValue.name == (mode as String).toLowerCase(),
+                    orElse: () => PlaylistType.values[0],
+                  ));
+        }
+      });
     }
 
     return Scaffold(

@@ -103,6 +103,8 @@ async def switch_type(sid, data):
         confidency=1, db=db, home_assistant=hass_client, translations=translations
     )
     await switch_playlist_type(ctx, type=type)
+
+    logger.info(f"Playlist mode changed to {current_playlist_type}")
     return {"success": True, "mode": PlaylistTypes(current_playlist_type).name}
 
 

@@ -12,7 +12,8 @@
     }
   },
   "error": {
-    "title": "Wystąpił błąd"
+    "title": "Wystąpił błąd",
+    "socket": "Error in socket operation: $error"
   },
   "loading": "Ładowanie...",
   "navigation": {
