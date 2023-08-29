@@ -3,6 +3,7 @@ import "dart:async";
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:go_router/go_router.dart";
+import "package:handy/components/control/control.dart";
 import "package:handy/types/playlist.dart";
 
 class HomePage extends StatefulWidget {
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         if (hasFocus) getSharedData();
       },
       child: Container(
-        child: Text("Home"),
+        child: Control(),
       ),
     );
   }

@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 66 (33 per locale)
+/// Strings: 72 (36 per locale)
 ///
-/// Built on 2023-08-28 at 15:38 UTC
+/// Built on 2023-08-29 at 10:42 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -162,6 +162,7 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	late final _StringsErrorEn error = _StringsErrorEn._(_root);
 	String get loading => 'Loading...';
 	late final _StringsNavigationEn navigation = _StringsNavigationEn._(_root);
+	late final _StringsControlEn control = _StringsControlEn._(_root);
 	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 }
@@ -211,6 +212,17 @@ class _StringsNavigationEn {
 	String get settings => 'Settings';
 }
 
+// Path: control
+class _StringsControlEn {
+	_StringsControlEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	late final _StringsControlConnectionStateEn connection_state = _StringsControlConnectionStateEn._(_root);
+	String get see_preview => 'See preview';
+}
+
 // Path: playlist
 class _StringsPlaylistEn {
 	_StringsPlaylistEn._(this._root);
@@ -246,6 +258,17 @@ class _StringsDialogDeleteItemEn {
 	// Translations
 	String get title => 'Delete item';
 	String description({required Object item_name}) => 'Are you sure you want to delete this item ${item_name}?';
+}
+
+// Path: control.connection_state
+class _StringsControlConnectionStateEn {
+	_StringsControlConnectionStateEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get connected => 'Connected';
+	String get disconnected => 'Not connected';
 }
 
 // Path: playlist.media
@@ -378,6 +401,7 @@ class _StringsPl implements _StringsEn {
 	@override late final _StringsErrorPl error = _StringsErrorPl._(_root);
 	@override String get loading => 'Ładowanie...';
 	@override late final _StringsNavigationPl navigation = _StringsNavigationPl._(_root);
+	@override late final _StringsControlPl control = _StringsControlPl._(_root);
 	@override late final _StringsPlaylistPl playlist = _StringsPlaylistPl._(_root);
 	@override late final _StringsSettingsPl settings = _StringsSettingsPl._(_root);
 }
@@ -427,6 +451,17 @@ class _StringsNavigationPl implements _StringsNavigationEn {
 	@override String get settings => 'Ustawienia';
 }
 
+// Path: control
+class _StringsControlPl implements _StringsControlEn {
+	_StringsControlPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override late final _StringsControlConnectionStatePl connection_state = _StringsControlConnectionStatePl._(_root);
+	@override String get see_preview => 'Zobacz podgląd';
+}
+
 // Path: playlist
 class _StringsPlaylistPl implements _StringsPlaylistEn {
 	_StringsPlaylistPl._(this._root);
@@ -462,6 +497,17 @@ class _StringsDialogDeleteItemPl implements _StringsDialogDeleteItemEn {
 	// Translations
 	@override String get title => 'Usuń element';
 	@override String description({required Object item_name}) => 'Czy na pewno chcesz usunąć ${item_name}?';
+}
+
+// Path: control.connection_state
+class _StringsControlConnectionStatePl implements _StringsControlConnectionStateEn {
+	_StringsControlConnectionStatePl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get connected => 'Połączono';
+	@override String get disconnected => 'Nie połączono';
 }
 
 // Path: playlist.media
@@ -581,6 +627,9 @@ extension on _StringsEn {
 			case 'navigation.home': return 'Home';
 			case 'navigation.playlist': return 'Playlist';
 			case 'navigation.settings': return 'Settings';
+			case 'control.connection_state.connected': return 'Connected';
+			case 'control.connection_state.disconnected': return 'Not connected';
+			case 'control.see_preview': return 'See preview';
 			case 'playlist.title': return 'Playlist';
 			case 'playlist.media.local': return 'Local';
 			case 'playlist.media.youtube': return 'YouTube';
@@ -628,6 +677,9 @@ extension on _StringsPl {
 			case 'navigation.home': return 'Start';
 			case 'navigation.playlist': return 'Playlista';
 			case 'navigation.settings': return 'Ustawienia';
+			case 'control.connection_state.connected': return 'Połączono';
+			case 'control.connection_state.disconnected': return 'Nie połączono';
+			case 'control.see_preview': return 'Zobacz podgląd';
 			case 'playlist.title': return 'Playlista';
 			case 'playlist.media.local': return 'Lokalna';
 			case 'playlist.media.youtube': return 'YouTube';

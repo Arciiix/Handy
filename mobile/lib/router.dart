@@ -4,6 +4,7 @@ import 'package:handy/components/bottom_navigation.dart';
 import 'package:handy/pages/home_page.dart';
 import 'package:handy/pages/playlist_item_form.dart';
 import 'package:handy/pages/playlist_page.dart';
+import 'package:handy/pages/preview_page.dart';
 import 'package:handy/pages/settings_page.dart';
 import 'package:handy/types/playlist.dart';
 
@@ -60,6 +61,10 @@ final router = GoRouter(
             type:
                 PlaylistType.values[int.parse(state.pathParameters["type"]!)]),
       )
-    ])
+    ]),
+    GoRoute(
+      path: "/preview",
+      builder: (context, state) => const PreviewPage(),
+    )
   ],
 );

@@ -45,6 +45,7 @@ dependencies:
   slang_flutter: ^3.23.0
   go_router: ^10.1.0
   url_launcher: ^6.1.12
+  avatar_glow: ^2.0.2
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

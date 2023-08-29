@@ -20,6 +20,13 @@
     "playlist": "Playlista",
     "settings": "Ustawienia"
   },
+  "control": {
+    "connection_state": {
+      "connected": "Połączono",
+      "disconnected": "Nie połączono"
+    },
+    "see_preview": "Zobacz podgląd"
+  },
   "playlist": {
     "title": "Playlista",
     "media": {
