@@ -105,6 +105,22 @@ def get_playlist_items(type: Optional[PlaylistTypes] = None):
     ]
 
 
+def get_playlist_info():
+    return {
+        "playlists": {
+            "local": {
+                "items": get_playlist_items(PlaylistTypes.LOCAL),
+                "current_index": current_local_playlist_item_index,
+            },
+            "youtube": {
+                "items": get_playlist_items(PlaylistTypes.YOUTUBE),
+                "current_index": current_youtube_playlist_item_index,
+            },
+        },
+        "current_playlist_type": current_playlist_type.name,
+    }
+
+
 async def update_playlists(socket: Server = None):
     global LOCAL_PLAYLIST, YOUTUBE_PLAYLIST
     try:

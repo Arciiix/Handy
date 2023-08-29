@@ -19,10 +19,10 @@ from playlist import (
     switch_playlist_type,
     current_playlist_type,
     get_playlist_item_new_position,
-    LOCAL_PLAYLIST,
-    YOUTUBE_PLAYLIST,
+    get_playlist_info,
 )
 from youtube import get_youtube_video_info
+from utils.working_hours import is_inside_working_hours
 
 sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
 
@@ -59,6 +59,18 @@ async def disconnect(sid):
     global number_of_socket_clients
     number_of_socket_clients -= 1
     logger.info(f"Socket {sid} disconnected")
+
+
+@sio.on("handy/info")
+async def get_current_info(sid, data):
+    """
+    Gets basic info, like playlists and current status
+    """
+    return {
+        "isEnabled": is_handy_enabled,
+        "inWorkingHours": is_inside_working_hours(),
+        **get_playlist_info(),
+    }
 
 
 @sio.on("handy/change_status")
