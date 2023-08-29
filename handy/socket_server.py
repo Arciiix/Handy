@@ -20,6 +20,7 @@ from playlist import (
     current_playlist_type,
     get_playlist_item_new_position,
     get_playlist_info,
+    play_playlist_item_from_object,
 )
 from youtube import get_youtube_video_info
 from utils.working_hours import is_inside_working_hours
@@ -291,6 +292,34 @@ async def rearrange_items(sid, data):
             f"Playlist item {previous_playlist_item.id} has been moved from position {old_position} to {new_position}"
         )
     return {"success": True, "playlists": get_playlist_items()}
+
+
+@sio.on("playlist_item/play")
+async def playlist_item_play(
+    sid,
+    data,
+):
+    logger.info(f"[{sid}] Play playlist item")
+
+    if not data.get("id", None):
+        return {"success": False, "error": "No id provided"}
+
+    playlist_item = PlaylistItem.get_or_none(PlaylistItem.id == data["id"])
+
+    if playlist_item is None:
+        return {"success": False, "error": "Item doesn't exist"}
+
+    ctx = ActionContext(
+        confidency=1, db=db, home_assistant=hass_client, translations=translations
+    )
+
+    current_playlist_type = await play_playlist_item_from_object(ctx, playlist_item)
+
+    return {
+        "success": True,
+        "item": playlist_item.to_dict(),
+        "type": current_playlist_type,
+    }
 
 
 @sio.on("youtube/info")

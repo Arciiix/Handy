@@ -30,8 +30,15 @@ async def play_playlist_item(
     ctx: ActionContext, item_to_play: PlaylistItem, index: int
 ):
     logger.info(
-        f"About to play {item_to_play.name} (item with index {index} from playlist type {current_playlist_type})"
+        f"About to play {item_to_play.name} (item with index {index} from playlist type {PlaylistTypes(item_to_play.type)})"
     )
+    if item_to_play.type is PlaylistTypes.LOCAL.value:
+        global current_local_playlist_item_index
+        current_local_playlist_item_index = index
+    elif item_to_play.type is PlaylistTypes.YOUTUBE.value:
+        global current_youtube_playlist_item_index
+        current_youtube_playlist_item_index = index
+
     # First say the name of the item
     await say(ctx, item_to_play.pronunciation)
     logger.info("Said next media name")
@@ -66,8 +73,8 @@ async def next_playlist_item(ctx: ActionContext):
         return
 
     global current_local_playlist_item_index, current_youtube_playlist_item_index
-
     index = None
+
     if current_playlist_type is PlaylistTypes.LOCAL:
         # Increment the current playlist item index
         current_local_playlist_item_index += 1
@@ -196,6 +203,35 @@ async def switch_playlist_type(ctx: ActionContext, type=None):
 
         # Play it once again
         return await play_playlist_item(ctx, current_item, current_item_index)
+
+
+async def play_playlist_item_from_object(
+    ctx: ActionContext, playlist_item: PlaylistItem
+) -> PlaylistTypes:
+    playlist_item_index = None
+    for index, item in enumerate(get_playlist_items(type=playlist_item.type)):
+        if str(item["id"]) == str(playlist_item.id):
+            playlist_item_index = index
+
+    type_friendly = PlaylistTypes(playlist_item.type)
+
+    if playlist_item_index is None:
+        logger.error(
+            f"Playlist item index that user wants to play (id: {playlist_item.id}) is None"
+        )
+        return {
+            "success": False,
+            "error": f"Playlist item index that user wants to play (id: {playlist_item.id}) is None",
+        }
+
+    with playlist_type_lock:
+        global current_playlist_type
+        if current_playlist_type is not type_friendly:
+            current_playlist_type = type_friendly
+
+    await play_playlist_item(ctx, playlist_item, playlist_item_index)
+
+    return type_friendly.name
 
 
 def get_playlist_item_new_position(type: PlaylistTypes) -> int:
