@@ -25,7 +25,8 @@
       "connected": "Połączono",
       "disconnected": "Nie połączono"
     },
-    "see_preview": "Zobacz podgląd"
+    "see_preview": "Zobacz podgląd",
+    "try_to_reconnect": "Try to reconnect"
   },
   "playlist": {
     "not_connected_dialog": {

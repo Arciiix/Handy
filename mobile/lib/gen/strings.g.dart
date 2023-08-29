@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 76 (38 per locale)
+/// Strings: 78 (39 per locale)
 ///
-/// Built on 2023-08-29 at 12:15 UTC
+/// Built on 2023-08-29 at 14:25 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -221,6 +221,7 @@ class _StringsControlEn {
 	// Translations
 	late final _StringsControlConnectionStateEn connection_state = _StringsControlConnectionStateEn._(_root);
 	String get see_preview => 'See preview';
+	String get try_to_reconnect => 'Try to reconnect';
 }
 
 // Path: playlist
@@ -472,6 +473,7 @@ class _StringsControlPl implements _StringsControlEn {
 	// Translations
 	@override late final _StringsControlConnectionStatePl connection_state = _StringsControlConnectionStatePl._(_root);
 	@override String get see_preview => 'Zobacz podgląd';
+	@override String get try_to_reconnect => 'Try to reconnect';
 }
 
 // Path: playlist
@@ -654,6 +656,7 @@ extension on _StringsEn {
 			case 'control.connection_state.connected': return 'Connected';
 			case 'control.connection_state.disconnected': return 'Not connected';
 			case 'control.see_preview': return 'See preview';
+			case 'control.try_to_reconnect': return 'Try to reconnect';
 			case 'playlist.not_connected_dialog.title': return 'Not connected';
 			case 'playlist.not_connected_dialog.description': return 'Please connect to the Handy server first.';
 			case 'playlist.title': return 'Playlist';
@@ -706,6 +709,7 @@ extension on _StringsPl {
 			case 'control.connection_state.connected': return 'Połączono';
 			case 'control.connection_state.disconnected': return 'Nie połączono';
 			case 'control.see_preview': return 'Zobacz podgląd';
+			case 'control.try_to_reconnect': return 'Try to reconnect';
 			case 'playlist.not_connected_dialog.title': return 'Nie połączono';
 			case 'playlist.not_connected_dialog.description': return 'Proszę najpierw połączyć się z serwerm Handy.';
 			case 'playlist.title': return 'Playlista';
