@@ -14,10 +14,10 @@ class _PlaylistPageState extends State<PlaylistPage> {
   final tabs = [
     Tab(
         icon: const Icon(Icons.perm_media_outlined),
-        text: t.playlist.media.local),
+        text: t.playlist.media(context: PlaylistTypesContext.local)),
     Tab(
         icon: const Icon(Icons.open_in_new_outlined),
-        text: t.playlist.media.youtube),
+        text: t.playlist.media(context: PlaylistTypesContext.youtube)),
   ];
 
   @override

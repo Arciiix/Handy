@@ -35,12 +35,16 @@
     "try_to_reconnect": "Try to reconnect"
   },
   "playlist": {
+    "current_type": {
+      "current_type_is": "Aktualny tryb: ",
+      "change": "Zmień tryb"
+    },
     "not_connected_dialog": {
       "title": "Nie połączono",
       "description": "Proszę najpierw połączyć się z serwerm Handy."
     },
     "title": "Playlista",
-    "media": {
+    "media(context=PlaylistTypesContext)": {
       "local": "Lokalna",
       "youtube": "YouTube"
     },

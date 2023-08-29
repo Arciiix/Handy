@@ -52,7 +52,14 @@ final socketClientProvider = Provider<Socket>((ref) {
                   url: Uri.parse(elem["url"])))
               .toList(),
           currentLocalIndex: e["playlists"]["local"]["current_index"],
-          currentYouTubeIndex: e["playlists"]["youtube"]["current_index"]);
+          currentYouTubeIndex: e["playlists"]["youtube"]["current_index"],
+          currentType: PlaylistType.values.firstWhere(
+            (enumValue) =>
+                enumValue.name ==
+                (e["playlists"]["current_playlist_type"] as String)
+                    .toLowerCase(),
+            orElse: () => PlaylistType.values[0],
+          ));
     });
 
     ref.read(currentStateProvider.notifier).state =

@@ -21,6 +21,8 @@ class Playlists {
   int? currentLocalIndex;
   int? currentYouTubeIndex;
 
+  PlaylistType currentType;
+
   List<PlaylistItem> get local {
     return items
         .where((element) => element.type == PlaylistType.local)
@@ -79,15 +81,18 @@ class Playlists {
   Playlists copyWith(
       {List<PlaylistItem>? items,
       int? currentLocalIndex,
-      int? currentYouTubeIndex}) {
+      int? currentYouTubeIndex,
+      PlaylistType? currentType}) {
     return Playlists(
         items: items ?? this.items,
         currentLocalIndex: currentLocalIndex ?? this.currentLocalIndex,
-        currentYouTubeIndex: currentYouTubeIndex ?? this.currentYouTubeIndex);
+        currentYouTubeIndex: currentYouTubeIndex ?? this.currentYouTubeIndex,
+        currentType: currentType ?? this.currentType);
   }
 
   Playlists(
       {required this.items,
       required this.currentLocalIndex,
-      required this.currentYouTubeIndex});
+      required this.currentYouTubeIndex,
+      required this.currentType});
 }

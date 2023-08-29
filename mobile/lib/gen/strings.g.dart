@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 86 (43 per locale)
+/// Strings: 90 (45 per locale)
 ///
-/// Built on 2023-08-29 at 15:42 UTC
+/// Built on 2023-08-29 at 15:50 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -232,9 +232,17 @@ class _StringsPlaylistEn {
 	final _StringsEn _root; // ignore: unused_field
 
 	// Translations
+	late final _StringsPlaylistCurrentTypeEn current_type = _StringsPlaylistCurrentTypeEn._(_root);
 	late final _StringsPlaylistNotConnectedDialogEn not_connected_dialog = _StringsPlaylistNotConnectedDialogEn._(_root);
 	String get title => 'Playlist';
-	late final _StringsPlaylistMediaEn media = _StringsPlaylistMediaEn._(_root);
+	String media({required PlaylistTypesContext context}) {
+		switch (context) {
+			case PlaylistTypesContext.local:
+				return 'Local';
+			case PlaylistTypesContext.youtube:
+				return 'YouTube';
+		}
+	}
 	late final _StringsPlaylistYoutubeEn youtube = _StringsPlaylistYoutubeEn._(_root);
 	String get open_url => 'Open URL';
 	late final _StringsPlaylistFormEn form = _StringsPlaylistFormEn._(_root);
@@ -287,6 +295,17 @@ class _StringsControlStateEn {
 	String get outside_working_hours => 'Outside working hours! 🛏️';
 }
 
+// Path: playlist.current_type
+class _StringsPlaylistCurrentTypeEn {
+	_StringsPlaylistCurrentTypeEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get current_type_is => 'Current type is: ';
+	String get change => 'Change current type';
+}
+
 // Path: playlist.not_connected_dialog
 class _StringsPlaylistNotConnectedDialogEn {
 	_StringsPlaylistNotConnectedDialogEn._(this._root);
@@ -296,17 +315,6 @@ class _StringsPlaylistNotConnectedDialogEn {
 	// Translations
 	String get title => 'Not connected';
 	String get description => 'Please connect to the Handy server first.';
-}
-
-// Path: playlist.media
-class _StringsPlaylistMediaEn {
-	_StringsPlaylistMediaEn._(this._root);
-
-	final _StringsEn _root; // ignore: unused_field
-
-	// Translations
-	String get local => 'Local';
-	String get youtube => 'YouTube';
 }
 
 // Path: playlist.youtube
@@ -498,9 +506,17 @@ class _StringsPlaylistPl implements _StringsPlaylistEn {
 	@override final _StringsPl _root; // ignore: unused_field
 
 	// Translations
+	@override late final _StringsPlaylistCurrentTypePl current_type = _StringsPlaylistCurrentTypePl._(_root);
 	@override late final _StringsPlaylistNotConnectedDialogPl not_connected_dialog = _StringsPlaylistNotConnectedDialogPl._(_root);
 	@override String get title => 'Playlista';
-	@override late final _StringsPlaylistMediaPl media = _StringsPlaylistMediaPl._(_root);
+	@override String media({required PlaylistTypesContext context}) {
+		switch (context) {
+			case PlaylistTypesContext.local:
+				return 'Lokalna';
+			case PlaylistTypesContext.youtube:
+				return 'YouTube';
+		}
+	}
 	@override late final _StringsPlaylistYoutubePl youtube = _StringsPlaylistYoutubePl._(_root);
 	@override String get open_url => 'Otwórz URL';
 	@override late final _StringsPlaylistFormPl form = _StringsPlaylistFormPl._(_root);
@@ -553,6 +569,17 @@ class _StringsControlStatePl implements _StringsControlStateEn {
 	@override String get outside_working_hours => 'Poza aktywnymi godzinami! 🛏️';
 }
 
+// Path: playlist.current_type
+class _StringsPlaylistCurrentTypePl implements _StringsPlaylistCurrentTypeEn {
+	_StringsPlaylistCurrentTypePl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get current_type_is => 'Aktualny tryb: ';
+	@override String get change => 'Zmień tryb';
+}
+
 // Path: playlist.not_connected_dialog
 class _StringsPlaylistNotConnectedDialogPl implements _StringsPlaylistNotConnectedDialogEn {
 	_StringsPlaylistNotConnectedDialogPl._(this._root);
@@ -562,17 +589,6 @@ class _StringsPlaylistNotConnectedDialogPl implements _StringsPlaylistNotConnect
 	// Translations
 	@override String get title => 'Nie połączono';
 	@override String get description => 'Proszę najpierw połączyć się z serwerm Handy.';
-}
-
-// Path: playlist.media
-class _StringsPlaylistMediaPl implements _StringsPlaylistMediaEn {
-	_StringsPlaylistMediaPl._(this._root);
-
-	@override final _StringsPl _root; // ignore: unused_field
-
-	// Translations
-	@override String get local => 'Lokalna';
-	@override String get youtube => 'YouTube';
 }
 
 // Path: playlist.youtube
@@ -689,11 +705,19 @@ extension on _StringsEn {
 			case 'control.state.outside_working_hours': return 'Outside working hours! 🛏️';
 			case 'control.see_preview': return 'See preview';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
+			case 'playlist.current_type.current_type_is': return 'Current type is: ';
+			case 'playlist.current_type.change': return 'Change current type';
 			case 'playlist.not_connected_dialog.title': return 'Not connected';
 			case 'playlist.not_connected_dialog.description': return 'Please connect to the Handy server first.';
 			case 'playlist.title': return 'Playlist';
-			case 'playlist.media.local': return 'Local';
-			case 'playlist.media.youtube': return 'YouTube';
+			case 'playlist.media': return ({required PlaylistTypesContext context}) {
+				switch (context) {
+					case PlaylistTypesContext.local:
+						return 'Local';
+					case PlaylistTypesContext.youtube:
+						return 'YouTube';
+				}
+			};
 			case 'playlist.youtube.advice.title': return 'Advice';
 			case 'playlist.youtube.advice.description': return 'A better way to add YouTube videos to Handy is to use the Share button on any YouTube video and select the Handy app.';
 			case 'playlist.youtube.fetch_data': return 'Fetch video data';
@@ -746,11 +770,19 @@ extension on _StringsPl {
 			case 'control.state.outside_working_hours': return 'Poza aktywnymi godzinami! 🛏️';
 			case 'control.see_preview': return 'Zobacz podgląd';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
+			case 'playlist.current_type.current_type_is': return 'Aktualny tryb: ';
+			case 'playlist.current_type.change': return 'Zmień tryb';
 			case 'playlist.not_connected_dialog.title': return 'Nie połączono';
 			case 'playlist.not_connected_dialog.description': return 'Proszę najpierw połączyć się z serwerm Handy.';
 			case 'playlist.title': return 'Playlista';
-			case 'playlist.media.local': return 'Lokalna';
-			case 'playlist.media.youtube': return 'YouTube';
+			case 'playlist.media': return ({required PlaylistTypesContext context}) {
+				switch (context) {
+					case PlaylistTypesContext.local:
+						return 'Lokalna';
+					case PlaylistTypesContext.youtube:
+						return 'YouTube';
+				}
+			};
 			case 'playlist.youtube.advice.title': return 'Porada';
 			case 'playlist.youtube.advice.description': return 'Lepszym sposobem dodawania filmów z YouTube do Handy jest użycie przycisku Udostępnij na dowolnym filmie YouTube i wybranie aplikacji Handy.';
 			case 'playlist.youtube.fetch_data': return 'Pobierz dane wideo';

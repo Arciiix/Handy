@@ -35,12 +35,16 @@
     "try_to_reconnect": "Try to reconnect"
   },
   "playlist": {
+    "current_type": {
+      "current_type_is": "Current type is: ",
+      "change": "Change current type"
+    },
     "not_connected_dialog": {
       "title": "Not connected",
       "description": "Please connect to the Handy server first."
     },
     "title": "Playlist",
-    "media": {
+    "media(context=PlaylistTypesContext)": {
       "local": "Local",
       "youtube": "YouTube"
     },

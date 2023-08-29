@@ -109,6 +109,7 @@ def get_playlist_info():
     return {
         "playlists": {
             "items": get_playlist_items(),
+            "current_playlist_type": current_playlist_type.name,
             "local": {
                 "current_index": current_local_playlist_item_index,
             },
@@ -116,7 +117,6 @@ def get_playlist_info():
                 "current_index": current_youtube_playlist_item_index,
             },
         },
-        "current_playlist_type": current_playlist_type.name,
     }
 
 
