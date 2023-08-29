@@ -18,6 +18,9 @@ class PlaylistItem {
 class Playlists {
   List<PlaylistItem> items;
 
+  int? currentLocalIndex;
+  int? currentYouTubeIndex;
+
   List<PlaylistItem> get local {
     return items
         .where((element) => element.type == PlaylistType.local)
@@ -45,7 +48,7 @@ class Playlists {
     //  TODO: The id here should be obtained from the request
     var newItems = [...items, item];
 
-    return Playlists(items: newItems);
+    return copyWith(items: newItems);
   }
 
   Future<Playlists> updateItem(PlaylistItem item) async {
@@ -58,21 +61,33 @@ class Playlists {
       // TODO: Handle error
 
       // Return the current playlist
-      return Playlists(items: items);
+      return copyWith(items: items);
     }
 
     var newItems = [...items];
     newItems[index] = item;
 
-    return Playlists(items: newItems);
+    return copyWith(items: newItems);
   }
 
   Future<Playlists> removeItem(String id) async {
     // TODO: Do the server-side work
 
-    return Playlists(
-        items: items.where((element) => element.id != id).toList());
+    return copyWith(items: items.where((element) => element.id != id).toList());
   }
 
-  Playlists({required this.items});
+  Playlists copyWith(
+      {List<PlaylistItem>? items,
+      int? currentLocalIndex,
+      int? currentYouTubeIndex}) {
+    return Playlists(
+        items: items ?? this.items,
+        currentLocalIndex: currentLocalIndex ?? this.currentLocalIndex,
+        currentYouTubeIndex: currentYouTubeIndex ?? this.currentYouTubeIndex);
+  }
+
+  Playlists(
+      {required this.items,
+      required this.currentLocalIndex,
+      required this.currentYouTubeIndex});
 }

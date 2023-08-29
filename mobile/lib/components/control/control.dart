@@ -72,6 +72,15 @@ class ControlState extends ConsumerState<Control> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text("Handy", style: TextStyle(fontSize: 72)),
+              Text(
+                state.isEnabled
+                    ? (state.isInsideWorkingHours == true
+                        ? t.control.state.enabled
+                        : t.control.state.outside_working_hours)
+                    : t.control.state.disabled,
+                style: const TextStyle(fontSize: 32),
+                textAlign: TextAlign.center,
+              ),
               AvatarGlow(
                 endRadius: 100,
                 animate: state.isConnected && !state.isEnabled,
@@ -82,7 +91,11 @@ class ControlState extends ConsumerState<Control> {
                       duration: const Duration(milliseconds: 300),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                          color: (state.isEnabled ? Colors.blue : Colors.red)
+                          color: (state.isEnabled
+                                  ? (state.isInsideWorkingHours == true
+                                      ? Colors.blue
+                                      : Colors.yellow)
+                                  : Colors.red)
                               .withOpacity(0.1),
                           borderRadius: BorderRadius.circular(100)),
                       child: AnimatedSwitcher(
@@ -91,7 +104,9 @@ class ControlState extends ConsumerState<Control> {
                             ? (state.isEnabled
                                 ? Icon(Icons.back_hand,
                                     size: 128,
-                                    color: Colors.blue[200],
+                                    color: state.isInsideWorkingHours == true
+                                        ? Colors.blue[200]
+                                        : Colors.yellow[200],
                                     key: const Key("icon_enabled"))
                                 : Icon(Icons.back_hand_outlined,
                                     size: 128,
@@ -110,23 +125,29 @@ class ControlState extends ConsumerState<Control> {
                     icon: const Icon(Icons.remove_red_eye_outlined),
                     label: Text(t.control.see_preview)),
               Chip(
-                label: Text(state.isConnected
-                    ? t.control.connection_state.connected
-                    : t.control.connection_state.disconnected),
+                label: Text(state.isConnecting == true
+                    ? t.control.connection_state.connecting
+                    : state.isConnected
+                        ? t.control.connection_state.connected
+                        : t.control.connection_state.disconnected),
                 avatar: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: (state.isConnected
-                              ? Colors.teal[300]
-                              : Colors.red[200])!
+                      color: (state.isConnecting == true
+                              ? Colors.yellow[300]
+                              : state.isConnected
+                                  ? Colors.teal[300]
+                                  : Colors.red[200])!
                           .withOpacity(0.5)),
                   child: Icon(state.isConnected ? Icons.check : Icons.close,
                       color: Colors.white, size: 14),
                 ),
-                backgroundColor: (state.isConnected
-                    ? Colors.teal[900]
-                    : Colors.red[800]!.withOpacity(0.5)),
+                backgroundColor: (state.isConnecting == true
+                    ? Colors.yellow[900]!.withOpacity(0.4)
+                    : state.isConnected
+                        ? Colors.teal[900]
+                        : Colors.red[800]!.withOpacity(0.5)),
                 deleteIcon:
                     !state.isConnected ? const Icon(Icons.refresh) : null,
                 onDeleted: !state.isConnected ? reconnect : null,

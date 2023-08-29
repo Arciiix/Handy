@@ -23,7 +23,13 @@
   "control": {
     "connection_state": {
       "connected": "Connected",
+      "connecting": "Connecting",
       "disconnected": "Not connected"
+    },
+    "state": {
+      "enabled": "Enabled! 🚀",
+      "disabled": "Disabled! 😶",
+      "outside_working_hours": "Outside working hours! 🛏️"
     },
     "see_preview": "See preview",
     "try_to_reconnect": "Try to reconnect"

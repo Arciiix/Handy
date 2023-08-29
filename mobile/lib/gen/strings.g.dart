@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 78 (39 per locale)
+/// Strings: 86 (43 per locale)
 ///
-/// Built on 2023-08-29 at 14:25 UTC
+/// Built on 2023-08-29 at 15:42 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -220,6 +220,7 @@ class _StringsControlEn {
 
 	// Translations
 	late final _StringsControlConnectionStateEn connection_state = _StringsControlConnectionStateEn._(_root);
+	late final _StringsControlStateEn state = _StringsControlStateEn._(_root);
 	String get see_preview => 'See preview';
 	String get try_to_reconnect => 'Try to reconnect';
 }
@@ -270,7 +271,20 @@ class _StringsControlConnectionStateEn {
 
 	// Translations
 	String get connected => 'Connected';
+	String get connecting => 'Connecting';
 	String get disconnected => 'Not connected';
+}
+
+// Path: control.state
+class _StringsControlStateEn {
+	_StringsControlStateEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get enabled => 'Enabled! 🚀';
+	String get disabled => 'Disabled! 😶';
+	String get outside_working_hours => 'Outside working hours! 🛏️';
 }
 
 // Path: playlist.not_connected_dialog
@@ -472,6 +486,7 @@ class _StringsControlPl implements _StringsControlEn {
 
 	// Translations
 	@override late final _StringsControlConnectionStatePl connection_state = _StringsControlConnectionStatePl._(_root);
+	@override late final _StringsControlStatePl state = _StringsControlStatePl._(_root);
 	@override String get see_preview => 'Zobacz podgląd';
 	@override String get try_to_reconnect => 'Try to reconnect';
 }
@@ -522,7 +537,20 @@ class _StringsControlConnectionStatePl implements _StringsControlConnectionState
 
 	// Translations
 	@override String get connected => 'Połączono';
+	@override String get connecting => 'Łączenie';
 	@override String get disconnected => 'Nie połączono';
+}
+
+// Path: control.state
+class _StringsControlStatePl implements _StringsControlStateEn {
+	_StringsControlStatePl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get enabled => 'Aktywne! 🚀';
+	@override String get disabled => 'Nieaktywne! 😶';
+	@override String get outside_working_hours => 'Poza aktywnymi godzinami! 🛏️';
 }
 
 // Path: playlist.not_connected_dialog
@@ -654,7 +682,11 @@ extension on _StringsEn {
 			case 'navigation.playlist': return 'Playlist';
 			case 'navigation.settings': return 'Settings';
 			case 'control.connection_state.connected': return 'Connected';
+			case 'control.connection_state.connecting': return 'Connecting';
 			case 'control.connection_state.disconnected': return 'Not connected';
+			case 'control.state.enabled': return 'Enabled! 🚀';
+			case 'control.state.disabled': return 'Disabled! 😶';
+			case 'control.state.outside_working_hours': return 'Outside working hours! 🛏️';
 			case 'control.see_preview': return 'See preview';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
 			case 'playlist.not_connected_dialog.title': return 'Not connected';
@@ -707,7 +739,11 @@ extension on _StringsPl {
 			case 'navigation.playlist': return 'Playlista';
 			case 'navigation.settings': return 'Ustawienia';
 			case 'control.connection_state.connected': return 'Połączono';
+			case 'control.connection_state.connecting': return 'Łączenie';
 			case 'control.connection_state.disconnected': return 'Nie połączono';
+			case 'control.state.enabled': return 'Aktywne! 🚀';
+			case 'control.state.disabled': return 'Nieaktywne! 😶';
+			case 'control.state.outside_working_hours': return 'Poza aktywnymi godzinami! 🛏️';
 			case 'control.see_preview': return 'Zobacz podgląd';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
 			case 'playlist.not_connected_dialog.title': return 'Nie połączono';

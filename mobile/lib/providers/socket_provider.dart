@@ -1,5 +1,8 @@
 import 'package:handy/providers/current_state_provider.dart';
+import 'package:handy/providers/playlist_items_provider.dart';
 import 'package:handy/providers/settings_provider.dart';
+import 'package:handy/types/playlist.dart';
+import 'package:handy/types/state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -22,8 +25,38 @@ final socketClientProvider = Provider<Socket>((ref) {
   socket.onConnect((data) {
     print("Connected to the socket.io server!");
 
+    // Get the current state
+    socket.emitWithAck("handy/info", {}, ack: (e) {
+      print("Got info from server!");
+
+      ref.read(currentStateProvider.notifier).state = CurrentState(
+          isConnecting: false,
+          isConnected: true,
+          isEnabled: e["isEnabled"],
+          isInsideWorkingHours: e["inWorkingHours"]);
+
+      ref.read(playlistItemsProvider.notifier).state = Playlists(
+          items: (e["playlists"]["items"] as List)
+              .map((elem) => PlaylistItem(
+                  id: elem["id"],
+
+                  // Get enum item by key
+                  type: PlaylistType.values.firstWhere(
+                    (enumValue) =>
+                        enumValue.name ==
+                        (elem["type"] as String).toLowerCase(),
+                    orElse: () => PlaylistType.values[0],
+                  ),
+                  name: elem["name"],
+                  pronunciation: elem?["pronunciation"],
+                  url: Uri.parse(elem["url"])))
+              .toList(),
+          currentLocalIndex: e["playlists"]["local"]["current_index"],
+          currentYouTubeIndex: e["playlists"]["youtube"]["current_index"]);
+    });
+
     ref.read(currentStateProvider.notifier).state =
-        ref.read(currentStateProvider).copyWith(isConnected: true);
+        ref.read(currentStateProvider).copyWith(isConnecting: true);
   });
 
   socket.onDisconnect((data) {

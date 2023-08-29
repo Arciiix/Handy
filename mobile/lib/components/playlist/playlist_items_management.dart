@@ -78,6 +78,10 @@ class PlaylistItemsManagementState
             title: Text(item.name),
             subtitle: Text(item.url.toString()),
             leading: const Icon(Icons.reorder),
+            selected: index ==
+                (widget.type == PlaylistType.local
+                    ? playlists.currentYouTubeIndex
+                    : playlists.currentLocalIndex),
             trailing: IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () => deleteItem(item.id, item.name)),
