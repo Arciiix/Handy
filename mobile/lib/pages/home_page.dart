@@ -4,16 +4,21 @@ import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:go_router/go_router.dart";
 import "package:handy/components/control/control.dart";
+import "package:handy/providers/current_state_provider.dart";
+import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/playlist.dart";
+import "package:hooks_riverpod/hooks_riverpod.dart";
+import "package:socket_io_client/socket_io_client.dart";
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
+class HomePageState extends ConsumerState<HomePage>
+    with WidgetsBindingObserver {
   static const platform = MethodChannel('app.channel.shared.data');
 
   Future<void> getSharedData() async {
@@ -39,6 +44,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     super.initState();
     // Add this widget as an observer to detect app lifecycle changes
     WidgetsBinding.instance.addObserver(this);
+
+    ref.read(socketClientProvider);
 
     getSharedData();
   }

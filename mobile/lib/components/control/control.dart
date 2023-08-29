@@ -16,9 +16,12 @@ class Control extends ConsumerStatefulWidget {
 
 class ControlState extends ConsumerState<Control> {
   void toggleControl() async {
+    var state = ref.read(currentStateProvider);
+
+    if (!state.isConnected) return;
+
     ref.read(currentStateProvider.notifier).state = await showLoadingDialog(
-        context,
-        () async => await ref.read(currentStateProvider).toggleControl());
+        context, () async => await state.toggleControl());
   }
 
   void navigateToPreview() {
@@ -51,15 +54,20 @@ class ControlState extends ConsumerState<Control> {
                       borderRadius: BorderRadius.circular(100)),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
-                    child: state.isEnabled
-                        ? Icon(Icons.back_hand,
+                    child: state.isConnected
+                        ? (state.isEnabled
+                            ? Icon(Icons.back_hand,
+                                size: 128,
+                                color: Colors.blue[200],
+                                key: const Key("icon_enabled"))
+                            : Icon(Icons.back_hand_outlined,
+                                size: 128,
+                                color: Colors.red[200],
+                                key: const Key("icon_disabled")))
+                        : const Icon(Icons.do_not_touch,
                             size: 128,
-                            color: Colors.blue[200],
-                            key: const Key("icon_enabled"))
-                        : Icon(Icons.back_hand_outlined,
-                            size: 128,
-                            color: Colors.red[200],
-                            key: const Key("icon_disabled")),
+                            color: Colors.grey,
+                            key: Key("icon_disconnected")),
                   )),
             ),
           ),

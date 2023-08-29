@@ -10,6 +10,7 @@ final settingsProvider = StateProvider<Settings>((ref) {
 
   ref.listenSelf((previous, next) {
     // Listens for value changes - when user changes settings
+    print("Settings are being saved...");
     sharedPreferences.setString(
         "HANDY_SERVER_IP", next.handyServerIP.toString());
   });

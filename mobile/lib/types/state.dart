@@ -4,8 +4,14 @@ class CurrentState {
 
   CurrentState({required this.isConnected, required this.isEnabled});
 
+  CurrentState copyWith({bool? isConnected, bool? isEnabled}) {
+    return CurrentState(
+        isConnected: isConnected ?? this.isConnected,
+        isEnabled: isEnabled ?? this.isEnabled);
+  }
+
   Future<CurrentState> toggleControl() async {
     // TODO DEV
-    return CurrentState(isConnected: true, isEnabled: !isEnabled);
+    return copyWith(isEnabled: !isEnabled);
   }
 }

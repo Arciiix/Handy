@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:handy/components/input_dialog.dart';
 import 'package:handy/gen/strings.g.dart';
 import 'package:handy/providers/settings_provider.dart';
+import 'package:handy/providers/socket_provider.dart';
 import 'package:handy/utils/validation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -51,8 +52,14 @@ class SettingsPageState extends ConsumerState<SettingsPage> {
                 );
 
                 if (output != null) {
-                  ref.read(settingsProvider.notifier).state =
-                      settings.copyWith(handyServerIP: Uri.parse(output));
+                  WidgetsBinding.instance.addPostFrameCallback(
+                    (timeStamp) {
+                      ref.read(settingsProvider.notifier).state =
+                          settings.copyWith(handyServerIP: Uri.parse(output));
+                      ref.refresh(
+                          socketClientProvider); // Has to be refresh because we need the socket to rebuild
+                    },
+                  );
                 }
               }),
         ],
