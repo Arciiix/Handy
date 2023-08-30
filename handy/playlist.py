@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime, timedelta
 import json
 from os import path
 import threading
@@ -6,6 +7,7 @@ from typing import Optional
 
 from socketio import Server
 
+from youtube import get_youtube_video_info
 from logger import logger
 from action_context import ActionContext
 from announcements import say
@@ -40,21 +42,52 @@ async def play_playlist_item(
         current_youtube_playlist_item_index = index
 
     # First say the name of the item
-    await say(ctx, item_to_play.pronunciation)
+    name_to_say = (
+        item_to_play.pronunciation
+        if item_to_play.pronunciation is not None
+        else item_to_play.name
+    )
+    await say(
+        ctx,
+        name_to_say,
+    )
     logger.info("Said next media name")
 
-    # TODO: If it's YouTube playlist, download the item in the background while waiting
+    # Define another variable for it because the URL can be different for specific type of playlist items (YouTube)
+    url_to_play = item_to_play.url
 
     # Let's assume it takes 0.5 second per word to say the name + 1 second
-    await asyncio.sleep((0.5 * len(item_to_play.pronunciation.split())) + 1)
-    logger.info("Waited 2 seconds")
+    time_to_wait_seconds = (0.5 * len(name_to_say.split())) + 1
+    if item_to_play.type is PlaylistTypes.YOUTUBE.value:
+        # If it's YouTube playlist, download the item first, then if there's need to wait more, wait
+        target_time = datetime.now() + timedelta(seconds=time_to_wait_seconds)
+
+        info = get_youtube_video_info(item_to_play.url)
+        if not info["success"] or not info["url"]:
+            logger.error(
+                f"Couldn't get YouTube URL for playlist item {item_to_play.id} (url: {{item_to_play.url}})"
+            )
+
+            await say(ctx, ctx.translations.get_translation("youtube_fail"))
+            return
+
+        url_to_play = info["url"]
+        logger.info("Got YouTube audio URL")
+        # If there is any time to wait anymore
+        if target_time < datetime.now():
+            logger.info("Additional waiting...")
+
+            await asyncio.sleep((target_time - datetime.now()).total_seconds())
+    else:
+        await asyncio.sleep(time_to_wait_seconds)
+        logger.info("Waited 2 seconds")
 
     # Play the media itself
     try:
         domain = await ctx.hass_client.async_get_domain(domain_id="media_player")
         await domain.play_media(
             entity_id=CONFIG.entities.next_playlist_item,
-            media_content_id=item_to_play.url,  # TODO: On YouTube, get the raw .mp3 URL
+            media_content_id=url_to_play,
             media_content_type="music",
             enqueue="replace",
         )
