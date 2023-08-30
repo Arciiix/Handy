@@ -127,6 +127,12 @@ class PlaylistItemsManagementState
     });
   }
 
+  Future<void> refreshPlaylists() async {
+    var data = await getCurrentInfo(ref.read(socketClientProvider)).future;
+
+    ref.read(playlistItemsProvider.notifier).state = Playlists.fromJson(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     Playlists playlists = ref.watch(playlistItemsProvider);
@@ -139,33 +145,36 @@ class PlaylistItemsManagementState
       body: Column(
         children: [
           Expanded(
-            child: ReorderableListView.builder(
-              itemBuilder: (context, index) {
-                PlaylistItem item = playlistItems[index];
-                bool isSelected = index ==
-                    (widget.type == PlaylistType.local
-                        ? playlists.currentLocalIndex
-                        : playlists.currentYouTubeIndex);
-                return ListTile(
-                  key: Key('${index}_${item.id}'),
-                  title: Text(item.name),
-                  subtitle: Text(item.url.toString()),
-                  leading: const Icon(Icons.reorder),
-                  selected: isSelected,
-                  trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () => deleteItem(item.id, item.name)),
-                  onTap: () {
-                    context.push(
-                        "/playlist_item/${widget.type.index}/edit/${item.id}");
-                  },
-                  onLongPress: () => playItem(item, index),
-                );
-              },
-              itemCount: playlistItems.length,
-              onReorder: (oldIndex, newIndex) {
-                print("reorder");
-              },
+            child: RefreshIndicator(
+              onRefresh: refreshPlaylists,
+              child: ReorderableListView.builder(
+                itemBuilder: (context, index) {
+                  PlaylistItem item = playlistItems[index];
+                  bool isSelected = index ==
+                      (widget.type == PlaylistType.local
+                          ? playlists.currentLocalIndex
+                          : playlists.currentYouTubeIndex);
+                  return ListTile(
+                    key: Key('${index}_${item.id}'),
+                    title: Text(item.name),
+                    subtitle: Text(item.url.toString()),
+                    leading: const Icon(Icons.reorder),
+                    selected: isSelected,
+                    trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () => deleteItem(item.id, item.name)),
+                    onTap: () {
+                      context.push(
+                          "/playlist_item/${widget.type.index}/edit/${item.id}");
+                    },
+                    onLongPress: () => playItem(item, index),
+                  );
+                },
+                itemCount: playlistItems.length,
+                onReorder: (oldIndex, newIndex) {
+                  print("reorder");
+                },
+              ),
             ),
           ),
           Padding(

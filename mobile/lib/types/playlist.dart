@@ -132,6 +132,33 @@ class Playlists {
         currentType: currentType ?? this.currentType);
   }
 
+  static Playlists fromJson(Map<String, dynamic> data) {
+    return Playlists(
+        items: (data["playlists"]["items"] as List)
+            .map((elem) => PlaylistItem(
+                id: elem["id"],
+
+                // Get enum item by key
+                type: PlaylistType.values.firstWhere(
+                  (enumValue) =>
+                      enumValue.name == (elem["type"] as String).toLowerCase(),
+                  orElse: () => PlaylistType.values[0],
+                ),
+                name: elem["name"],
+                pronunciation: elem?["pronunciation"],
+                url: Uri.parse(elem["url"])))
+            .toList(),
+        currentLocalIndex: data["playlists"]["local"]["current_index"],
+        currentYouTubeIndex: data["playlists"]["youtube"]["current_index"],
+        currentType: PlaylistType.values.firstWhere(
+          (enumValue) =>
+              enumValue.name ==
+              (data["playlists"]["current_playlist_type"] as String)
+                  .toLowerCase(),
+          orElse: () => PlaylistType.values[0],
+        ));
+  }
+
   Playlists(
       {required this.items,
       required this.currentLocalIndex,

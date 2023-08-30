@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:handy/providers/current_state_provider.dart';
 import 'package:handy/providers/playlist_items_provider.dart';
 import 'package:handy/providers/settings_provider.dart';
@@ -26,40 +28,14 @@ final socketClientProvider = Provider<Socket>((ref) {
     print("Connected to the socket.io server!");
 
     // Get the current state
-    socket.emitWithAck("handy/info", {}, ack: (e) {
-      print("Got info from server!");
-
+    getCurrentInfo(socket).future.then((e) {
       ref.read(currentStateProvider.notifier).state = CurrentState(
           isConnecting: false,
           isConnected: true,
           isEnabled: e["isEnabled"],
           isInsideWorkingHours: e["inWorkingHours"]);
 
-      ref.read(playlistItemsProvider.notifier).state = Playlists(
-          items: (e["playlists"]["items"] as List)
-              .map((elem) => PlaylistItem(
-                  id: elem["id"],
-
-                  // Get enum item by key
-                  type: PlaylistType.values.firstWhere(
-                    (enumValue) =>
-                        enumValue.name ==
-                        (elem["type"] as String).toLowerCase(),
-                    orElse: () => PlaylistType.values[0],
-                  ),
-                  name: elem["name"],
-                  pronunciation: elem?["pronunciation"],
-                  url: Uri.parse(elem["url"])))
-              .toList(),
-          currentLocalIndex: e["playlists"]["local"]["current_index"],
-          currentYouTubeIndex: e["playlists"]["youtube"]["current_index"],
-          currentType: PlaylistType.values.firstWhere(
-            (enumValue) =>
-                enumValue.name ==
-                (e["playlists"]["current_playlist_type"] as String)
-                    .toLowerCase(),
-            orElse: () => PlaylistType.values[0],
-          ));
+      ref.read(playlistItemsProvider.notifier).state = Playlists.fromJson(e);
     });
 
     ref.read(currentStateProvider.notifier).state =
@@ -85,3 +61,14 @@ final socketClientProvider = Provider<Socket>((ref) {
 
   return socket;
 });
+
+Completer getCurrentInfo(Socket socket) {
+  Completer c = Completer();
+
+  socket.emitWithAck("handy/info", {}, ack: (e) {
+    print("Got info from server!");
+
+    c.complete(e);
+  });
+  return c;
+}
