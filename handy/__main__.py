@@ -20,7 +20,7 @@ from translations import Translations
 from logger import logger
 from utils.working_hours import is_inside_working_hours
 from db import db
-from socket_server import init_socket, number_of_socket_clients, get_is_enabled
+from socket_server import init_socket, get_number_of_socket_clients, get_is_enabled
 from playlist import update_playlists
 from services import get_services
 
@@ -81,7 +81,7 @@ async def main(hass_client, translations):
             ret, frame = cap.read()
 
             if (
-                not is_inside_working_hours() and number_of_socket_clients == 0
+                not is_inside_working_hours() and get_number_of_socket_clients() == 0
             ) or not get_is_enabled():
                 return
 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     while True:
         # The app should only process images within its working hours
         if (is_inside_working_hours() and get_is_enabled()) or (
-            number_of_socket_clients > 0 and get_is_enabled()
+            get_number_of_socket_clients() > 0 and get_is_enabled()
         ):
             loop.run_until_complete(main(hass_client, translations))
         elif not get_is_enabled():

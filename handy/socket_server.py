@@ -1,8 +1,10 @@
 import asyncio
+import base64
 import threading
 import uuid
 from aiohttp import web
 import aiohttp_cors
+import cv2
 
 import socketio
 from schematics.exceptions import DataError
@@ -24,6 +26,7 @@ from playlist import (
 )
 from youtube import get_youtube_video_info
 from utils.working_hours import is_inside_working_hours
+from utils.current_image import get_current_image, get_current_image_changed_at
 
 sio = socketio.AsyncServer(async_mode="aiohttp", cors_allowed_origins=["*"])
 
@@ -84,6 +87,22 @@ async def change_status(sid, data):
     logger.info(f"Is enabled changed to {is_enabled}")
 
     return {"success": True, "isEnabled": is_handy_enabled}
+
+
+@sio.on("handy/preview")
+async def get_preview(sid, data):
+    image = get_current_image()
+    image_string = None
+    if image is not None:
+        _, image = cv2.imencode(".jpg", image, [cv2.IMWRITE_JPEG_QUALITY, 50])
+        image_string = base64.b64encode(image).decode()
+
+    return {
+        "success": True,
+        "preview": image_string,
+        "image_mimetype": "data:image/jpeg;base64",
+        "changed_at": get_current_image_changed_at().isoformat(),
+    }
 
 
 @sio.on("playlist/switch_type")
@@ -391,3 +410,7 @@ async def init():
 
 def init_socket():
     asyncio.run(init())
+
+
+def get_number_of_socket_clients():
+    return number_of_socket_clients

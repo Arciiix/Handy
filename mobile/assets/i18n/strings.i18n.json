@@ -81,6 +81,30 @@
       }
     }
   },
+  "preview": {
+    "title": "Preview",
+    "last_updated": "Last updated: $time_ago"
+  },
+  "time_ago": {
+    "second": {
+      "one": "$n second",
+      "other": "$n seconds"
+    },
+    "minute": {
+      "one": "$n minute",
+      "other": "$n minutes"
+    },
+    "hour": {
+      "one": "$n hour",
+      "other": "$n hours"
+    },
+    "day": {
+      "one": "$n day",
+      "other": "$n days"
+    },
+    "now": "Now",
+    "ago": "ago"
+  },
   "settings": {
     "title": "Settings",
     "sections": {

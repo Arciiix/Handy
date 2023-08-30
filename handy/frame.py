@@ -1,3 +1,4 @@
+import base64
 from os import path
 import time
 from typing import Optional
@@ -10,6 +11,8 @@ from logger import logger
 from config import CONFIG
 from angle import calculate_angle_from_obj
 from config import HANDY_MODEL_WINDOW, HANDY_WINDOW, ROI, TROI, GROI
+from socket_server import get_number_of_socket_clients, sio
+from utils.current_image import set_current_image
 
 mp_drawing = mp.solutions.drawing_utils
 mp_holistic = mp.solutions.holistic
@@ -187,6 +190,8 @@ def handle_frame(
         if not dont_predict_pose:
             cv2.imshow(HANDY_MODEL_WINDOW, model_frame)
         cv2.imshow(HANDY_WINDOW, image)
+
+    set_current_image(image)
 
     # logger.info(f"It took {time.time() - start_time}s")
 

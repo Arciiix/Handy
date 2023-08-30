@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 96 (48 per locale)
+/// Strings: 128 (64 per locale)
 ///
-/// Built on 2023-08-29 at 21:41 UTC
+/// Built on 2023-08-30 at 15:02 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -164,6 +164,8 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	late final _StringsNavigationEn navigation = _StringsNavigationEn._(_root);
 	late final _StringsControlEn control = _StringsControlEn._(_root);
 	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
+	late final _StringsPreviewEn preview = _StringsPreviewEn._(_root);
+	late final _StringsTimeAgoEn time_ago = _StringsTimeAgoEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 }
 
@@ -247,6 +249,44 @@ class _StringsPlaylistEn {
 	late final _StringsPlaylistYoutubeEn youtube = _StringsPlaylistYoutubeEn._(_root);
 	String get open_url => 'Open URL';
 	late final _StringsPlaylistFormEn form = _StringsPlaylistFormEn._(_root);
+}
+
+// Path: preview
+class _StringsPreviewEn {
+	_StringsPreviewEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Preview';
+	String last_updated({required Object time_ago}) => 'Last updated: ${time_ago}';
+}
+
+// Path: time_ago
+class _StringsTimeAgoEn {
+	_StringsTimeAgoEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String second({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} second',
+		other: '${n} seconds',
+	);
+	String minute({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} minute',
+		other: '${n} minutes',
+	);
+	String hour({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} hour',
+		other: '${n} hours',
+	);
+	String day({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+		one: '${n} day',
+		other: '${n} days',
+	);
+	String get now => 'Now';
+	String get ago => 'ago';
 }
 
 // Path: settings
@@ -451,6 +491,8 @@ class _StringsPl implements _StringsEn {
 	@override late final _StringsNavigationPl navigation = _StringsNavigationPl._(_root);
 	@override late final _StringsControlPl control = _StringsControlPl._(_root);
 	@override late final _StringsPlaylistPl playlist = _StringsPlaylistPl._(_root);
+	@override late final _StringsPreviewPl preview = _StringsPreviewPl._(_root);
+	@override late final _StringsTimeAgoPl time_ago = _StringsTimeAgoPl._(_root);
 	@override late final _StringsSettingsPl settings = _StringsSettingsPl._(_root);
 }
 
@@ -534,6 +576,52 @@ class _StringsPlaylistPl implements _StringsPlaylistEn {
 	@override late final _StringsPlaylistYoutubePl youtube = _StringsPlaylistYoutubePl._(_root);
 	@override String get open_url => 'Otwórz URL';
 	@override late final _StringsPlaylistFormPl form = _StringsPlaylistFormPl._(_root);
+}
+
+// Path: preview
+class _StringsPreviewPl implements _StringsPreviewEn {
+	_StringsPreviewPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Podgląd';
+	@override String last_updated({required Object time_ago}) => 'Ostatnia aktualizacja: ${time_ago}';
+}
+
+// Path: time_ago
+class _StringsTimeAgoPl implements _StringsTimeAgoEn {
+	_StringsTimeAgoPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String second({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+		one: '${n} sekunda',
+		few: '${n} sekundy',
+		many: '${n} sekund',
+		other: '${n} sekundy',
+	);
+	@override String minute({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+		one: '${n} minuta',
+		few: '${n} minuty',
+		many: '${n} minut',
+		other: '${n} minuty',
+	);
+	@override String hour({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+		one: '${n} godzina',
+		few: '${n} godziny',
+		many: '${n} godzin',
+		other: '${n} godziny',
+	);
+	@override String day({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+		one: '${n} dzień',
+		few: '${n} dni',
+		many: '${n} dni',
+		other: '${n} dni',
+	);
+	@override String get now => 'Teraz';
+	@override String get ago => 'temu';
 }
 
 // Path: settings
@@ -768,6 +856,26 @@ extension on _StringsEn {
 			case 'playlist.form.fields.url_helper': return 'Start with e.g. https://';
 			case 'playlist.form.errors.name_empty': return 'Please enter a name';
 			case 'playlist.form.errors.url_invalid': return 'Please enter a valid URL';
+			case 'preview.title': return 'Preview';
+			case 'preview.last_updated': return ({required Object time_ago}) => 'Last updated: ${time_ago}';
+			case 'time_ago.second': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+				one: '${n} second',
+				other: '${n} seconds',
+			);
+			case 'time_ago.minute': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+				one: '${n} minute',
+				other: '${n} minutes',
+			);
+			case 'time_ago.hour': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+				one: '${n} hour',
+				other: '${n} hours',
+			);
+			case 'time_ago.day': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
+				one: '${n} day',
+				other: '${n} days',
+			);
+			case 'time_ago.now': return 'Now';
+			case 'time_ago.ago': return 'ago';
 			case 'settings.title': return 'Settings';
 			case 'settings.sections.general': return 'General';
 			case 'settings.ip.title': return 'Server IP';
@@ -836,6 +944,34 @@ extension on _StringsPl {
 			case 'playlist.form.fields.url_helper': return 'Zacznij od np. https://';
 			case 'playlist.form.errors.name_empty': return 'Proszę podać nazwę';
 			case 'playlist.form.errors.url_invalid': return 'Proszę podać poprawny adres URL';
+			case 'preview.title': return 'Podgląd';
+			case 'preview.last_updated': return ({required Object time_ago}) => 'Ostatnia aktualizacja: ${time_ago}';
+			case 'time_ago.second': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+				one: '${n} sekunda',
+				few: '${n} sekundy',
+				many: '${n} sekund',
+				other: '${n} sekundy',
+			);
+			case 'time_ago.minute': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+				one: '${n} minuta',
+				few: '${n} minuty',
+				many: '${n} minut',
+				other: '${n} minuty',
+			);
+			case 'time_ago.hour': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+				one: '${n} godzina',
+				few: '${n} godziny',
+				many: '${n} godzin',
+				other: '${n} godziny',
+			);
+			case 'time_ago.day': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
+				one: '${n} dzień',
+				few: '${n} dni',
+				many: '${n} dni',
+				other: '${n} dni',
+			);
+			case 'time_ago.now': return 'Teraz';
+			case 'time_ago.ago': return 'temu';
 			case 'settings.title': return 'Ustawienia';
 			case 'settings.sections.general': return 'Ogólne';
 			case 'settings.ip.title': return 'IP serwera';

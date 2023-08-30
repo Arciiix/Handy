@@ -81,6 +81,38 @@
       }
     }
   },
+  "preview": {
+    "title": "Podgląd",
+    "last_updated": "Ostatnia aktualizacja: $time_ago"
+  },
+  "time_ago": {
+    "second": {
+      "one": "$n sekunda",
+      "few": "$n sekundy",
+      "many": "$n sekund",
+      "other": "$n sekundy"
+    },
+    "minute": {
+      "one": "$n minuta",
+      "few": "$n minuty",
+      "many": "$n minut",
+      "other": "$n minuty"
+    },
+    "hour": {
+      "one": "$n godzina",
+      "few": "$n godziny",
+      "many": "$n godzin",
+      "other": "$n godziny"
+    },
+    "day": {
+      "one": "$n dzień",
+      "few": "$n dni",
+      "many": "$n dni",
+      "other": "$n dni"
+    },
+    "now": "Teraz",
+    "ago": "temu"
+  },
   "settings": {
     "title": "Ustawienia",
     "sections": {
