@@ -83,6 +83,8 @@ async def main(hass_client, translations):
             if (
                 not is_inside_working_hours() and get_number_of_socket_clients() == 0
             ) or not get_is_enabled():
+                cap.release()
+                cv2.destroyAllWindows()
                 return
 
             # Limit the processing to the FPS, depending whether there's a person in G-ROI or not
