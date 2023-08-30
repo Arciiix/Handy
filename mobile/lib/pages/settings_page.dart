@@ -24,44 +24,55 @@ class SettingsPageState extends ConsumerState<SettingsPage> {
       appBar: AppBar(
         title: Text(t.settings.title),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(8),
+      body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              t.settings.sections.general,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(8),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    t.settings.sections.general,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListTile(
+                    leading: const Icon(Icons.public),
+                    title: Text(t.settings.ip.title),
+                    subtitle: Text(t.settings.ip.description),
+                    onTap: () async {
+                      String? output = await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return InputDialog(
+                              title: t.settings.ip.title,
+                              initialValue: settings.handyServerIP.toString(),
+                              validator: validateURL,
+                              errorMessage: "Invalid URL",
+                              helperText: "Start with e.g. http://");
+                        },
+                      );
+
+                      if (output != null) {
+                        WidgetsBinding.instance.addPostFrameCallback(
+                          (timeStamp) {
+                            ref.read(settingsProvider.notifier).state = settings
+                                .copyWith(handyServerIP: Uri.parse(output));
+                            ref.refresh(
+                                socketClientProvider); // Has to be refresh because we need the socket to rebuild
+                          },
+                        );
+                      }
+                    }),
+              ],
             ),
           ),
-          ListTile(
-              leading: const Icon(Icons.public),
-              title: Text(t.settings.ip.title),
-              subtitle: Text(t.settings.ip.description),
-              onTap: () async {
-                String? output = await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return InputDialog(
-                        title: t.settings.ip.title,
-                        initialValue: settings.handyServerIP.toString(),
-                        validator: validateURL,
-                        errorMessage: "Invalid URL",
-                        helperText: "Start with e.g. http://");
-                  },
-                );
-
-                if (output != null) {
-                  WidgetsBinding.instance.addPostFrameCallback(
-                    (timeStamp) {
-                      ref.read(settingsProvider.notifier).state =
-                          settings.copyWith(handyServerIP: Uri.parse(output));
-                      ref.refresh(
-                          socketClientProvider); // Has to be refresh because we need the socket to rebuild
-                    },
-                  );
-                }
-              }),
+          Chip(
+            label: const Text("Made with ❤️ by Artur Nowak"),
+            backgroundColor: Colors.red[400]!.withOpacity(0.2),
+          )
         ],
       ),
     );
