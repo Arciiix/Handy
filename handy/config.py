@@ -21,7 +21,7 @@ def load_config(
 
 class ActionEntitiesConfig:
     media_player = "media_player.mpd"
-    play_pause = "media_player.volumio"
+    play_pause = "media_player.mpd"
     volume = "media_player.volumio"
     weather = "weather.openweathermap"
     next_playlist_item = "media_player.mpd"
@@ -36,7 +36,7 @@ class ActionEntitiesConfig:
     ):
         self.media_player = media_player or self.media_player
         self.play_pause = play_pause or self.play_pause or media_player
-        self.volume = volume or self.play_pause
+        self.volume = volume or self.volume or self.play_pause
         self.weather = weather or self.weather
         self.next_playlist_item = next_playlist_item or self.media_player
 

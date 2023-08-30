@@ -34,6 +34,7 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
 
   bool customPronunciation = false;
 
+  bool alreadySaving = false;
   void _launchURL() async {
     Uri? url = Uri.tryParse(urlController.text);
     if (url == null || !validateURL(urlController.text)) {
@@ -44,6 +45,10 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
   }
 
   void handleSave() async {
+    if (alreadySaving) return;
+    setState(() {
+      alreadySaving = true;
+    });
     print("Save");
     // First, if it's a YouTube item, verify whether the audio URL can be retrieved
     if (widget.type == PlaylistType.youtube) {
@@ -89,6 +94,9 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
             );
           });
         }
+        setState(() {
+          alreadySaving = false;
+        });
         return;
       }
     }
@@ -107,7 +115,7 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
     if (mounted) {
       if (widget.id != null) {
         // Update playlist item
-        showLoadingDialog(context, () async {
+        var operation = () async {
           var result = await playlists.updateItem(
               playlist, ref.read(socketClientProvider));
 
@@ -119,13 +127,18 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
             ref.read(playlistItemsProvider.notifier).state = result.data!;
           }
           WidgetsBinding.instance.addPostFrameCallback((_) async {
-            // Wait a bit for the dialog to1close
+            // Wait a bit for the dialog to close
             if (mounted) context.push("/playlist");
           });
+        }();
+
+        showLoadingDialog(context, () async {
+          await operation;
         });
       } else {
         // Create a new playlist item
-        showLoadingDialog(context, () async {
+
+        var operation = () async {
           var result =
               await playlists.addItem(playlist, ref.read(socketClientProvider));
 
@@ -139,6 +152,10 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             if (mounted) context.push("/playlist");
           });
+        }();
+
+        showLoadingDialog(context, () async {
+          await operation;
         });
       }
     }
@@ -204,11 +221,13 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
                   context: PlaylistTypesContext.values[widget.type.index]))),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.save),
-        onPressed: () {
-          if (_formKey.currentState?.validate() == true) {
-            handleSave();
-          }
-        },
+        onPressed: alreadySaving
+            ? null
+            : () {
+                if (_formKey.currentState?.validate() == true) {
+                  handleSave();
+                }
+              },
       ),
       body: SingleChildScrollView(
         child: Column(
