@@ -32,7 +32,8 @@ class HomePageState extends ConsumerState<HomePage>
       }
 
       if (mounted) {
-        context.go("/playlist_item/${type.index}/add?url=$sharedData");
+        context.go(
+            "/playlist_item/${type.index}/add?url=$sharedData&closeAppOnSave=1");
       }
     } else {
       print("Didn't receive any sharing intent!");
@@ -72,9 +73,7 @@ class HomePageState extends ConsumerState<HomePage>
       onFocusChange: (hasFocus) {
         if (hasFocus) getSharedData();
       },
-      child: Container(
-        child: Control(),
-      ),
+      child: const Control(),
     );
   }
 }

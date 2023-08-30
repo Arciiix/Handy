@@ -51,8 +51,10 @@ final router = GoRouter(
       GoRoute(
         path: "add",
         builder: (context, state) => PlaylistItemForm(
-            type: PlaylistType.values[int.parse(state.pathParameters["type"]!)],
-            overrideURL: state.uri.queryParameters["url"]),
+          type: PlaylistType.values[int.parse(state.pathParameters["type"]!)],
+          overrideURL: state.uri.queryParameters["url"],
+          closeAppOnSave: state.uri.queryParameters["closeAppOnSave"] == "1",
+        ),
       ),
       GoRoute(
         path: "edit/:id",

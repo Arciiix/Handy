@@ -1,5 +1,6 @@
 import "dart:async";
 import "package:flutter/material.dart";
+import "package:flutter/services.dart";
 import "package:go_router/go_router.dart";
 import "package:handy/components/loading_dialog/loading_dialog.dart";
 import "package:handy/gen/strings.g.dart";
@@ -16,10 +17,16 @@ class PlaylistItemForm extends ConsumerStatefulWidget {
   final String? id;
   final String? overrideURL;
 
+  final bool? closeAppOnSave;
+
   final PlaylistType type;
 
   const PlaylistItemForm(
-      {super.key, this.id, required this.type, this.overrideURL});
+      {super.key,
+      this.id,
+      required this.type,
+      this.overrideURL,
+      this.closeAppOnSave});
 
   @override
   PlaylistItemFormState createState() => PlaylistItemFormState();
@@ -128,6 +135,10 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
           }
           WidgetsBinding.instance.addPostFrameCallback((_) async {
             // Wait a bit for the dialog to close
+            if (widget.closeAppOnSave == true) {
+              SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+              return;
+            }
             if (mounted) context.push("/playlist");
           });
         }();
@@ -150,6 +161,10 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
             ref.read(playlistItemsProvider.notifier).state = result.data!;
           }
           WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (widget.closeAppOnSave == true) {
+              SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+              return;
+            }
             if (mounted) context.push("/playlist");
           });
         }();
