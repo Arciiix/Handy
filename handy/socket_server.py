@@ -153,7 +153,7 @@ async def playlist_item_add(
 
     return {
         "success": True,
-        "playlist": playlist_item.to_dict(),
+        "playlistItem": playlist_item.to_dict(),
         "playlists": get_playlist_items(),
     }
 
@@ -203,7 +203,7 @@ async def playlist_item_add(
 
     return {
         "success": True,
-        "playlist": playlist_item.to_dict(),
+        "playlistItem": playlist_item.to_dict(),
         "playlists": get_playlist_items(),
     }
 

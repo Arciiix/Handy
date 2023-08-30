@@ -30,7 +30,7 @@ class PlaylistTypes(Enum):
 class PlaylistItem(Model):
     id = UUIDField(primary_key=True)
     name = CharField()
-    pronunciation = CharField()
+    pronunciation = CharField(null=True)
     url = CharField()
 
     position = IntegerField()  # A index/order of this item

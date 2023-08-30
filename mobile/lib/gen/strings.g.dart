@@ -6,7 +6,7 @@
 /// Locales: 2
 /// Strings: 96 (48 per locale)
 ///
-/// Built on 2023-08-29 at 17:38 UTC
+/// Built on 2023-08-29 at 21:41 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -485,7 +485,7 @@ class _StringsErrorPl implements _StringsErrorEn {
 
 	// Translations
 	@override String get title => 'Wystąpił błąd';
-	@override String socket({required Object error}) => 'Error in socket operation: ${error}';
+	@override String socket({required Object error}) => 'Błąd podczas operacji Handy: ${error}';
 }
 
 // Path: navigation
@@ -787,7 +787,7 @@ extension on _StringsPl {
 			case 'dialog.delete_item.title': return 'Usuń element';
 			case 'dialog.delete_item.description': return ({required Object item_name}) => 'Czy na pewno chcesz usunąć ${item_name}?';
 			case 'error.title': return 'Wystąpił błąd';
-			case 'error.socket': return ({required Object error}) => 'Error in socket operation: ${error}';
+			case 'error.socket': return ({required Object error}) => 'Błąd podczas operacji Handy: ${error}';
 			case 'loading': return 'Ładowanie...';
 			case 'navigation.home': return 'Start';
 			case 'navigation.playlist': return 'Playlista';

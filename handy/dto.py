@@ -30,7 +30,7 @@ class PlaylistItemEditDto(Model):
     url = StringType(validators=[validate_url])
 
     type = StringType(
-        choices=[PlaylistTypes.__members__.keys()]
+        choices=[*PlaylistTypes.__members__.keys()]
     )  # Type is PlaylistTypes enum
 
 

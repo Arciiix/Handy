@@ -44,6 +44,7 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
   }
 
   void handleSave() async {
+    print("Save");
     // First, if it's a YouTube item, verify whether the audio URL can be retrieved
     if (widget.type == PlaylistType.youtube) {
       var socket = ref.read(socketClientProvider);
@@ -51,7 +52,7 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
       Completer c = Completer();
       socket.emitWithAck("youtube/check", {"url": urlController.text},
           ack: (data) {
-        bool isSuccess = processSocketRepsonse(context, data);
+        bool isSuccess = data?["success"] == true;
 
         c.complete(isSuccess);
       });
@@ -103,16 +104,44 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
 
     // Edit if the id has been provided, otherwise add a new playlist item
     Playlists playlists = ref.read(playlistItemsProvider);
+    if (mounted) {
+      if (widget.id != null) {
+        // Update playlist item
+        showLoadingDialog(context, () async {
+          var result = await playlists.updateItem(
+              playlist, ref.read(socketClientProvider));
 
-    if (widget.id != null) {
-      // Create a new playlist item
-      ref.read(playlistItemsProvider.notifier).state =
-          await playlists.updateItem(playlist);
-    } else {
-      ref.read(playlistItemsProvider.notifier).state =
-          await playlists.addItem(playlist);
+          if (result.error != null && mounted) {
+            showSocketError(context, result.error);
+          }
+
+          if (result.data != null) {
+            ref.read(playlistItemsProvider.notifier).state = result.data!;
+          }
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            // Wait a bit for the dialog to1close
+            if (mounted) context.push("/playlist");
+          });
+        });
+      } else {
+        // Create a new playlist item
+        showLoadingDialog(context, () async {
+          var result =
+              await playlists.addItem(playlist, ref.read(socketClientProvider));
+
+          if (result.error != null && mounted) {
+            showSocketError(context, result.error);
+          }
+
+          if (result.data != null) {
+            ref.read(playlistItemsProvider.notifier).state = result.data!;
+          }
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (mounted) context.push("/playlist");
+          });
+        });
+      }
     }
-    if (mounted) context.pop();
   }
 
   Future<void> fetchYouTubeData() async {

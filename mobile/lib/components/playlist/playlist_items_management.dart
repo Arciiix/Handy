@@ -54,8 +54,17 @@ class PlaylistItemsManagementState
 
     if (response == true && mounted) {
       await showLoadingDialog(context, () async {
-        ref.read(playlistItemsProvider.notifier).state =
-            await ref.read(playlistItemsProvider).removeItem(id);
+        var result = await ref
+            .read(playlistItemsProvider)
+            .removeItem(id, ref.read(socketClientProvider));
+
+        if (result.error != null && mounted) {
+          showSocketError(context, result.error);
+        }
+
+        if (result.data != null) {
+          ref.read(playlistItemsProvider.notifier).state = result.data!;
+        }
       });
     }
   }

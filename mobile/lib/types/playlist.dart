@@ -1,3 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:handy/types/result.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+
 enum PlaylistType { local, youtube }
 
 class PlaylistItem {
@@ -13,6 +19,16 @@ class PlaylistItem {
       required this.name,
       required this.pronunciation,
       required this.url});
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'type': type.name.toUpperCase(),
+      'name': name,
+      'pronunciation': pronunciation,
+      'url': url.toString()
+    };
+  }
 }
 
 class Playlists {
@@ -44,38 +60,64 @@ class Playlists {
     }
   }
 
-  Future<Playlists> addItem(PlaylistItem item) async {
-    // TODO: Do the server-side work
+  Future<Result<Playlists>> addItem(PlaylistItem item, Socket socket) async {
+    Completer c = Completer();
+    socket.emitWithAck("playlist_item/add",
+        item.toJson()..removeWhere((key, value) => key == "id"), ack: (data) {
+      c.complete(data);
+    });
 
-    //  TODO: The id here should be obtained from the request
-    var newItems = [...items, item];
+    var response = await c.future;
 
-    return copyWith(items: newItems);
+    if (response?["success"] && response?["playlistItem"] != null) {
+      var newItems = [...items, item..id = response["playlistItem"]["id"]];
+      return Result(data: copyWith(items: newItems));
+    } else {
+      return Result(data: this, error: response?["error"] ?? "unknown");
+    }
   }
 
-  Future<Playlists> updateItem(PlaylistItem item) async {
+  Future<Result<Playlists>> updateItem(PlaylistItem item, Socket socket) async {
     // First find if id exists
     int index = items.indexWhere((e) => e.id == item.id);
 
-// TODO: Do the server-side work
-
     if (index == -1) {
-      // TODO: Handle error
-
       // Return the current playlist
-      return copyWith(items: items);
+      return Result(data: this, error: "not exists");
     }
 
-    var newItems = [...items];
-    newItems[index] = item;
+    Completer c = Completer();
+    socket.emitWithAck("playlist_item/edit", item.toJson(), ack: (data) {
+      c.complete(data);
+    });
 
-    return copyWith(items: newItems);
+    var response = await c.future;
+
+    if (response?["success"] && response?["playlistItem"] != null) {
+      var newItems = [...items];
+      newItems[index] = item;
+
+      return Result(data: copyWith(items: newItems));
+    } else {
+      return Result(data: this, error: response?["error"] ?? "unknown");
+    }
   }
 
-  Future<Playlists> removeItem(String id) async {
-    // TODO: Do the server-side work
+  Future<Result<Playlists>> removeItem(String id, Socket socket) async {
+    Completer c = Completer();
+    socket.emitWithAck("playlist_item/delete", {"id": id}, ack: (data) {
+      c.complete(data);
+    });
 
-    return copyWith(items: items.where((element) => element.id != id).toList());
+    var response = await c.future;
+
+    if (response?["success"]) {
+      return Result(
+          data: copyWith(
+              items: items.where((element) => element.id != id).toList()));
+    } else {
+      return Result(data: this, error: response?["error"] ?? "unknown");
+    }
   }
 
   Playlists copyWith(
