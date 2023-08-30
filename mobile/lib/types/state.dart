@@ -1,3 +1,9 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:handy/utils/process_socket_response.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+
 class CurrentState {
   bool isConnected;
   bool?
@@ -25,8 +31,18 @@ class CurrentState {
             isInsideWorkingHours ?? this.isInsideWorkingHours);
   }
 
-  Future<CurrentState> toggleControl() async {
-    // TODO DEV
+  Future<CurrentState> toggleControl(
+      BuildContext context, Socket socket) async {
+    Completer c = Completer();
+    socket.emitWithAck("handy/change_status", {"isEnabled": !isEnabled},
+        ack: (data) {
+      bool isSuccess = processSocketRepsonse(context, data);
+      print("Change status - success: {isSuccess}");
+      c.complete(isSuccess);
+    });
+
+    await c.future;
+
     return copyWith(isEnabled: !isEnabled);
   }
 }

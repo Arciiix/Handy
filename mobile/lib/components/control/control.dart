@@ -24,7 +24,9 @@ class ControlState extends ConsumerState<Control> {
     if (!state.isConnected) return;
 
     ref.read(currentStateProvider.notifier).state = await showLoadingDialog(
-        context, () async => await state.toggleControl());
+        context,
+        () async =>
+            await state.toggleControl(context, ref.read(socketClientProvider)));
   }
 
   void navigateToPreview() {
