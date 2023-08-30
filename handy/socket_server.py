@@ -24,6 +24,7 @@ from playlist import (
     get_playlist_info,
     play_playlist_item_from_object,
 )
+from playback import get_playback_state, get_current_volume_only
 from youtube import get_youtube_video_info
 from utils.working_hours import is_inside_working_hours
 from utils.current_image import get_current_image, get_current_image_changed_at
@@ -103,6 +104,23 @@ async def get_preview(sid, data):
         "image_mimetype": "data:image/jpeg;base64",
         "changed_at": get_current_image_changed_at().isoformat(),
     }
+
+
+@sio.on("playback/state")
+async def get_current_playback_state(sid, data):
+    ctx = ActionContext(
+        confidency=1, db=db, home_assistant=hass_client, translations=translations
+    )
+    try:
+        logger.info("Trying to get current playback state")
+        return {
+            "success": True,
+            "state": (await get_playback_state(ctx))[0].state,
+            "volume": await get_current_volume_only(ctx),
+        }
+    except Exception as err:
+        logger.exception(err)
+        return {"success": False, "error": str(err)}
 
 
 @sio.on("playlist/switch_type")

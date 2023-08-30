@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 128 (64 per locale)
+/// Strings: 134 (67 per locale)
 ///
-/// Built on 2023-08-30 at 15:02 UTC
+/// Built on 2023-08-30 at 21:22 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -225,7 +225,9 @@ class _StringsControlEn {
 	late final _StringsControlConnectionStateEn connection_state = _StringsControlConnectionStateEn._(_root);
 	late final _StringsControlStateEn state = _StringsControlStateEn._(_root);
 	String get see_preview => 'See preview';
+	String get control => 'Control';
 	String get try_to_reconnect => 'Try to reconnect';
+	late final _StringsControlControlDialogEn control_dialog = _StringsControlControlDialogEn._(_root);
 }
 
 // Path: playlist
@@ -334,6 +336,17 @@ class _StringsControlStateEn {
 	String get enabled => 'Enabled! 🚀';
 	String get disabled => 'Disabled! 😶';
 	String get outside_working_hours => 'Outside working hours! 🛏️';
+}
+
+// Path: control.control_dialog
+class _StringsControlControlDialogEn {
+	_StringsControlControlDialogEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get playback => 'Playback';
+	String get volume => 'Volume';
 }
 
 // Path: playlist.current_type
@@ -552,7 +565,9 @@ class _StringsControlPl implements _StringsControlEn {
 	@override late final _StringsControlConnectionStatePl connection_state = _StringsControlConnectionStatePl._(_root);
 	@override late final _StringsControlStatePl state = _StringsControlStatePl._(_root);
 	@override String get see_preview => 'Zobacz podgląd';
+	@override String get control => 'Kontrola';
 	@override String get try_to_reconnect => 'Try to reconnect';
+	@override late final _StringsControlControlDialogPl control_dialog = _StringsControlControlDialogPl._(_root);
 }
 
 // Path: playlist
@@ -669,6 +684,17 @@ class _StringsControlStatePl implements _StringsControlStateEn {
 	@override String get enabled => 'Aktywne! 🚀';
 	@override String get disabled => 'Nieaktywne! 😶';
 	@override String get outside_working_hours => 'Poza aktywnymi godzinami! 🛏️';
+}
+
+// Path: control.control_dialog
+class _StringsControlControlDialogPl implements _StringsControlControlDialogEn {
+	_StringsControlControlDialogPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get playback => 'Odtwarzanie';
+	@override String get volume => 'Głośność';
 }
 
 // Path: playlist.current_type
@@ -819,7 +845,10 @@ extension on _StringsEn {
 			case 'control.state.disabled': return 'Disabled! 😶';
 			case 'control.state.outside_working_hours': return 'Outside working hours! 🛏️';
 			case 'control.see_preview': return 'See preview';
+			case 'control.control': return 'Control';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
+			case 'control.control_dialog.playback': return 'Playback';
+			case 'control.control_dialog.volume': return 'Volume';
 			case 'playlist.current_type.current_type_is': return 'Current type is: ';
 			case 'playlist.current_type.change': return 'Change current type';
 			case 'playlist.not_connected_dialog.title': return 'Not connected';
@@ -907,7 +936,10 @@ extension on _StringsPl {
 			case 'control.state.disabled': return 'Nieaktywne! 😶';
 			case 'control.state.outside_working_hours': return 'Poza aktywnymi godzinami! 🛏️';
 			case 'control.see_preview': return 'Zobacz podgląd';
+			case 'control.control': return 'Kontrola';
 			case 'control.try_to_reconnect': return 'Try to reconnect';
+			case 'control.control_dialog.playback': return 'Odtwarzanie';
+			case 'control.control_dialog.volume': return 'Głośność';
 			case 'playlist.current_type.current_type_is': return 'Aktualny tryb: ';
 			case 'playlist.current_type.change': return 'Zmień tryb';
 			case 'playlist.not_connected_dialog.title': return 'Nie połączono';

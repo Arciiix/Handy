@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
+import "package:handy/components/control/control_dialog.dart";
 import "package:handy/components/loading_dialog/loading_dialog.dart";
 import "package:handy/gen/strings.g.dart";
 import 'package:avatar_glow/avatar_glow.dart';
@@ -37,6 +38,13 @@ class ControlState extends ConsumerState<Control> {
 
   void reconnect() {
     ref.read(socketClientProvider).connect();
+  }
+
+  void showControl() async {
+    showDialog(
+      context: context,
+      builder: (context) => const ControlDialog(),
+    );
   }
 
   @override
@@ -123,11 +131,21 @@ class ControlState extends ConsumerState<Control> {
                       )),
                 ),
               ),
-              if (state.isConnected && state.isEnabled)
-                ElevatedButton.icon(
-                    onPressed: navigateToPreview,
-                    icon: const Icon(Icons.remove_red_eye_outlined),
-                    label: Text(t.control.see_preview)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (state.isConnected && state.isEnabled)
+                    ElevatedButton.icon(
+                        onPressed: navigateToPreview,
+                        icon: const Icon(Icons.remove_red_eye_outlined),
+                        label: Text(t.control.see_preview)),
+                  if (state.isConnected)
+                    ElevatedButton.icon(
+                        onPressed: showControl,
+                        icon: const Icon(Icons.slow_motion_video),
+                        label: Text(t.control.control)),
+                ],
+              ),
               Chip(
                 label: Text(state.isConnecting == true
                     ? t.control.connection_state.connecting

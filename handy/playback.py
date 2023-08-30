@@ -1,18 +1,24 @@
 import asyncio
 from typing import Optional
 
-from homeassistant_api import Domain
+from homeassistant_api import Client, Domain
 from action_context import ActionContext
 from config import CONFIG
 from logger import logger
 
 
-async def toggle_playback_state(ctx: ActionContext):
+async def get_playback_state(ctx: ActionContext):
     domain = await ctx.hass_client.async_get_domain("media_player")
 
     # Get current state
     state = await ctx.hass_client.async_get_state(entity_id=CONFIG.entities.play_pause)
     logger.info(f"Got the current audio state = {state.state}")
+
+    return (state, domain)
+
+
+async def toggle_playback_state(ctx: ActionContext):
+    state, domain = await get_playback_state(ctx)
     try:
         if state.state == "playing":
             await domain.media_pause(entity_id=CONFIG.entities.play_pause)
@@ -24,13 +30,19 @@ async def toggle_playback_state(ctx: ActionContext):
         logger.error(f"Error while toggling playback state: {err}")
 
 
-async def get_current_volume(ctx: ActionContext) -> tuple[int, Optional[Domain]]:
+async def get_current_volume_only(ctx: ActionContext) -> int:
     state = await ctx.hass_client.async_get_state(entity_id=CONFIG.entities.volume)
     # TODO: Sometimes it's null - think what to do in that scenario
     volume = state.attributes.get("volume_level", 50)
 
     volume = int(float(volume) * 100)
     logger.info(f"Got volume: {volume}")
+
+    return volume
+
+
+async def get_current_volume(ctx: ActionContext) -> tuple[int, Optional[Domain]]:
+    volume = await get_current_volume_only(ctx)
 
     # Also indicate about entering volume change mode
     domain = await ctx.hass_client.async_get_domain("media_player")

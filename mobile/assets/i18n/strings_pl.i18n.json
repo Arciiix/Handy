@@ -33,7 +33,12 @@
       "outside_working_hours": "Poza aktywnymi godzinami! 🛏️"
     },
     "see_preview": "Zobacz podgląd",
-    "try_to_reconnect": "Try to reconnect"
+    "control": "Kontrola",
+    "try_to_reconnect": "Try to reconnect",
+    "control_dialog": {
+      "playback": "Odtwarzanie",
+      "volume": "Głośność"
+    }
   },
   "playlist": {
     "current_type": {
