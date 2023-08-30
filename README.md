@@ -55,6 +55,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
 - TIME_START_MINUTES_AFTER_MIDNIGHT - The time of the day that Handy starts processing the images at (to prevent it from unnecessary image processing, e.g. why would it process images at 2 am?). It's minutes after midnight, i.e. hour \* 60 + minutes, e.g. 08:15 = 8 \* 60 + 15. Defaults to 8:00.
 - TIME_END_MINUTES_AFTER_MIDNIGHT - The same thing as above, but it's ending time. Defaults to 21:00.
 - SOCKET_IO_PORT - A port that the socket.io instance will run on.
+- ACTION_PERFORMED_HISTORY_LENGTH - in the mobile app, you can view the recent performed actions. This variable determines how many of the recent actions should be kept.
 
 ## Action-related changes
 
@@ -87,6 +88,7 @@ You can modify some of the preferences a by creating a `config.json` file (`hand
   "TIME_START_MINUTES_AFTER_MIDNIGHT": 480,
   "TIME_END_MINUTES_AFTER_MIDNIGHT": 1260,
   "SOCKET_IO_PORT": 4001,
+  "ACTION_PERFORMED_HISTORY_LENGTH": 5,
 
   "PLAYER_PLAYPAUSE_HASS_ENTITY_ID": "media_player.volumio",
   "PLAYER_NEXTPLAYLISTITEM_HASS_ENTITY_ID": "media_player.mpd",

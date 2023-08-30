@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta, time
 import json
-import logging
 from os import path
 
 from logger import logger
@@ -73,6 +72,7 @@ class Config:
     min_arm_angle_for_numeric_value_change = 70
     working_hours = (time(8, 0), time(21, 0))
     socket_io_port = 4001
+    action_performed_history_length = 5
 
     entities = ActionEntitiesConfig()
 
@@ -119,6 +119,7 @@ class Config:
             ),
         )
         self.socket_io_port = dict["SOCKET_IO_PORT"]
+        self.action_performed_history_length = dict["ACTION_PERFORMED_HISTORY_LENGTH"]
 
         self.entities = ActionEntitiesConfig(
             media_player=dict["MEDIA_PLAYER_HASS_ENTITY_ID"],
@@ -152,6 +153,7 @@ class Config:
             "TIME_END_MINUTES_AFTER_MIDNIGHT": self.working_hours[1].hour * 60
             + self.working_hours[1].minute,
             "SOCKET_IO_PORT": self.socket_io_port,
+            "ACTION_PERFORMED_HISTORY_LENGTH": self.action_performed_history_length,
             **(self.entities.to_dict()),
         }
 

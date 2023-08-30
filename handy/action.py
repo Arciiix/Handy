@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Awaitable, Callable, Optional
 
 from homeassistant_api import Domain
@@ -11,6 +12,8 @@ from playback import (
     set_current_volume,
 )
 from weather import get_weather
+from config import CONFIG
+from logger import logger
 
 
 class Action:
@@ -19,6 +22,7 @@ class Action:
     def __init__(
         self,
         handler: Callable[[ActionContext], Awaitable[None]],
+        friendly_name: str,
         change_numeric_value=False,
         numeric_value_multiplier=1,
         numeric_value_range: Optional[tuple[int, int]] = (0, 100),
@@ -27,6 +31,10 @@ class Action:
         ] = None,
     ):
         self.handler = handler
+
+        # Name displayed on mobile app
+        self.friendly_name = friendly_name
+
         # If true, after user does the gesture, Handy will then ask to indicate a numeric value with the hands
         self.change_numeric_value = change_numeric_value
 
@@ -41,19 +49,82 @@ class Action:
         # It returns a tuple of the initial value + optionally Home Assistant domain (to reduce further requests)
         self.init_value_getter = init_value_getter
 
+    def to_dict(self) -> dict[str, any]:
+        return {
+            "name": self.friendly_name,
+            "change_numeric_value": self.change_numeric_value,
+            "numeric_value_multiplier": self.numeric_value_multiplier,
+            "numeric_value_range": self.numeric_value_range,
+        }
+
+
+class ActionPerformed:
+    """
+    A class that represents the type of an already done action
+    """
+
+    def __init__(
+        self, action: Action, index: int, timestamp: datetime = datetime.now()
+    ):
+        self.action = action
+        self.index = index  # The action gesture index
+        self.timestamp = timestamp
+
+    def to_dict(self):
+        return {
+            **self.action.to_dict(),
+            "index": self.index,
+            "timestamp": self.timestamp.isoformat(),
+        }
+
+
+actions_perform_history: list[ActionPerformed] = []
+
+
+def add_action_performed(action: Action, gesture_index: int):
+    global actions_perform_history
+    performed = ActionPerformed(
+        action=action, index=gesture_index, timestamp=datetime.now()
+    )
+    actions_perform_history.append(performed)
+
+    if len(actions_perform_history) > CONFIG.action_performed_history_length:
+        actions_perform_history.pop(0)
+    logger.info("Added new performed action")
+
+
+def get_actions_performed():
+    return actions_perform_history
+
 
 # A dict of all the actions. The key is the class_name and value is the action
 ACTIONS: dict[int, Optional[Action]] = {
     1: Action(
         handler=set_current_volume,
+        friendly_name="Set current volume",
         change_numeric_value=True,
         numeric_value_range=(0, 100),
         numeric_value_multiplier=5,
         init_value_getter=get_current_volume,
     ),
-    2: Action(handler=next_playlist_item),
-    4: Action(handler=toggle_playback_state),
-    5: Action(handler=switch_playlist_type),
-    7: Action(handler=say_current_time),
-    8: Action(handler=get_weather),
+    2: Action(
+        handler=next_playlist_item,
+        friendly_name="Next playlist item",
+    ),
+    4: Action(
+        handler=toggle_playback_state,
+        friendly_name="Toggle playback state",
+    ),
+    5: Action(
+        handler=switch_playlist_type,
+        friendly_name="Switch playlist type",
+    ),
+    7: Action(
+        handler=say_current_time,
+        friendly_name="Say current time",
+    ),
+    8: Action(
+        handler=get_weather,
+        friendly_name="Get weather",
+    ),
 }

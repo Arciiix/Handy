@@ -9,6 +9,7 @@ import cv2
 import socketio
 from schematics.exceptions import DataError
 
+from action import ACTIONS, get_actions_performed
 from action_context import ActionContext
 from logger import logger
 from config import CONFIG
@@ -381,6 +382,36 @@ async def get_youtube_video_data(sid, data):
     info = get_youtube_video_info(data["url"])
 
     return {"success": info["success"], **info}
+
+
+@sio.on("actions/all")
+async def get_all_actions(sid, data):
+    logger.info(f"[{sid}] Get all actions")
+    return {
+        "success": True,
+        "actions": [
+            {**action.to_dict(), "index": index} for index, action in ACTIONS.items()
+        ],
+    }
+
+
+@sio.on("actions/performed")
+async def get_performed_actions(sid, data):
+    logger.info(f"[{sid}] Get performed actions")
+
+    actions_performed = get_actions_performed()
+    last_updated_at = None
+
+    if len(actions_performed) > 0:
+        last_updated_at = actions_performed[-1].timestamp
+
+    return {
+        "success": True,
+        "performed_actions": [action.to_dict() for action in actions_performed],
+        "last_updated_at": last_updated_at.isoformat()
+        if last_updated_at is not None
+        else None,
+    }
 
 
 async def hello_handler(request):

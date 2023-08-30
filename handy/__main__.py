@@ -14,7 +14,7 @@ import numpy as np
 from config import CONFIG, HANDY_MODEL_WINDOW, HANDY_WINDOW, HANDY_TROI_WINDOW, TROI
 from frame import handle_frame
 from audio import AudioIndicator
-from action import ACTIONS, ActionContext
+from action import ACTIONS, ActionContext, add_action_performed
 from numeric_value_track import numeric_value_track
 from translations import Translations
 from logger import logger
@@ -181,6 +181,7 @@ async def main(hass_client, translations):
                 logger.info(f"Confidency of performing action: {ctx.confidency}")
 
                 if class_name in ACTIONS:
+                    add_action_performed(ACTIONS[class_name], class_name)
                     if ACTIONS[class_name].change_numeric_value:
                         logger.info("Numeric action performing - start...")
                         await numeric_value_track(
