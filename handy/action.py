@@ -80,8 +80,10 @@ class ActionPerformed:
     def to_dict(self):
         image_string = None
         if self.image is not None:
-            _, image = cv2.imencode(".jpg", self.image, [cv2.IMWRITE_JPEG_QUALITY, 50])
-            image_string = base64.b64encode(image).decode()
+            _, image_encoded = cv2.imencode(
+                ".jpg", self.image, [cv2.IMWRITE_JPEG_QUALITY, 50]
+            )
+            image_string = base64.b64encode(image_encoded).decode()
         return {
             **self.action.to_dict(),
             "index": self.index,
