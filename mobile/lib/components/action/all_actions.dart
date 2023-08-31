@@ -116,7 +116,7 @@ class AllActionsState extends ConsumerState<AllActions> {
         if (performedActions != null) {
           // Try to find the performed action
           try {
-            ActionPerformed? performed = performedActions.reversed
+            ActionPerformed? performed = performedActions
                 .toList()
                 .firstWhere((element) => element.index == action.index);
 
