@@ -37,3 +37,7 @@ class PlaylistItemEditDto(Model):
 class PlaylistItemRearrangeDto(Model):
     id = StringType(required=True)
     new_position = IntType(required=True)
+
+
+class VolumeChangeDto(Model):
+    volume = IntType(required=True, min_value=0, max_value=100)

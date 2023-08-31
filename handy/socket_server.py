@@ -13,7 +13,12 @@ from action import ACTIONS, get_actions_performed
 from action_context import ActionContext
 from logger import logger
 from config import CONFIG
-from dto import PlaylistItemCreateDto, PlaylistItemEditDto, PlaylistItemRearrangeDto
+from dto import (
+    PlaylistItemCreateDto,
+    PlaylistItemEditDto,
+    PlaylistItemRearrangeDto,
+    VolumeChangeDto,
+)
 from db import PlaylistItem, PlaylistTypes, db
 from services import get_services
 from playlist import (
@@ -25,7 +30,12 @@ from playlist import (
     get_playlist_info,
     play_playlist_item_from_object,
 )
-from playback import get_playback_state, get_current_volume_only
+from playback import (
+    get_playback_state,
+    get_current_volume_only,
+    toggle_playback_state,
+    set_current_volume,
+)
 from youtube import get_youtube_video_info
 from utils.working_hours import is_inside_working_hours
 from utils.current_image import get_current_image, get_current_image_changed_at
@@ -122,6 +132,40 @@ async def get_current_playback_state(sid, data):
     except Exception as err:
         logger.exception(err)
         return {"success": False, "error": str(err)}
+
+
+@sio.on("playback/toggle")
+async def toggle_playback(sid, data):
+    ctx = ActionContext(
+        confidency=1, db=db, home_assistant=hass_client, translations=translations
+    )
+    await toggle_playback_state(ctx)
+
+    new_state = await get_playback_state(ctx)
+    return {"success": True, "newState": new_state[0].state}
+
+
+@sio.on("playback/volume")
+async def change_volume(sid, data):
+    volume = None
+    try:
+        data = VolumeChangeDto(data)
+        volume = data.volume
+    except Exception as err:
+        logger.warning(f"Error while validating volume change: {err}")
+        return {"success": False, "error": str(err)}
+
+    ctx = ActionContext(
+        confidency=1,
+        db=db,
+        home_assistant=hass_client,
+        translations=translations,
+    )
+    ctx.numeric_value = volume
+    ctx.domain = await ctx.hass_client.async_get_domain("media_player")
+
+    await set_current_volume(ctx)
+    return {"success": True, "volume": volume}
 
 
 @sio.on("playlist/switch_type")

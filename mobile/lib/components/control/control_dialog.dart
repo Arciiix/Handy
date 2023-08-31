@@ -21,6 +21,8 @@ class ControlDialogState extends ConsumerState<ControlDialog> {
 
   bool isLoading = true;
 
+  bool isChangingPlaybackState = false;
+
   Timer?
       volumeDebounce; // To not spam the server, use a debounce for changing volume
 
@@ -67,13 +69,37 @@ class ControlDialogState extends ConsumerState<ControlDialog> {
   }
 
   Future<void> togglePlayback() async {
-    // TODO: Toggle playback
-    print("toggle playback");
+    setState(() {
+      isChangingPlaybackState = true;
+    });
+    var socket = ref.read(socketClientProvider);
+
+    Completer c = Completer();
+
+    socket.emitWithAck("playback/toggle", {}, ack: (data) {
+      bool isSuccess = processSocketRepsonse(context, data);
+
+      c.complete(isSuccess);
+    });
+
+    await c.future;
+
+    setState(() {
+      isChangingPlaybackState = false;
+      isPlaying = !isPlaying;
+    });
   }
 
   Future<void> updateVolume() async {
-    // TODO: Update volume
-    print("update volume");
+    var socket = ref.read(socketClientProvider);
+
+    socket.emitWithAck("playback/volume", {'volume': localVolume}, ack: (data) {
+      processSocketRepsonse(context, data);
+
+      setState(() {
+        currentVolume = localVolume;
+      });
+    });
   }
 
   @override
@@ -126,7 +152,9 @@ class ControlDialogState extends ConsumerState<ControlDialog> {
                   ],
                 ),
                 IconButton(
-                    onPressed: isLoading ? null : togglePlayback,
+                    onPressed: isLoading && !isChangingPlaybackState
+                        ? null
+                        : togglePlayback,
                     icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,
                         size: 48)),
                 const SizedBox(height: 40),

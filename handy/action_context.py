@@ -20,4 +20,4 @@ class ActionContext:
         self.hass_client = home_assistant
         self.translations = translations
         self.db = db
-        self.domain = domain  # Optional, to reduce requests
+        self.domain = domain or None  # Optional, to reduce requests
