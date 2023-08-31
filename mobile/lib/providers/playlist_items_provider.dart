@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../types/playlist.dart';
+import 'package:handy/types/playlist.dart';
 
 final playlistItemsProvider = StateProvider<Playlists>((ref) {
   // This is later updated within the socket client provider
