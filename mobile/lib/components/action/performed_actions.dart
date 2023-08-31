@@ -44,7 +44,10 @@ class PerformedActionsState extends ConsumerState<PerformedActions> {
 
     var newLastUpdated = DateTime.tryParse(data["lastUpdatedAt"] ?? "");
 
-    if (firstTime != true && lastUpdated != newLastUpdated && mounted) {
+    if (firstTime != true &&
+        lastUpdated != newLastUpdated &&
+        mounted &&
+        list.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(t.actions
               .action_was_performed(action: list.reversed.first.name))));
