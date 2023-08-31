@@ -19,6 +19,7 @@
   "navigation": {
     "home": "Home",
     "playlist": "Playlist",
+    "actions": "Actions",
     "settings": "Settings"
   },
   "control": {
@@ -89,6 +90,18 @@
   "preview": {
     "title": "Preview",
     "last_updated": "Last updated: $time_ago"
+  },
+  "actions": {
+    "title": "Actions",
+    "recent": "Recent actions",
+    "all_actions": "All actions",
+    "last_performed": "Last performed: $date",
+    "didnt_perform_lately": "Didn't perform lately",
+    "cannot_perform_action": {
+      "title": "Cannot perform action",
+      "description": "This action cannot be performed because it requires numeric value, which, in fact, requires gestures."
+    },
+    "action_was_performed": "Action performed: $action"
   },
   "time_ago": {
     "second": {

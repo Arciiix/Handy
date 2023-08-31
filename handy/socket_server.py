@@ -1,6 +1,7 @@
 import asyncio
 import base64
 import threading
+import time
 import uuid
 from aiohttp import web
 import aiohttp_cors
@@ -9,7 +10,7 @@ import cv2
 import socketio
 from schematics.exceptions import DataError
 
-from action import ACTIONS, get_actions_performed
+from action import ACTIONS, get_actions_performed, add_action_performed
 from action_context import ActionContext
 from logger import logger
 from config import CONFIG
@@ -451,11 +452,39 @@ async def get_performed_actions(sid, data):
 
     return {
         "success": True,
-        "performed_actions": [action.to_dict() for action in actions_performed],
-        "last_updated_at": last_updated_at.isoformat()
+        "performedActions": [action.to_dict() for action in actions_performed],
+        "lastUpdatedAt": last_updated_at.isoformat()
         if last_updated_at is not None
         else None,
     }
+
+
+@sio.on("actions/execute")
+async def execute_action(sid, data):
+    class_name = data.get("index", None)
+    logger.info(f"[{sid}] Perform action {class_name}")
+
+    if class_name is None or class_name not in ACTIONS:
+        return {"success": False, "error": "Action not found"}
+
+    if ACTIONS[class_name].change_numeric_value:
+        logger.warning("Tried to perform change_numeric_value action")
+        return {"success": False, "error": "Numeric actions not supported"}
+    else:
+        add_action_performed(ACTIONS[class_name], class_name)
+        logger.info("Action performing - start...")
+        start_time = time.time()
+        ctx = ActionContext(
+            confidency=1, db=db, home_assistant=hass_client, translations=translations
+        )
+        await ACTIONS[class_name].handler(ctx)
+        logger.info(
+            f"Arbitrary action performing - end, it took {time.time() - start_time}s"
+        )
+        return {
+            "success": True,
+            "recentActions": [action.to_dict() for action in get_actions_performed()],
+        }
 
 
 async def hello_handler(request):

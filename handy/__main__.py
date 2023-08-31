@@ -183,7 +183,7 @@ async def main(hass_client, translations):
                 logger.info(f"Confidency of performing action: {ctx.confidency}")
 
                 if class_name in ACTIONS:
-                    add_action_performed(ACTIONS[class_name], class_name)
+                    add_action_performed(ACTIONS[class_name], class_name, frame)
                     if ACTIONS[class_name].change_numeric_value:
                         logger.info("Numeric action performing - start...")
                         await numeric_value_track(

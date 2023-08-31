@@ -30,15 +30,11 @@ class ControlDialogState extends ConsumerState<ControlDialog> {
     setState(() {
       isLoading = true;
     });
-    print("do stuff");
 
     var socket = ref.read(socketClientProvider);
 
     Completer c = Completer();
-    print("start!");
     socket.emitWithAck("playback/state", {}, ack: (data) {
-      print("Received callback");
-      print(data);
       bool isSuccess = processSocketRepsonse(context, data);
 
       if (isSuccess && mounted) {

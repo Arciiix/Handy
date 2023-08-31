@@ -1,5 +1,7 @@
+import base64
 from datetime import datetime
 from typing import Awaitable, Callable, Optional
+import cv2
 
 from homeassistant_api import Domain
 from action_context import ActionContext
@@ -52,9 +54,9 @@ class Action:
     def to_dict(self) -> dict[str, any]:
         return {
             "name": self.friendly_name,
-            "change_numeric_value": self.change_numeric_value,
-            "numeric_value_multiplier": self.numeric_value_multiplier,
-            "numeric_value_range": self.numeric_value_range,
+            "changeNumericValue": self.change_numeric_value,
+            "numericValueMultiplier": self.numeric_value_multiplier,
+            "numericValueRange": self.numeric_value_range,
         }
 
 
@@ -64,16 +66,26 @@ class ActionPerformed:
     """
 
     def __init__(
-        self, action: Action, index: int, timestamp: datetime = datetime.now()
+        self,
+        action: Action,
+        index: int,
+        image: Optional[cv2.typing.MatLike] = None,
+        timestamp: datetime = datetime.now(),
     ):
         self.action = action
         self.index = index  # The action gesture index
+        self.image = image
         self.timestamp = timestamp
 
     def to_dict(self):
+        image_string = None
+        if self.image is not None:
+            _, image = cv2.imencode(".jpg", self.image, [cv2.IMWRITE_JPEG_QUALITY, 50])
+            image_string = base64.b64encode(image).decode()
         return {
             **self.action.to_dict(),
             "index": self.index,
+            "image": image_string,
             "timestamp": self.timestamp.isoformat(),
         }
 
@@ -81,10 +93,12 @@ class ActionPerformed:
 actions_perform_history: list[ActionPerformed] = []
 
 
-def add_action_performed(action: Action, gesture_index: int):
+def add_action_performed(
+    action: Action, gesture_index: int, frame: Optional[cv2.typing.MatLike] = None
+):
     global actions_perform_history
     performed = ActionPerformed(
-        action=action, index=gesture_index, timestamp=datetime.now()
+        action=action, index=gesture_index, image=frame, timestamp=datetime.now()
     )
     actions_perform_history.append(performed)
 
@@ -125,6 +139,6 @@ ACTIONS: dict[int, Optional[Action]] = {
     ),
     8: Action(
         handler=get_weather,
-        friendly_name="Get weather",
+        friendly_name="Say the weather",
     ),
 }

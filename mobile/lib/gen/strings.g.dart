@@ -4,9 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 2
-/// Strings: 134 (67 per locale)
+/// Strings: 152 (76 per locale)
 ///
-/// Built on 2023-08-30 at 21:22 UTC
+/// Built on 2023-08-31 at 16:36 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
@@ -165,6 +165,7 @@ class _StringsEn implements BaseTranslations<AppLocale, _StringsEn> {
 	late final _StringsControlEn control = _StringsControlEn._(_root);
 	late final _StringsPlaylistEn playlist = _StringsPlaylistEn._(_root);
 	late final _StringsPreviewEn preview = _StringsPreviewEn._(_root);
+	late final _StringsActionsEn actions = _StringsActionsEn._(_root);
 	late final _StringsTimeAgoEn time_ago = _StringsTimeAgoEn._(_root);
 	late final _StringsSettingsEn settings = _StringsSettingsEn._(_root);
 }
@@ -212,6 +213,7 @@ class _StringsNavigationEn {
 	// Translations
 	String get home => 'Home';
 	String get playlist => 'Playlist';
+	String get actions => 'Actions';
 	String get settings => 'Settings';
 }
 
@@ -262,6 +264,22 @@ class _StringsPreviewEn {
 	// Translations
 	String get title => 'Preview';
 	String last_updated({required Object time_ago}) => 'Last updated: ${time_ago}';
+}
+
+// Path: actions
+class _StringsActionsEn {
+	_StringsActionsEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Actions';
+	String get recent => 'Recent actions';
+	String get all_actions => 'All actions';
+	String last_performed({required Object date}) => 'Last performed: ${date}';
+	String get didnt_perform_lately => 'Didn\'t perform lately';
+	late final _StringsActionsCannotPerformActionEn cannot_perform_action = _StringsActionsCannotPerformActionEn._(_root);
+	String action_was_performed({required Object action}) => 'Action performed: ${action}';
 }
 
 // Path: time_ago
@@ -404,6 +422,17 @@ class _StringsPlaylistFormEn {
 	late final _StringsPlaylistFormErrorsEn errors = _StringsPlaylistFormErrorsEn._(_root);
 }
 
+// Path: actions.cannot_perform_action
+class _StringsActionsCannotPerformActionEn {
+	_StringsActionsCannotPerformActionEn._(this._root);
+
+	final _StringsEn _root; // ignore: unused_field
+
+	// Translations
+	String get title => 'Cannot perform action';
+	String get description => 'This action cannot be performed because it requires numeric value, which, in fact, requires gestures.';
+}
+
 // Path: settings.sections
 class _StringsSettingsSectionsEn {
 	_StringsSettingsSectionsEn._(this._root);
@@ -505,6 +534,7 @@ class _StringsPl implements _StringsEn {
 	@override late final _StringsControlPl control = _StringsControlPl._(_root);
 	@override late final _StringsPlaylistPl playlist = _StringsPlaylistPl._(_root);
 	@override late final _StringsPreviewPl preview = _StringsPreviewPl._(_root);
+	@override late final _StringsActionsPl actions = _StringsActionsPl._(_root);
 	@override late final _StringsTimeAgoPl time_ago = _StringsTimeAgoPl._(_root);
 	@override late final _StringsSettingsPl settings = _StringsSettingsPl._(_root);
 }
@@ -552,6 +582,7 @@ class _StringsNavigationPl implements _StringsNavigationEn {
 	// Translations
 	@override String get home => 'Start';
 	@override String get playlist => 'Playlista';
+	@override String get actions => 'Akcje';
 	@override String get settings => 'Ustawienia';
 }
 
@@ -602,6 +633,22 @@ class _StringsPreviewPl implements _StringsPreviewEn {
 	// Translations
 	@override String get title => 'Podgląd';
 	@override String last_updated({required Object time_ago}) => 'Ostatnia aktualizacja: ${time_ago}';
+}
+
+// Path: actions
+class _StringsActionsPl implements _StringsActionsEn {
+	_StringsActionsPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Actions';
+	@override String get recent => 'Ostatnie akcje';
+	@override String get all_actions => 'Wszystkie akcje';
+	@override String last_performed({required Object date}) => 'Ostatnio wykonano: ${date}';
+	@override String get didnt_perform_lately => 'Ostatnio niewykonywana';
+	@override late final _StringsActionsCannotPerformActionPl cannot_perform_action = _StringsActionsCannotPerformActionPl._(_root);
+	@override String action_was_performed({required Object action}) => 'Wykonano akcję: ${action}';
 }
 
 // Path: time_ago
@@ -752,6 +799,17 @@ class _StringsPlaylistFormPl implements _StringsPlaylistFormEn {
 	@override late final _StringsPlaylistFormErrorsPl errors = _StringsPlaylistFormErrorsPl._(_root);
 }
 
+// Path: actions.cannot_perform_action
+class _StringsActionsCannotPerformActionPl implements _StringsActionsCannotPerformActionEn {
+	_StringsActionsCannotPerformActionPl._(this._root);
+
+	@override final _StringsPl _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nie można wykonać akcji';
+	@override String get description => 'Tej akcji nie można wykonać, ponieważ wymaga wartości liczbowej, co wymaga gestów.';
+}
+
 // Path: settings.sections
 class _StringsSettingsSectionsPl implements _StringsSettingsSectionsEn {
 	_StringsSettingsSectionsPl._(this._root);
@@ -837,6 +895,7 @@ extension on _StringsEn {
 			case 'loading': return 'Loading...';
 			case 'navigation.home': return 'Home';
 			case 'navigation.playlist': return 'Playlist';
+			case 'navigation.actions': return 'Actions';
 			case 'navigation.settings': return 'Settings';
 			case 'control.connection_state.connected': return 'Connected';
 			case 'control.connection_state.connecting': return 'Connecting';
@@ -887,6 +946,14 @@ extension on _StringsEn {
 			case 'playlist.form.errors.url_invalid': return 'Please enter a valid URL';
 			case 'preview.title': return 'Preview';
 			case 'preview.last_updated': return ({required Object time_ago}) => 'Last updated: ${time_ago}';
+			case 'actions.title': return 'Actions';
+			case 'actions.recent': return 'Recent actions';
+			case 'actions.all_actions': return 'All actions';
+			case 'actions.last_performed': return ({required Object date}) => 'Last performed: ${date}';
+			case 'actions.didnt_perform_lately': return 'Didn\'t perform lately';
+			case 'actions.cannot_perform_action.title': return 'Cannot perform action';
+			case 'actions.cannot_perform_action.description': return 'This action cannot be performed because it requires numeric value, which, in fact, requires gestures.';
+			case 'actions.action_was_performed': return ({required Object action}) => 'Action performed: ${action}';
 			case 'time_ago.second': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('en'))(n,
 				one: '${n} second',
 				other: '${n} seconds',
@@ -928,6 +995,7 @@ extension on _StringsPl {
 			case 'loading': return 'Ładowanie...';
 			case 'navigation.home': return 'Start';
 			case 'navigation.playlist': return 'Playlista';
+			case 'navigation.actions': return 'Akcje';
 			case 'navigation.settings': return 'Ustawienia';
 			case 'control.connection_state.connected': return 'Połączono';
 			case 'control.connection_state.connecting': return 'Łączenie';
@@ -978,6 +1046,14 @@ extension on _StringsPl {
 			case 'playlist.form.errors.url_invalid': return 'Proszę podać poprawny adres URL';
 			case 'preview.title': return 'Podgląd';
 			case 'preview.last_updated': return ({required Object time_ago}) => 'Ostatnia aktualizacja: ${time_ago}';
+			case 'actions.title': return 'Actions';
+			case 'actions.recent': return 'Ostatnie akcje';
+			case 'actions.all_actions': return 'Wszystkie akcje';
+			case 'actions.last_performed': return ({required Object date}) => 'Ostatnio wykonano: ${date}';
+			case 'actions.didnt_perform_lately': return 'Ostatnio niewykonywana';
+			case 'actions.cannot_perform_action.title': return 'Nie można wykonać akcji';
+			case 'actions.cannot_perform_action.description': return 'Tej akcji nie można wykonać, ponieważ wymaga wartości liczbowej, co wymaga gestów.';
+			case 'actions.action_was_performed': return ({required Object action}) => 'Wykonano akcję: ${action}';
 			case 'time_ago.second': return ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('pl'))(n,
 				one: '${n} sekunda',
 				few: '${n} sekundy',

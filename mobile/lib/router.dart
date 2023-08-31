@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:handy/components/bottom_navigation.dart';
+import 'package:handy/pages/actions_page.dart';
 import 'package:handy/pages/home_page.dart';
 import 'package:handy/pages/playlist_item_form.dart';
 import 'package:handy/pages/playlist_page.dart';
@@ -34,6 +35,15 @@ final router = GoRouter(
                 path: '/playlist',
                 builder: (BuildContext context, GoRouterState state) {
                   return const PlaylistPage();
+                }),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: <RouteBase>[
+            GoRoute(
+                path: '/actions',
+                builder: (BuildContext context, GoRouterState state) {
+                  return const ActionsPage();
                 }),
           ],
         ),

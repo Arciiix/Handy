@@ -18,8 +18,9 @@ class BottomNavigation extends ConsumerStatefulWidget {
 
 class BottomNavigationState extends ConsumerState<BottomNavigation> {
   void onPageChange(int index) {
-    // If user wants to go to managing playlists and the socket.io connection hasn't been established, deny it and show an alert
-    if (index == 1 && !ref.read(currentStateProvider).isConnected) {
+    // If user wants to go to managing playlists or actions and the socket.io connection hasn't been established, deny it and show an alert
+    if ((index == 1 || index == 2) &&
+        !ref.read(currentStateProvider).isConnected) {
       showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -45,6 +46,7 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
     return Scaffold(
       body: SafeArea(child: widget.navigationShell),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: widget.navigationShell.currentIndex,
         onTap: onPageChange,
         items: [
@@ -52,6 +54,8 @@ class BottomNavigationState extends ConsumerState<BottomNavigation> {
               icon: const Icon(Icons.home), label: t.navigation.home),
           BottomNavigationBarItem(
               icon: const Icon(Icons.music_note), label: t.navigation.playlist),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.back_hand), label: t.navigation.actions),
           BottomNavigationBarItem(
               icon: const Icon(Icons.settings), label: t.navigation.settings)
         ],

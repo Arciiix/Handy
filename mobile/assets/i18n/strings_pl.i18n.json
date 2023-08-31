@@ -19,6 +19,7 @@
   "navigation": {
     "home": "Start",
     "playlist": "Playlista",
+    "actions": "Akcje",
     "settings": "Ustawienia"
   },
   "control": {
@@ -89,6 +90,18 @@
   "preview": {
     "title": "Podgląd",
     "last_updated": "Ostatnia aktualizacja: $time_ago"
+  },
+  "actions": {
+    "title": "Actions",
+    "recent": "Ostatnie akcje",
+    "all_actions": "Wszystkie akcje",
+    "last_performed": "Ostatnio wykonano: $date",
+    "didnt_perform_lately": "Ostatnio niewykonywana",
+    "cannot_perform_action": {
+      "title": "Nie można wykonać akcji",
+      "description": "Tej akcji nie można wykonać, ponieważ wymaga wartości liczbowej, co wymaga gestów."
+    },
+    "action_was_performed": "Wykonano akcję: $action"
   },
   "time_ago": {
     "second": {
