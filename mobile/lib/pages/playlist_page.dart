@@ -24,16 +24,18 @@ class _PlaylistPageState extends State<PlaylistPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
         length: tabs.length,
-        child: Scaffold(
-            body: Column(
-          children: [
-            TabBar(tabs: tabs),
-            const Expanded(
-                child: TabBarView(children: [
-              PlaylistItemsManagement(type: PlaylistType.local),
-              PlaylistItemsManagement(type: PlaylistType.youtube),
-            ])),
-          ],
-        )));
+        child: SafeArea(
+          child: Scaffold(
+              body: Column(
+            children: [
+              TabBar(tabs: tabs),
+              const Expanded(
+                  child: TabBarView(children: [
+                PlaylistItemsManagement(type: PlaylistType.local),
+                PlaylistItemsManagement(type: PlaylistType.youtube),
+              ])),
+            ],
+          )),
+        ));
   }
 }

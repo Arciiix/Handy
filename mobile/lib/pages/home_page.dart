@@ -71,7 +71,7 @@ class HomePageState extends ConsumerState<HomePage>
       onFocusChange: (hasFocus) {
         if (hasFocus) getSharedData();
       },
-      child: const Control(),
+      child: const SafeArea(child: Control()),
     );
   }
 }

@@ -235,7 +235,6 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
               : t.playlist.form.title_add(
                   context: PlaylistTypesContext.values[widget.type.index]))),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.save),
         onPressed: alreadySaving
             ? null
             : () {
@@ -243,6 +242,7 @@ class PlaylistItemFormState extends ConsumerState<PlaylistItemForm> {
                   handleSave();
                 }
               },
+        child: const Icon(Icons.save),
       ),
       body: SingleChildScrollView(
         child: Column(
