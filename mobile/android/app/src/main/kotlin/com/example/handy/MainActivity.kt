@@ -1,4 +1,4 @@
-package com.example.handy
+package com.arciiix.handy
 
 import android.content.Intent
 import android.os.Bundle
