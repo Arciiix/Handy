@@ -1,6 +1,6 @@
 import 'package:handy/providers/shared_preferences_provider.dart';
 import 'package:handy/types/settings.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final settingsProvider = StateProvider<Settings>((ref) {
   final sharedPreferences = ref.watch(sharedPreferencesProvider);

@@ -7,7 +7,7 @@ import 'package:handy/gen/strings.g.dart';
 import 'package:handy/providers/socket_provider.dart';
 import 'package:handy/utils/process_socket_response.dart';
 import 'package:handy/utils/time_ago.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PreviewPage extends ConsumerStatefulWidget {
   const PreviewPage({super.key});

@@ -7,7 +7,7 @@ import "package:handy/components/control/control.dart";
 import "package:handy/providers/current_state_provider.dart";
 import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/playlist.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:socket_io_client/socket_io_client.dart";
 
 class HomePage extends ConsumerStatefulWidget {

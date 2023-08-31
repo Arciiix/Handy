@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:go_router/go_router.dart";
 import "package:handy/gen/strings.g.dart";
 import "package:handy/providers/current_state_provider.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BottomNavigation extends ConsumerStatefulWidget {
   const BottomNavigation({

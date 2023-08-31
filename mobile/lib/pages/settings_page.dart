@@ -4,7 +4,7 @@ import 'package:handy/gen/strings.g.dart';
 import 'package:handy/providers/settings_provider.dart';
 import 'package:handy/providers/socket_provider.dart';
 import 'package:handy/utils/validation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});

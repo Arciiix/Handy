@@ -7,7 +7,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import "package:handy/providers/current_state_provider.dart";
 import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/state.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Control extends ConsumerStatefulWidget {
   const Control({super.key});

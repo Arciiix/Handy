@@ -8,7 +8,7 @@ import "package:handy/providers/playlist_items_provider.dart";
 import "package:handy/providers/socket_provider.dart";
 import "package:handy/types/playlist.dart";
 import "package:handy/utils/validation.dart";
-import "package:hooks_riverpod/hooks_riverpod.dart";
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:url_launcher/url_launcher.dart";
 
 import "../utils/process_socket_response.dart";
