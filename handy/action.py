@@ -7,7 +7,7 @@ from homeassistant_api import Domain
 from action_context import ActionContext
 
 from announcements import say_current_time
-from playlist import next_playlist_item, switch_playlist_type
+from playlist import next_playlist_item, switch_playlist_type, play_current_item
 from playback import (
     toggle_playback_state,
     get_current_volume,
@@ -126,6 +126,10 @@ ACTIONS: dict[int, Optional[Action]] = {
     2: Action(
         handler=next_playlist_item,
         friendly_name="Next playlist item",
+    ),
+    3: Action(
+        handler=play_current_item,
+        friendly_name="Replay current playlist item",
     ),
     4: Action(
         handler=toggle_playback_state,

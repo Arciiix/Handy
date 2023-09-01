@@ -198,6 +198,23 @@ async def update_playlists(socket: Server = None):
         logger.warning(f"Playlist couldn't be loaded from the database: {str(err)}")
 
 
+async def play_current_item(ctx: ActionContext):
+    # Get the current item index
+    current_item_index = (
+        current_local_playlist_item_index
+        if current_playlist_type is PlaylistTypes.LOCAL
+        else current_youtube_playlist_item_index
+    )
+    current_item = (
+        LOCAL_PLAYLIST[current_item_index]
+        if current_playlist_type is PlaylistTypes.LOCAL
+        else YOUTUBE_PLAYLIST[current_item_index]
+    )
+
+    # Play it once again
+    return await play_playlist_item(ctx, current_item, current_item_index)
+
+
 async def switch_playlist_type(ctx: ActionContext, type=None):
     """
     Switches between LOCAL and YOUTUBE type
@@ -222,20 +239,7 @@ async def switch_playlist_type(ctx: ActionContext, type=None):
             ),
         )
 
-        # Get the current item index
-        current_item_index = (
-            current_local_playlist_item_index
-            if current_playlist_type is PlaylistTypes.LOCAL
-            else current_youtube_playlist_item_index
-        )
-        current_item = (
-            LOCAL_PLAYLIST[current_item_index]
-            if current_playlist_type is PlaylistTypes.LOCAL
-            else YOUTUBE_PLAYLIST[current_item_index]
-        )
-
-        # Play it once again
-        return await play_playlist_item(ctx, current_item, current_item_index)
+        return await play_current_item(ctx)
 
 
 async def play_playlist_item_from_object(
