@@ -46,13 +46,12 @@ async def get_current_volume_only(ctx: ActionContext) -> Optional[int]:
 
 async def get_current_volume(ctx: ActionContext) -> tuple[int, Optional[Domain]]:
     volume = await get_current_volume_only(ctx)
-
-    if volume is None:
-        return None
-
-    # Also indicate about entering volume change mode
     domain = await ctx.hass_client.async_get_domain("media_player")
 
+    if volume is None:
+        return (None, domain)
+
+    # Also indicate about entering volume change mode
     logger.info("Indicating about volume change mode...")
     await domain.volume_mute(entity_id=CONFIG.entities.volume, is_volume_muted=True)
     logger.info("Muted, wait 1s")
