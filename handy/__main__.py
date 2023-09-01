@@ -192,10 +192,16 @@ async def main(hass_client, translations):
                     else:
                         logger.info("Action performing - start...")
                         start_time = time.time()
-                        await ACTIONS[class_name].handler(ctx)
-                        logger.info(
-                            f"Action performing - end, it took {time.time() - start_time}s"
-                        )
+                        try:
+                            await ACTIONS[class_name].handler(ctx)
+                            logger.info(
+                                f"Action performing - end, it took {time.time() - start_time}s"
+                            )
+                        except Exception as err:
+                            logger.error(
+                                f"Action failed after {time.time() - start_time}s"
+                            )
+                            logger.exception(err)
 
             # logger.debug([angles, class_name, proba])
             previous_frame = frame
