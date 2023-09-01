@@ -30,10 +30,13 @@ async def toggle_playback_state(ctx: ActionContext):
         logger.error(f"Error while toggling playback state: {err}")
 
 
-async def get_current_volume_only(ctx: ActionContext) -> int:
+async def get_current_volume_only(ctx: ActionContext) -> Optional[int]:
     state = await ctx.hass_client.async_get_state(entity_id=CONFIG.entities.volume)
-    # TODO: Sometimes it's null - think what to do in that scenario
-    volume = state.attributes.get("volume_level", 50)
+
+    volume = state.attributes.get("volume_level", None)
+
+    if volume is None:
+        return None
 
     volume = int(float(volume) * 100)
     logger.info(f"Got volume: {volume}")
@@ -43,6 +46,9 @@ async def get_current_volume_only(ctx: ActionContext) -> int:
 
 async def get_current_volume(ctx: ActionContext) -> tuple[int, Optional[Domain]]:
     volume = await get_current_volume_only(ctx)
+
+    if volume is None:
+        return None
 
     # Also indicate about entering volume change mode
     domain = await ctx.hass_client.async_get_domain("media_player")
@@ -70,7 +76,10 @@ async def set_current_volume(ctx: ActionContext):
         if ctx.domain is not None
         else await ctx.hass_client.async_get_domain("media_player")
     )
-    await domain.volume_set(
-        entity_id=CONFIG.entities.volume, volume_level=ctx.numeric_value / 100
-    )
-    logger.info(f"Set volume to {ctx.numeric_value}%")
+    try:
+        await domain.volume_set(
+            entity_id=CONFIG.entities.volume, volume_level=ctx.numeric_value / 100
+        )
+        logger.info(f"Set volume to {ctx.numeric_value}%")
+    except Exception as err:
+        logger.exception(err)

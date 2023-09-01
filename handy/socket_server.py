@@ -125,10 +125,11 @@ async def get_current_playback_state(sid, data):
     )
     try:
         logger.info("Trying to get current playback state")
+        volume = await get_current_volume_only(ctx)
         return {
             "success": True,
             "state": (await get_playback_state(ctx))[0].state,
-            "volume": await get_current_volume_only(ctx),
+            "volume": volume if volume is not None else -1,
         }
     except Exception as err:
         logger.exception(err)
