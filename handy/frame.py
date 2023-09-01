@@ -80,11 +80,11 @@ def handle_frame(
     )
 
     # Draw the GROI on the image
-    if GROI is not None and CONFIG.is_dev:
+    if GROI is not None:
         cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
     # Draw the T-ROI (tracking ROI) on the image
-    if TROI is not None and CONFIG.is_dev:
+    if TROI is not None:
         cv2.rectangle(
             image,
             (max(TROI["x1"] - ROI["x1"], 0), max(TROI["y1"] - ROI["y1"], 0)),

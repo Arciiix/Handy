@@ -7,10 +7,11 @@ from action_context import ActionContext
 from config import CONFIG
 from frame import handle_frame
 from logger import logger
+from video_feed import Streamer
 
 
 async def numeric_value_track(
-    action: Action, cap: cv2.VideoCapture, ctx: ActionContext, holistic, model
+    action: Action, cap: Streamer, ctx: ActionContext, holistic, model
 ):
     """
     Some of the actions, like changing volume, have to know the numeric value of change.
@@ -34,7 +35,7 @@ async def numeric_value_track(
 
     logger.info(f"Set initial numeric value to {ctx.numeric_value}")
     while True:
-        ret, frame = cap.read()
+        frame = cap.get_processed_frame()
 
         # Limit the processing to the FPS
         if datetime.now() - last_processing_time < timedelta(
@@ -44,7 +45,7 @@ async def numeric_value_track(
         last_processing_time = datetime.now()
 
         # In case of empty frame
-        if not ret or frame is None:
+        if frame is None:
             logger.warning("Frame empty")
             continue
 

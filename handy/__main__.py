@@ -23,6 +23,7 @@ from db import db
 from socket_server import init_socket, get_number_of_socket_clients, get_is_enabled
 from playlist import update_playlists
 from services import get_services
+from video_feed import Streamer
 
 mp_holistic = mp.solutions.holistic
 model_path = path.join(path.dirname(__file__), "train", "handy_classifier.pkl")
@@ -44,15 +45,14 @@ async def main(hass_client, translations):
         exit(-1)
 
     # Init the video feed
-    cap = cv2.VideoCapture(CONFIG.stream_url, cv2.CAP_FFMPEG)
+    # cap = cv2.VideoCapture(CONFIG.stream_url, cv2.CAP_FFMPEG)
+    streamer = Streamer(CONFIG.stream_url)
 
-    if not cap.isOpened():
-        logger.error("VideoCapture not opened")
-        exit(-1)
-    ret = False
+    thread = threading.Thread(target=streamer.start)
+    thread.start()
 
-    while not ret:
-        ret, frame = cap.read()
+    while streamer.get_processed_frame() is None:
+        pass
 
     logger.info("Video feed opened")
 
@@ -78,12 +78,12 @@ async def main(hass_client, translations):
         previous_frame = None
         while True:
             is_fast_mode = fast_mode_expire_time >= datetime.now()
-            ret, frame = cap.read()
+            frame = streamer.get_processed_frame()
 
             if (
                 not is_inside_working_hours() and get_number_of_socket_clients() == 0
             ) or not get_is_enabled():
-                cap.release()
+                streamer.release()
                 cv2.destroyAllWindows()
                 return
 
@@ -94,7 +94,7 @@ async def main(hass_client, translations):
                 continue
             last_processing_time = datetime.now()
 
-            if not ret or frame is None:
+            if frame is None:
                 logger.warning("Frame empty")
                 continue
 
@@ -187,7 +187,7 @@ async def main(hass_client, translations):
                     if ACTIONS[class_name].change_numeric_value:
                         logger.info("Numeric action performing - start...")
                         await numeric_value_track(
-                            ACTIONS[class_name], cap, ctx, holistic, model
+                            ACTIONS[class_name], streamer, ctx, holistic, model
                         )
                     else:
                         logger.info("Action performing - start...")
