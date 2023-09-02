@@ -36,9 +36,6 @@ def handle_frame(
     # To calculate the performance for processing a single frame, init a start_time variable
     start_time = time.time()
 
-    # Resize frame
-    frame = cv2.resize(frame, (CONFIG.resize_width, CONFIG.resize_height))
-
     input_frame = frame.copy()
     width, height = CONFIG.resize_width, CONFIG.resize_height
     x1, x2, y1, y2 = (
@@ -57,8 +54,6 @@ def handle_frame(
         x1 = max(x1 - ROI["x1"], 0)
         y2 = min(y2 - ROI["y1"], height)
         y1 = max(y1 - ROI["y1"], 0)
-
-    print(x1, x2, y1, y2)
 
     # Recolor feed
     image = cv2.cvtColor(input_frame, cv2.COLOR_BGR2RGB)

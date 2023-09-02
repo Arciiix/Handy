@@ -186,9 +186,14 @@ async def main(hass_client, translations):
                     add_action_performed(ACTIONS[class_name], int(class_name), frame)
                     if ACTIONS[class_name].change_numeric_value:
                         logger.info("Numeric action performing - start...")
-                        await numeric_value_track(
-                            ACTIONS[class_name], streamer, ctx, holistic, model
-                        )
+                        try:
+                            await numeric_value_track(
+                                ACTIONS[class_name], streamer, ctx, holistic, model
+                            )
+                            logger.info("Numeric action - done")
+                        except Exception as err:
+                            logger.error("Numeric action failed")
+                            logger.exception(err)
                     else:
                         logger.info("Action performing - start...")
                         start_time = time.time()

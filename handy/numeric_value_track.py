@@ -28,6 +28,7 @@ async def numeric_value_track(
     if action.init_value_getter is not None:
         ctx.numeric_value, domain = await action.init_value_getter(ctx)
         if ctx.numeric_value is None:
+            logger.error("Numeric value is None at start")
             return None
         if domain is not None:
             ctx.domain = domain
