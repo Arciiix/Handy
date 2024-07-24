@@ -114,3 +114,36 @@ To set up MPD in Home Assistant, please add:
 # Command to stream webcam on Linux
 
 ffmpeg -f v4l2 -i /dev/video0 -preset ultrafast -vcodec libx264 -tune zerolatency -b 900k -f h264 udp://<YOUR_IP>:<YOUR_PORT>
+
+# Default poses
+## Play next item
+![Play next item](./assets/poses/next.png)
+## Play/pause
+![Play/pause](./assets/poses/toggle-playback.png)
+## (Re)play current item
+![Play current item](./assets/poses/play.png)
+## Volume
+First, make this pose:
+
+![Volume](./assets/poses/volume.png)
+
+The system will indicate that it's ready to change the volume by **muting the audio for a moment**.
+
+Then, to increase the volume, make this pose:
+
+![Volume up](./assets/poses/volume-up.png)
+
+And to decrease the volume, make this pose:
+
+![Volume down](./assets/poses/volume-down.png)
+
+When you're ready, you can leave the ROI or raise both your hands.
+
+# Toggle playlist - between local and remote (YouTube)
+![Toggle playlist](./assets/poses/toggle-playlist.png)
+
+# Get the current time
+![Get the current time](./assets/poses/time.png)
+
+# Get the current weather
+![Get the current weather](./assets/poses/weather.png)
