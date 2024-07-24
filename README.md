@@ -3,7 +3,39 @@
     <h2 align="center">Handy</h2>
 </div>
 
-### Easily control your home automations using hand gestures, at any time. This app recognizes the gestures using your security camera footage and controls every IoT action you can dream of. Nothing is impossible - make your life feel like in a sci-fi movie.
+### Easily control your home automations using hand gestures, at any time. This app recognizes the gestures using your security camera footage and controls every IoT action you can dream of. Nothing is impossible - make your life feel like you were the main character of a sci-fi movie.
+
+Imagine living in a world where you can effortlessly control **every aspect of your smart home with a simple wave of your hand**. Welcome to Handy, a groundbreaking project designed to transform your daily life into a science fiction dream come true. With Handy, you can seamlessly interact with your home automation systems using hand gestures, making the future of smart living a reality today.
+
+# Features
+
+**🖐️ Gesture Recognition**
+
+Control your smart home devices effortlessly with **various hand gestures** - I built and trained a classifier (Random Forest) model by myself. It gets the angles between different body joints (thanks to [MediaPipe](https://developers.google.com/mediapipe) and some magic (math to be specific)) as input data and outputs the corresponding gesture ID. This sophisticated model **accurately interprets your hand movements, enabling seamless interaction with your IoT devices**.
+
+**🏡 Home Assistant Integration**
+
+Handy was built to seamlessly integrate with [**Home Assistant**](https://www.home-assistant.io/), the most popular central hub for your smart home ecosystem. This means you can effortlessly control all your IoT devices that are compatible with it. Every single one of them. There is no catch.
+
+**🎵 Built-In actions**
+
+The core element of Handy is **music control** - play, pause, adjust volume, switch tracks, play music from YouTube or online radio, and much more. Want to get an update on **weather** or want the music player to **say the current date and time**? No problem at all.
+
+📱 **Mobile App**
+
+If you need to **manually control Handy without using hand gestures**, you can use the mobile app I also created. What's more, it keeps **the action history** so that you can see who did what and when. You can also **manage music items** (radios/YouTube videos) of the playlist used in Handy.
+
+**⚙️ Resource Efficiency**
+
+Efficiently operates on **standard surveillance cameras 24/7**, without any problems. Optimized for **fully automated workflow** - you forget that this app "works somewhere" - these hand gestures become a crucial part of your life (trust me, I know what I'm talking about 😅)
+
+**🤖 Customization**
+
+The app can be customized in every way. You can even build, train, and test your own gesture recognition model - I wanted this project to be **incredibly friendly** for new users - see below for Jupyter notebooks on how to get started. Easily customize and extend actions for any IoT device - with the intuitive code and docs.
+
+**📈 Constant Innovation**
+
+Since this is a crucial part of my (and my family members') lives right now, every problem that I discover will be patched. And of course, **this doesn't stop just there**. This app will be improved so that it becomes a real science fiction dream come true.
 
 # Prerequirements
 
@@ -13,15 +45,17 @@
 
 # Train
 
+Handy comes with pretrained model that recognizes various of hand gestures, but if you want to build your own, please follow the notebooks below.
+
 1. [Gather data](./handy/train/0_Gather_Data.ipynb)
 
 1. [Process data](./handy/train/1_Process_Data.ipynb)
 
 1. [Train model](./handy/train/2_Train_Model.ipynb)
 
-1. [Select ROI (region of interest), T-ROI (trigger region of interest), and G-ROI (gesture region of interest)](./handy/utils/Select_ROI.ipynb)
-
 After completing all above, you can optionally:
+
+1. [Select ROI (region of interest), T-ROI (trigger region of interest), and G-ROI (gesture region of interest)](./handy/utils/Select_ROI.ipynb)
 
 1. [Test model](./handy/train/3_Test_Model.ipynb)
 
@@ -115,6 +149,7 @@ To set up MPD in Home Assistant, please add:
 
 ffmpeg -f v4l2 -i /dev/video0 -preset ultrafast -vcodec libx264 -tune zerolatency -b 900k -f h264 udp://<YOUR_IP>:<YOUR_PORT>
 
+
 # Default poses
 ## Play next item
 ![Play next item](./assets/poses/next.png)
@@ -147,3 +182,5 @@ When you're ready, you can leave the ROI or raise both your hands.
 
 # Get the current weather
 ![Get the current weather](./assets/poses/weather.png)
+
+Made with lots of ❤️ by [Artur Nowak](https://github.com/Arciiix/Handy)
